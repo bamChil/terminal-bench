@@ -1,0 +1,2 @@
+black_links:
+- https://github.com/scikit-learn/scikit-learn/

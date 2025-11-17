@@ -1,0 +1,693 @@
+base_image: pb-python310_nvidia-base_a48d8454
+black_links:
+- https://github.com/huggingface/transformers/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+    environment:
+      PYTHONPATH: /testbed
+install: python -m pip install --upgrade pip setuptools wheel && pip install -e '.[testing]'
+  && echo 'Transformers环境设置完成'
+instance_image: pb-instance_4702c5d8
+library_name: transformers
+pip_packages:
+- numpy>=1.17
+- packaging>=20.0
+- pyyaml>=5.1
+- regex!=2019.12.17
+- requests
+- tokenizers>=0.19,<0.20
+- safetensors>=0.4.1
+- huggingface-hub>=0.23.2,<1.0
+- filelock
+- tqdm>=4.27
+- pytest>=7.2.0
+- pytest-timeout
+- pytest-xdist
+- parameterized
+- psutil
+- Pillow<=15.0
+- optuna
+- ray[tune]
+- sigopt
+- timm
+- datasets!=2.5.0
+- accelerate>=0.21.0
+- peft>=0.3.0
+- bitsandbytes>0.37.0
+python: '3.10'
+repo_name: transformers
+repository: huggingface/transformers
+task_level: 3
+task_name: transformers_tokenization_longformer
+task_statement: '**Task: Implement Longformer Text Tokenization System**
+
+
+  **Core Functionalities:**
+
+  - Build a specialized tokenizer for the Longformer model using byte-level Byte-Pair
+  Encoding (BPE)
+
+  - Provide both standard and fast tokenization implementations with vocabulary management
+
+  - Handle text preprocessing, token encoding/decoding, and special token integration
+
+
+  **Main Features & Requirements:**
+
+  - Support single and paired sequence tokenization with appropriate special token
+  formatting
+
+  - Manage vocabulary loading/saving and BPE merge operations
+
+  - Handle space-sensitive tokenization where word encoding depends on position context
+
+  - Provide configurable special tokens (CLS, SEP, MASK, PAD, etc.) and prefix space
+  handling
+
+  - Support batch processing and various output formats (tensors, attention masks,
+  etc.)
+
+
+  **Key Challenges:**
+
+  - Correctly handle space-as-token behavior where words encode differently based
+  on leading spaces
+
+  - Ensure compatibility between standard and fast tokenizer implementations
+
+  - Validate proper configuration for pre-tokenized inputs requiring prefix space
+  handling
+
+  - Maintain backward compatibility with existing Longformer model expectations
+
+  - Efficiently manage large vocabularies and BPE operations for long sequence processing'
+technical_docs: []
+test_cmd: pytest --no-header -rA --tb=short -p no:cacheprovider --timeout=50
+test_code1: 'from agent_code.transformers import LongformerTokenizer
+
+  from agent_code.transformers import LongformerTokenizerFast'
+test_code_example: from agent_code.transformers import LongformerTokenizer
+test_code_example_obj: LongformerTokenizer
+test_code_example_path: /testbed/agent_code/transformers.py
+test_description1: Below is **Test Description 1**
+timeout: 50
+interface_description1: 'Below is **Interface Description 1** for file: src-transformers-models-longformer-tokenization_longformer.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LongformerTokenizer(PreTrainedTokenizer):\n    \"\"\"\n  \
+  \  \n        Constructs a Longformer tokenizer, derived from the GPT-2 tokenizer,\
+  \ using byte-level Byte-Pair-Encoding.\n    \n        This tokenizer has been trained\
+  \ to treat spaces like parts of the tokens (a bit like sentencepiece) so a word\
+  \ will\n        be encoded differently whether it is at the beginning of the sentence\
+  \ (without space) or not:\n    \n        ```python\n        >>> from transformers\
+  \ import LongformerTokenizer\n    \n        >>> tokenizer = LongformerTokenizer.from_pretrained(\"\
+  allenai/longformer-base-4096\")\n        >>> tokenizer(\"Hello world\")[\"input_ids\"\
+  ]\n        [0, 31414, 232, 2]\n    \n        >>> tokenizer(\" Hello world\")[\"\
+  input_ids\"]\n        [0, 20920, 232, 2]\n        ```\n    \n        You can get\
+  \ around that behavior by passing `add_prefix_space=True` when instantiating this\
+  \ tokenizer or when you\n        call it on some text, but since the model was not\
+  \ pretrained this way, it might yield a decrease in performance.\n    \n       \
+  \ <Tip>\n    \n        When used with `is_split_into_words=True`, this tokenizer\
+  \ will add a space before each word (even the first one).\n    \n        </Tip>\n\
+  \    \n        This tokenizer inherits from [`PreTrainedTokenizer`] which contains\
+  \ most of the main methods. Users should refer to\n        this superclass for more\
+  \ information regarding those methods.\n    \n        Args:\n            vocab_file\
+  \ (`str`):\n                Path to the vocabulary file.\n            merges_file\
+  \ (`str`):\n                Path to the merges file.\n            errors (`str`,\
+  \ *optional*, defaults to `\"replace\"`):\n                Paradigm to follow when\
+  \ decoding bytes to UTF-8. See\n                [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)\
+  \ for more information.\n            bos_token (`str`, *optional*, defaults to `\"\
+  <s>\"`):\n                The beginning of sequence token that was used during pretraining.\
+  \ Can be used a sequence classifier token.\n    \n                <Tip>\n    \n\
+  \                When building a sequence using special tokens, this is not the\
+  \ token that is used for the beginning of\n                sequence. The token used\
+  \ is the `cls_token`.\n    \n                </Tip>\n    \n            eos_token\
+  \ (`str`, *optional*, defaults to `\"</s>\"`):\n                The end of sequence\
+  \ token.\n    \n                <Tip>\n    \n                When building a sequence\
+  \ using special tokens, this is not the token that is used for the end of sequence.\n\
+  \                The token used is the `sep_token`.\n    \n                </Tip>\n\
+  \    \n            sep_token (`str`, *optional*, defaults to `\"</s>\"`):\n    \
+  \            The separator token, which is used when building a sequence from multiple\
+  \ sequences, e.g. two sequences for\n                sequence classification or\
+  \ for a text and a question for question answering. It is also used as the last\n\
+  \                token of a sequence built with special tokens.\n            cls_token\
+  \ (`str`, *optional*, defaults to `\"<s>\"`):\n                The classifier token\
+  \ which is used when doing sequence classification (classification of the whole\
+  \ sequence\n                instead of per-token classification). It is the first\
+  \ token of the sequence when built with special tokens.\n            unk_token (`str`,\
+  \ *optional*, defaults to `\"<unk>\"`):\n                The unknown token. A token\
+  \ that is not in the vocabulary cannot be converted to an ID and is set to be this\n\
+  \                token instead.\n            pad_token (`str`, *optional*, defaults\
+  \ to `\"<pad>\"`):\n                The token used for padding, for example when\
+  \ batching sequences of different lengths.\n            mask_token (`str`, *optional*,\
+  \ defaults to `\"<mask>\"`):\n                The token used for masking values.\
+  \ This is the token used when training this model with masked language\n       \
+  \         modeling. This is the token which the model will try to predict.\n   \
+  \         add_prefix_space (`bool`, *optional*, defaults to `False`):\n        \
+  \        Whether or not to add an initial space to the input. This allows to treat\
+  \ the leading word just as any\n                other word. (Longformer tokenizer\
+  \ detect beginning of words by the preceding space).\n        \n    \"\"\"\n\n \
+  \   vocab_files_names = \"VOCAB_FILES_NAMES\"\n    model_input_names = ['input_ids',\
+  \ 'attention_mask']\n\n    def __init__(\n        self,\n        vocab_file,\n \
+  \       merges_file,\n        errors = 'replace',\n        bos_token = '<s>',\n\
+  \        eos_token = '</s>',\n        sep_token = '</s>',\n        cls_token = '<s>',\n\
+  \        unk_token = '<unk>',\n        pad_token = '<pad>',\n        mask_token\
+  \ = '<mask>',\n        add_prefix_space = False,\n        **kwargs\n    ):\n   \
+  \     \"\"\"\n        Initialize a LongformerTokenizer instance.\n\n        This\
+  \ constructor sets up a Longformer tokenizer, which is derived from the GPT-2 tokenizer\
+  \ and uses \n        byte-level Byte-Pair-Encoding (BPE). The tokenizer is designed\
+  \ to handle long sequences and treats \n        spaces as parts of tokens, similar\
+  \ to sentencepiece.\n\n        Parameters:\n            vocab_file (str): Path to\
+  \ the vocabulary file containing the token-to-ID mappings in JSON format.\n    \
+  \        merges_file (str): Path to the merges file containing BPE merge rules.\n\
+  \            errors (str, optional): Paradigm to follow when decoding bytes to UTF-8.\
+  \ Defaults to 'replace'.\n                See Python's bytes.decode() documentation\
+  \ for more information.\n            bos_token (str, optional): The beginning of\
+  \ sequence token used during pretraining. Defaults to '<s>'.\n                Note\
+  \ that when building sequences with special tokens, cls_token is used instead.\n\
+  \            eos_token (str, optional): The end of sequence token. Defaults to '</s>'.\n\
+  \                Note that when building sequences with special tokens, sep_token\
+  \ is used instead.\n            sep_token (str, optional): The separator token used\
+  \ when building sequences from multiple sequences\n                or as the last\
+  \ token of a sequence built with special tokens. Defaults to '</s>'.\n         \
+  \   cls_token (str, optional): The classifier token used for sequence classification\
+  \ tasks.\n                It becomes the first token when building sequences with\
+  \ special tokens. Defaults to '<s>'.\n            unk_token (str, optional): The\
+  \ unknown token used for out-of-vocabulary words. Defaults to '<unk>'.\n       \
+  \     pad_token (str, optional): The padding token used when batching sequences\
+  \ of different lengths.\n                Defaults to '<pad>'.\n            mask_token\
+  \ (str, optional): The token used for masking values in masked language modeling\
+  \ tasks.\n                Defaults to '<mask>'.\n            add_prefix_space (bool,\
+  \ optional): Whether to add an initial space to the input text.\n              \
+  \  This allows treating the leading word like any other word. Defaults to False.\n\
+  \            **kwargs: Additional keyword arguments passed to the parent PreTrainedTokenizer\
+  \ class.\n\n        Returns:\n            None: This is a constructor method that\
+  \ initializes the tokenizer instance.\n\n        Notes:\n            - The tokenizer\
+  \ encodes words differently depending on whether they appear at the beginning\n\
+  \              of a sentence (without preceding space) or not.\n            - When\
+  \ used with is_split_into_words=True, the tokenizer adds a space before each word,\n\
+  \              including the first one.\n            - The mask_token behaves like\
+  \ a normal word and includes the space before it.\n            - All special tokens\
+  \ are converted to AddedToken objects with specific lstrip/rstrip settings.\n  \
+  \          - The tokenizer loads vocabulary and merge files during initialization\
+  \ and sets up internal\n              mappings for encoding/decoding operations.\n\
+  \n        Raises:\n            FileNotFoundError: If vocab_file or merges_file cannot\
+  \ be found.\n            json.JSONDecodeError: If vocab_file contains invalid JSON.\n\
+  \            UnicodeDecodeError: If files cannot be decoded with UTF-8 encoding.\n\
+  \        \"\"\"\n        <your code>\n\n    @property\n    def vocab_size(self):\n\
+  \        \"\"\"\n        Get the vocabulary size of the tokenizer.\n\n        This\
+  \ property returns the total number of tokens in the base vocabulary of the \n \
+  \       LongformerTokenizer, which corresponds to the number of entries in the encoder\
+  \ \n        dictionary loaded from the vocabulary file. This count includes all\
+  \ the base \n        tokens used for byte-pair encoding but excludes any additional\
+  \ special tokens \n        that may have been added after initialization.\n\n  \
+  \      Returns:\n            int: The size of the base vocabulary, representing\
+  \ the number of unique \n                 tokens that can be encoded by the tokenizer's\
+  \ base vocabulary.\n\n        Note:\n            This property only counts the base\
+  \ vocabulary tokens loaded from the \n            vocab.json file. It does not include\
+  \ added tokens or special tokens \n            that were added after the tokenizer\
+  \ was initialized. To get the complete \n            vocabulary including added\
+  \ tokens, use the get_vocab() method instead.\n        \"\"\"\n        <your code>\n\
+  \n    def get_vocab(self):\n        \"\"\"\n        Retrieve the complete vocabulary\
+  \ dictionary for the tokenizer.\n\n        This method returns a comprehensive vocabulary\
+  \ dictionary that includes both the base vocabulary\n        from the encoder and\
+  \ any additional tokens that have been added to the tokenizer (such as\n       \
+  \ special tokens like <pad>, <mask>, etc.).\n\n        Returns:\n            dict:\
+  \ A dictionary mapping vocabulary tokens (str) to their corresponding token IDs\
+  \ (int).\n                  The dictionary contains:\n                  - All tokens\
+  \ from the base vocabulary (self.encoder)\n                  - All added tokens\
+  \ from the added_tokens_encoder\n\n        Notes:\n            - The returned dictionary\
+  \ is a copy of the encoder dictionary, so modifications to it\n              will\
+  \ not affect the tokenizer's internal state\n            - Added tokens (like special\
+  \ tokens) are included with their assigned IDs\n            - This method is commonly\
+  \ used for vocabulary inspection, saving tokenizer state, or\n              creating\
+  \ custom tokenizers with the same vocabulary\n        \"\"\"\n        <your code>\n\
+  \n    def bpe(self, token):\n        \"\"\"\n        Apply Byte-Pair Encoding (BPE)\
+  \ algorithm to tokenize a given token into subword units.\n\n        This method\
+  \ implements the core BPE algorithm that iteratively merges the most frequent\n\
+  \        pairs of characters or character sequences based on pre-learned merge rules.\
+  \ The process\n        continues until no more valid merges can be performed according\
+  \ to the Bpe ranks.\n\n        Parameters:\n            token (str): The input token\
+  \ string to be processed with BPE. This should be a \n                        single\
+  \ token (word or word piece) that has already been preprocessed \n             \
+  \           and encoded using byte-level encoding.\n\n        Returns:\n       \
+  \     str: A space-separated string of BPE subword tokens. Each subword represents\
+  \ \n                 a unit that was learned during the BPE training process. If\
+  \ the input \n                 token cannot be split further, the original token\
+  \ is returned.\n\n        Notes:\n            - The method uses caching (self.cache)\
+  \ to store previously computed results \n              for efficiency, avoiding\
+  \ recomputation of the same tokens.\n            - The algorithm relies on self.bpe_ranks,\
+  \ which contains the learned merge \n              rules with their priority rankings\
+  \ from the BPE training process.\n            - If no character pairs exist in the\
+  \ token (single character), the original \n              token is returned immediately.\n\
+  \            - The method uses the get_pairs() helper function to extract all adjacent\
+  \ \n              character pairs from the current word representation.\n      \
+  \      - Merging continues until either all possible merges are exhausted or the\
+  \ \n              word is reduced to a single subword unit.\n        \"\"\"\n  \
+  \      <your code>\n\n    def _tokenize(self, text):\n        \"\"\"\n        Tokenize\
+  \ a string.\n        \"\"\"\n        <your code>\n\n    def _convert_token_to_id(self,\
+  \ token):\n        \"\"\"\n        Converts a token (str) in an id using the vocab.\n\
+  \        \"\"\"\n        <your code>\n\n    def _convert_id_to_token(self, index):\n\
+  \        \"\"\"\n        Converts an index (integer) in a token (str) using the\
+  \ vocab.\n        \"\"\"\n        <your code>\n\n    def convert_tokens_to_string(self,\
+  \ tokens):\n        \"\"\"\n        Converts a sequence of tokens (string) in a\
+  \ single string.\n        \"\"\"\n        <your code>\n\n    def save_vocabulary(\n\
+  \        self,\n        save_directory: str,\n        filename_prefix: Optional[str]\
+  \ = None\n    ) -> tuple[str]:\n        \"\"\"\n        Save the tokenizer's vocabulary\
+  \ files to a specified directory.\n\n        This method saves both the vocabulary\
+  \ file (vocab.json) and the BPE merges file (merges.txt)\n        to the given directory.\
+  \ These files are essential for reconstructing the tokenizer later.\n\n        Parameters:\n\
+  \            save_directory (str): The directory path where the vocabulary files\
+  \ will be saved.\n                Must be an existing directory, otherwise an error\
+  \ will be logged and the method\n                will return early.\n          \
+  \  filename_prefix (Optional[str], optional): An optional prefix to add to the saved\n\
+  \                filenames. If provided, the files will be saved as \"{prefix}-vocab.json\"\
+  \ and\n                \"{prefix}-merges.txt\". If None, the default filenames \"\
+  vocab.json\" and \n                \"merges.txt\" will be used. Defaults to None.\n\
+  \n        Returns:\n            tuple[str]: A tuple containing the full paths to\
+  \ the saved vocabulary file and\n                merges file, in that order: (vocab_file_path,\
+  \ merge_file_path). Returns None\n                if the save_directory is not a\
+  \ valid directory.\n\n        Notes:\n            - The vocabulary file is saved\
+  \ as a JSON file containing the encoder dictionary\n              with proper formatting\
+  \ (indented, sorted keys, UTF-8 encoding).\n            - The merges file is saved\
+  \ as a text file with BPE merge rules, starting with\n              a version header\
+  \ \"#version: 0.2\".\n            - If BPE merge indices are not consecutive, a\
+  \ warning will be logged indicating\n              potential tokenizer corruption.\n\
+  \            - Both files are saved with UTF-8 encoding to ensure proper handling\
+  \ of unicode\n              characters.\n        \"\"\"\n        <your code>\n\n\
+  \    def build_inputs_with_special_tokens(\n        self,\n        token_ids_0:\
+  \ list[int],\n        token_ids_1: Optional[list[int]] = None\n    ) -> list[int]:\n\
+  \        \"\"\"\n\n                Build model inputs from a sequence or a pair\
+  \ of sequence for sequence classification tasks by concatenating and\n         \
+  \       adding special tokens. A Longformer sequence has the following format:\n\
+  \n                - single sequence: `<s> X </s>`\n                - pair of sequences:\
+  \ `<s> A </s></s> B </s>`\n\n                Args:\n                    token_ids_0\
+  \ (`list[int]`):\n                        List of IDs to which the special tokens\
+  \ will be added.\n                    token_ids_1 (`list[int]`, *optional*):\n \
+  \                       Optional second list of IDs for sequence pairs.\n\n    \
+  \            Returns:\n                    `list[int]`: List of [input IDs](../glossary#input-ids)\
+  \ with the appropriate special tokens.\n\n        \"\"\"\n        <your code>\n\n\
+  \    def get_special_tokens_mask(\n        self,\n        token_ids_0: list[int],\n\
+  \        token_ids_1: Optional[list[int]] = None,\n        already_has_special_tokens:\
+  \ bool = False\n    ) -> list[int]:\n        \"\"\"\n\n                Retrieve\
+  \ sequence ids from a token list that has no special tokens added. This method is\
+  \ called when adding\n                special tokens using the tokenizer `prepare_for_model`\
+  \ method.\n\n                Args:\n                    token_ids_0 (`list[int]`):\n\
+  \                        List of IDs.\n                    token_ids_1 (`list[int]`,\
+  \ *optional*):\n                        Optional second list of IDs for sequence\
+  \ pairs.\n                    already_has_special_tokens (`bool`, *optional*, defaults\
+  \ to `False`):\n                        Whether or not the token list is already\
+  \ formatted with special tokens for the model.\n\n                Returns:\n   \
+  \                 `list[int]`: A list of integers in the range [0, 1]: 1 for a special\
+  \ token, 0 for a sequence token.\n\n        \"\"\"\n        <your code>\n\n    def\
+  \ create_token_type_ids_from_sequences(\n        self,\n        token_ids_0: list[int],\n\
+  \        token_ids_1: Optional[list[int]] = None\n    ) -> list[int]:\n        \"\
+  \"\"\n\n                Create a mask from the two sequences passed to be used in\
+  \ a sequence-pair classification task. Longformer does not\n                make\
+  \ use of token type ids, therefore a list of zeros is returned.\n\n            \
+  \    Args:\n                    token_ids_0 (`list[int]`):\n                   \
+  \     List of IDs.\n                    token_ids_1 (`list[int]`, *optional*):\n\
+  \                        Optional second list of IDs for sequence pairs.\n\n   \
+  \             Returns:\n                    `list[int]`: List of zeros.\n\n    \
+  \    \"\"\"\n        <your code>\n\n    def prepare_for_tokenization(\n        self,\n\
+  \        text,\n        is_split_into_words = False,\n        **kwargs\n    ):\n\
+  \        \"\"\"\n        Prepares text for tokenization by applying necessary preprocessing\
+  \ steps.\n\n        This method handles text preprocessing before the actual tokenization\
+  \ process begins. It primarily manages the addition of prefix spaces based on the\
+  \ tokenizer's configuration and the nature of the input text.\n\n        Parameters:\n\
+  \            text (str): The input text string to be prepared for tokenization.\n\
+  \            is_split_into_words (bool, optional): Whether the input text is already\
+  \ split into words. \n                Defaults to False. When True, a prefix space\
+  \ will be added if the text doesn't start \n                with whitespace.\n \
+  \           **kwargs: Additional keyword arguments that may contain tokenization\
+  \ options. The method \n                specifically looks for 'add_prefix_space'\
+  \ in kwargs, which can override the tokenizer's \n                default add_prefix_space\
+  \ setting.\n\n        Returns:\n            tuple: A tuple containing:\n       \
+  \         - text (str): The preprocessed text, potentially with a prefix space added\n\
+  \                - kwargs (dict): The remaining keyword arguments after removing\
+  \ 'add_prefix_space' \n                  if it was present\n\n        Important\
+  \ Notes:\n            - The method adds a prefix space to the text when either is_split_into_words\
+  \ is True \n              or add_prefix_space is True, provided the text is non-empty\
+  \ and doesn't already \n              start with whitespace\n            - The add_prefix_space\
+  \ parameter in kwargs takes precedence over the tokenizer's \n              instance\
+  \ variable self.add_prefix_space\n            - This preprocessing is crucial for\
+  \ the Longformer tokenizer as it treats spaces as \n              part of tokens,\
+  \ similar to sentencepiece, and words are encoded differently \n              depending\
+  \ on whether they appear at the beginning of a sentence or not\n            - The\
+  \ 'add_prefix_space' key is removed from kwargs before returning to avoid \n   \
+  \           passing it to subsequent tokenization steps\n        \"\"\"\n      \
+  \  <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: src-transformers-models-longformer-tokenization_longformer_fast.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class LongformerTokenizerFast(PreTrainedTokenizerFast):\n    \"\"\
+  \"\n    \n        Construct a \"fast\" Longformer tokenizer (backed by HuggingFace's\
+  \ *tokenizers* library), derived from the GPT-2\n        tokenizer, using byte-level\
+  \ Byte-Pair-Encoding.\n    \n        This tokenizer has been trained to treat spaces\
+  \ like parts of the tokens (a bit like sentencepiece) so a word will\n        be\
+  \ encoded differently whether it is at the beginning of the sentence (without space)\
+  \ or not:\n    \n        ```python\n        >>> from transformers import LongformerTokenizerFast\n\
+  \    \n        >>> tokenizer = LongformerTokenizerFast.from_pretrained(\"allenai/longformer-base-4096\"\
+  )\n        >>> tokenizer(\"Hello world\")[\"input_ids\"]\n        [0, 31414, 232,\
+  \ 2]\n    \n        >>> tokenizer(\" Hello world\")[\"input_ids\"]\n        [0,\
+  \ 20920, 232, 2]\n        ```\n    \n        You can get around that behavior by\
+  \ passing `add_prefix_space=True` when instantiating this tokenizer or when you\n\
+  \        call it on some text, but since the model was not pretrained this way,\
+  \ it might yield a decrease in performance.\n    \n        <Tip>\n    \n       \
+  \ When used with `is_split_into_words=True`, this tokenizer needs to be instantiated\
+  \ with `add_prefix_space=True`.\n    \n        </Tip>\n    \n        This tokenizer\
+  \ inherits from [`PreTrainedTokenizerFast`] which contains most of the main methods.\
+  \ Users should\n        refer to this superclass for more information regarding\
+  \ those methods.\n    \n        Args:\n            vocab_file (`str`):\n       \
+  \         Path to the vocabulary file.\n            merges_file (`str`):\n     \
+  \           Path to the merges file.\n            errors (`str`, *optional*, defaults\
+  \ to `\"replace\"`):\n                Paradigm to follow when decoding bytes to\
+  \ UTF-8. See\n                [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)\
+  \ for more information.\n            bos_token (`str`, *optional*, defaults to `\"\
+  <s>\"`):\n                The beginning of sequence token that was used during pretraining.\
+  \ Can be used a sequence classifier token.\n    \n                <Tip>\n    \n\
+  \                When building a sequence using special tokens, this is not the\
+  \ token that is used for the beginning of\n                sequence. The token used\
+  \ is the `cls_token`.\n    \n                </Tip>\n    \n            eos_token\
+  \ (`str`, *optional*, defaults to `\"</s>\"`):\n                The end of sequence\
+  \ token.\n    \n                <Tip>\n    \n                When building a sequence\
+  \ using special tokens, this is not the token that is used for the end of sequence.\n\
+  \                The token used is the `sep_token`.\n    \n                </Tip>\n\
+  \    \n            sep_token (`str`, *optional*, defaults to `\"</s>\"`):\n    \
+  \            The separator token, which is used when building a sequence from multiple\
+  \ sequences, e.g. two sequences for\n                sequence classification or\
+  \ for a text and a question for question answering. It is also used as the last\n\
+  \                token of a sequence built with special tokens.\n            cls_token\
+  \ (`str`, *optional*, defaults to `\"<s>\"`):\n                The classifier token\
+  \ which is used when doing sequence classification (classification of the whole\
+  \ sequence\n                instead of per-token classification). It is the first\
+  \ token of the sequence when built with special tokens.\n            unk_token (`str`,\
+  \ *optional*, defaults to `\"<unk>\"`):\n                The unknown token. A token\
+  \ that is not in the vocabulary cannot be converted to an ID and is set to be this\n\
+  \                token instead.\n            pad_token (`str`, *optional*, defaults\
+  \ to `\"<pad>\"`):\n                The token used for padding, for example when\
+  \ batching sequences of different lengths.\n            mask_token (`str`, *optional*,\
+  \ defaults to `\"<mask>\"`):\n                The token used for masking values.\
+  \ This is the token used when training this model with masked language\n       \
+  \         modeling. This is the token which the model will try to predict.\n   \
+  \         add_prefix_space (`bool`, *optional*, defaults to `False`):\n        \
+  \        Whether or not to add an initial space to the input. This allows to treat\
+  \ the leading word just as any\n                other word. (Longformer tokenizer\
+  \ detect beginning of words by the preceding space).\n            trim_offsets (`bool`,\
+  \ *optional*, defaults to `True`):\n                Whether the post processing\
+  \ step should trim offsets to avoid including whitespaces.\n        \n    \"\"\"\
+  \n\n    vocab_files_names = \"VOCAB_FILES_NAMES\"\n    model_input_names = ['input_ids',\
+  \ 'attention_mask']\n    slow_tokenizer_class = \"LongformerTokenizer\"\n\n    def\
+  \ __init__(\n        self,\n        vocab_file = None,\n        merges_file = None,\n\
+  \        tokenizer_file = None,\n        errors = 'replace',\n        bos_token\
+  \ = '<s>',\n        eos_token = '</s>',\n        sep_token = '</s>',\n        cls_token\
+  \ = '<s>',\n        unk_token = '<unk>',\n        pad_token = '<pad>',\n       \
+  \ mask_token = '<mask>',\n        add_prefix_space = False,\n        trim_offsets\
+  \ = True,\n        **kwargs\n    ):\n        \"\"\"\n        Initialize a LongformerTokenizerFast\
+  \ instance for fast tokenization of text using the Longformer model.\n\n       \
+  \ This constructor sets up a fast tokenizer based on HuggingFace's tokenizers library,\
+  \ derived from the GPT-2\n        tokenizer using byte-level Byte-Pair-Encoding.\
+  \ The tokenizer is specifically designed for the Longformer\n        model and handles\
+  \ long sequences efficiently.\n\n        Parameters:\n            vocab_file (str,\
+  \ optional): Path to the vocabulary file containing the token-to-id mappings.\n\
+  \                If None, the tokenizer will attempt to load from the default location\
+  \ or tokenizer_file.\n            merges_file (str, optional): Path to the merges\
+  \ file containing BPE merge rules.\n                If None, the tokenizer will\
+  \ attempt to load from the default location or tokenizer_file.\n            tokenizer_file\
+  \ (str, optional): Path to a pre-built tokenizer file in JSON format.\n        \
+  \        If provided, this takes precedence over vocab_file and merges_file.\n \
+  \           errors (str, optional): Error handling paradigm when decoding bytes\
+  \ to UTF-8.\n                Defaults to 'replace'. See Python's bytes.decode()\
+  \ documentation for options.\n            bos_token (str, optional): Beginning of\
+  \ sequence token used during pretraining.\n                Defaults to '<s>'. Used\
+  \ as sequence classifier token.\n            eos_token (str, optional): End of sequence\
+  \ token. Defaults to '</s>'.\n                Note: When building sequences with\
+  \ special tokens, sep_token is used instead.\n            sep_token (str, optional):\
+  \ Separator token for building sequences from multiple parts.\n                Defaults\
+  \ to '</s>'. Also used as the last token in sequences built with special tokens.\n\
+  \            cls_token (str, optional): Classifier token for sequence classification\
+  \ tasks.\n                Defaults to '<s>'. Used as the first token when building\
+  \ sequences with special tokens.\n            unk_token (str, optional): Unknown\
+  \ token for out-of-vocabulary words.\n                Defaults to '<unk>'. Tokens\
+  \ not in vocabulary are replaced with this.\n            pad_token (str, optional):\
+  \ Padding token for batching sequences of different lengths.\n                Defaults\
+  \ to '<pad>'.\n            mask_token (str, optional): Masking token for masked\
+  \ language modeling tasks.\n                Defaults to '<mask>'. The model predicts\
+  \ this token during training.\n            add_prefix_space (bool, optional): Whether\
+  \ to add an initial space to input text.\n                Defaults to False. When\
+  \ True, treats leading words like any other word by adding\n                a preceding\
+  \ space, which the tokenizer uses to detect word boundaries.\n            trim_offsets\
+  \ (bool, optional): Whether to trim token offsets to exclude whitespaces\n     \
+  \           in post-processing. Defaults to True.\n            **kwargs: Additional\
+  \ keyword arguments passed to the parent PreTrainedTokenizerFast class.\n\n    \
+  \    Returns:\n            None: This is a constructor method that initializes the\
+  \ instance.\n\n        Important Notes:\n            - The tokenizer treats spaces\
+  \ as parts of tokens, so words are encoded differently\n              depending\
+  \ on whether they appear at the beginning of a sentence or not.\n            - When\
+  \ using is_split_into_words=True, the tokenizer must be instantiated with\n    \
+  \          add_prefix_space=True to work correctly with pretokenized inputs.\n \
+  \           - The mask_token is automatically configured as an AddedToken with lstrip=True\n\
+  \              to maintain backward compatibility with existing Longformer models.\n\
+  \            - If a tokenizer_file is provided, it takes precedence over separate\
+  \ vocab_file\n              and merges_file parameters.\n            - The constructor\
+  \ automatically updates the backend tokenizer's post-processor\n              settings\
+  \ if add_prefix_space or trim_offsets differ from existing configuration.\n    \
+  \    \"\"\"\n        <your code>\n\n    @property\n    def mask_token(self) -> str:\n\
+  \        \"\"\"\n\n                `str`: Mask token, to use when training a model\
+  \ with masked-language modeling. Log an error if used while not\n              \
+  \  having been set.\n\n                Longformer tokenizer has a special mask token\
+  \ to be usable in the fill-mask pipeline. The mask token will greedily\n       \
+  \         comprise the space before the *<mask>*.\n\n        \"\"\"\n        <your\
+  \ code>\n\n    @mask_token.setter\n    def mask_token(self, value):\n        \"\"\
+  \"\n\n                Overriding the default behavior of the mask token to have\
+  \ it eat the space before it.\n\n                This is needed to preserve backward\
+  \ compatibility with all the previously used models based on Longformer.\n\n   \
+  \     \"\"\"\n        <your code>\n\n    def _batch_encode_plus(self, *args, **kwargs)\
+  \ -> BatchEncoding:\n        \"\"\"\n        Internal batch encoding method for\
+  \ processing multiple text inputs with Longformer-specific validation.\n\n     \
+  \   This method serves as an internal wrapper around the parent class's batch encoding\
+  \ functionality,\n        adding validation specific to the Longformer tokenizer's\
+  \ requirements for handling pretokenized inputs.\n\n        Args:\n            *args:\
+  \ Variable length argument list passed to the parent class's _batch_encode_plus\
+  \ method.\n                Typically includes batch_text_or_text_pairs as the first\
+  \ argument, which can be:\n                - A list of strings to be tokenized\n\
+  \                - A list of tuples of strings for sequence pair tasks\n       \
+  \     **kwargs: Arbitrary keyword arguments passed to the parent class's _batch_encode_plus\
+  \ method.\n                Common parameters include:\n                - is_split_into_words\
+  \ (bool): Whether the input is already split into words/tokens\n               \
+  \ - add_special_tokens (bool): Whether to add special tokens like [CLS], [SEP]\n\
+  \                - padding (bool/str): Padding strategy\n                - truncation\
+  \ (bool/str): Truncation strategy\n                - max_length (int): Maximum sequence\
+  \ length\n                - return_tensors (str): Format of return tensors ('pt',\
+  \ 'tf', 'np', etc.)\n\n        Returns:\n            BatchEncoding: A BatchEncoding\
+  \ object containing the tokenized and encoded batch data.\n                This\
+  \ includes input_ids, attention_mask, and other relevant tensors based on the\n\
+  \                specified return parameters.\n\n        Raises:\n            AssertionError:\
+  \ If is_split_into_words=True is used when the tokenizer was not instantiated\n\
+  \                with add_prefix_space=True. This is required because the Longformer\
+  \ tokenizer needs\n                to properly handle word boundaries when working\
+  \ with pretokenized inputs.\n\n        Notes:\n            - This method enforces\
+  \ Longformer-specific constraints on pretokenized input handling\n            -\
+  \ The validation ensures compatibility with the model's pretraining approach to\
+  \ space handling\n            - All other functionality is delegated to the parent\
+  \ class implementation\n        \"\"\"\n        <your code>\n\n    def _encode_plus(self,\
+  \ *args, **kwargs) -> BatchEncoding:\n        \"\"\"\n        Encode a single text\
+  \ or text pair into a BatchEncoding object with token IDs and additional information.\n\
+  \n        This method is the internal implementation for encoding a single text\
+  \ input or a pair of text inputs\n        into the format expected by the Longformer\
+  \ model. It handles tokenization, special token addition,\n        and creates the\
+  \ necessary tensors and metadata for model input.\n\n        Args:\n           \
+  \ *args: Variable length argument list passed to the parent tokenizer's _encode_plus\
+  \ method.\n                   Typically includes:\n                   - text (str\
+  \ or List[str]): The sequence to be encoded. Can be a string or a list of strings\n\
+  \                     if is_split_into_words=True.\n                   - text_pair\
+  \ (str or List[str], optional): Optional second sequence for sequence pair tasks.\n\
+  \            **kwargs: Arbitrary keyword arguments passed to the parent tokenizer's\
+  \ _encode_plus method.\n                      Common arguments include:\n      \
+  \                - add_special_tokens (bool): Whether to add special tokens (CLS,\
+  \ SEP, etc.).\n                      - padding (bool, str, or PaddingStrategy):\
+  \ Padding strategy.\n                      - truncation (bool, str, or TruncationStrategy):\
+  \ Truncation strategy.\n                      - max_length (int): Maximum length\
+  \ of the returned list.\n                      - return_tensors (str): Type of tensors\
+  \ to return ('pt', 'tf', 'np', etc.).\n                      - return_attention_mask\
+  \ (bool): Whether to return attention mask.\n                      - return_token_type_ids\
+  \ (bool): Whether to return token type IDs.\n                      - is_split_into_words\
+  \ (bool): Whether the input is already split into words.\n\n        Returns:\n \
+  \           BatchEncoding: A BatchEncoding object containing:\n                -\
+  \ input_ids: List of token IDs representing the encoded sequence(s).\n         \
+  \       - attention_mask: List of integers (0s and 1s) indicating which tokens should\
+  \ be attended to.\n                - token_type_ids: List of token type IDs (if\
+  \ applicable).\n                - special_tokens_mask: List indicating which tokens\
+  \ are special tokens.\n                - offset_mapping: List of tuples indicating\
+  \ character spans (if return_offsets_mapping=True).\n                - overflowing_tokens:\
+  \ Information about tokens that were truncated (if applicable).\n\n        Raises:\n\
+  \            AssertionError: If is_split_into_words=True is used without add_prefix_space=True\
+  \ during\n                           tokenizer instantiation. This is required because\
+  \ the Longformer tokenizer\n                           needs to properly handle\
+  \ word boundaries when working with pre-tokenized inputs.\n\n        Notes:\n  \
+  \          - This method validates that when using pre-tokenized inputs (is_split_into_words=True),\n\
+  \              the tokenizer must have been instantiated with add_prefix_space=True.\n\
+  \            - The method delegates the actual encoding work to the parent class\
+  \ implementation\n              after performing the necessary validation checks.\n\
+  \            - This is an internal method and should typically not be called directly\
+  \ by users.\n              Use the public encode_plus method instead.\n        \"\
+  \"\"\n        <your code>\n\n    def save_vocabulary(\n        self,\n        save_directory:\
+  \ str,\n        filename_prefix: Optional[str] = None\n    ) -> tuple[str]:\n  \
+  \      \"\"\"\n        Save the tokenizer's vocabulary files to the specified directory.\n\
+  \n        This method saves the vocabulary and merge files used by the tokenizer\
+  \ to disk,\n        allowing the tokenizer to be reconstructed later or used in\
+  \ other applications.\n        The files are saved using the tokenizer's underlying\
+  \ model save functionality.\n\n        Args:\n            save_directory (str):\
+  \ The directory path where the vocabulary files will be saved.\n               \
+  \ The directory must exist or be creatable by the underlying save mechanism.\n \
+  \           filename_prefix (Optional[str], optional): An optional prefix to add\
+  \ to the saved\n                vocabulary filenames. If None, the default filenames\
+  \ will be used without\n                any prefix. Defaults to None.\n\n      \
+  \  Returns:\n            tuple[str]: A tuple containing the paths to the saved vocabulary\
+  \ files. Typically\n                includes paths to files like vocab.json and\
+  \ merges.txt, depending on the\n                tokenizer's configuration.\n\n \
+  \       Note:\n            This method delegates to the underlying tokenizer model's\
+  \ save functionality.\n            The exact files saved and their formats depend\
+  \ on the specific tokenizer\n            implementation (in this case, a BPE-based\
+  \ tokenizer for Longformer).\n        \"\"\"\n        <your code>\n\n    def build_inputs_with_special_tokens(self,\
+  \ token_ids_0, token_ids_1 = None):\n        \"\"\"\n        Build a sequence with\
+  \ special tokens for the Longformer model.\n\n        This method constructs input\
+  \ sequences by adding the appropriate special tokens (BOS and EOS) \n        around\
+  \ the provided token sequences. For single sequences, it adds BOS at the beginning\
+  \ and \n        EOS at the end. For sequence pairs, it creates the format: \n  \
+  \      [BOS] + sequence_0 + [EOS] + [EOS] + sequence_1 + [EOS].\n\n        Args:\n\
+  \            token_ids_0 (list[int]): The first sequence of token IDs to be processed.\
+  \ This is the \n                primary sequence that will always be included in\
+  \ the output.\n            token_ids_1 (list[int], optional): The second sequence\
+  \ of token IDs for sequence pair \n                tasks such as question answering\
+  \ or sentence similarity. If None, only the first \n                sequence will\
+  \ be processed. Defaults to None.\n\n        Returns:\n            list[int]: A\
+  \ list of token IDs with special tokens added. For single sequences, returns \n\
+  \                [bos_token_id] + token_ids_0 + [eos_token_id]. For sequence pairs,\
+  \ returns \n                [bos_token_id] + token_ids_0 + [eos_token_id] + [eos_token_id]\
+  \ + token_ids_1 + [eos_token_id].\n\n        Notes:\n            - The BOS (beginning\
+  \ of sequence) token is added at the very beginning of the output\n            -\
+  \ The EOS (end of sequence) token is used as a separator between sequences and at\
+  \ the end\n            - For sequence pairs, two consecutive EOS tokens separate\
+  \ the first and second sequences\n            - This format is specific to the Longformer\
+  \ model architecture and follows the same \n              pattern as RoBERTa tokenization\n\
+  \        \"\"\"\n        <your code>\n\n    def create_token_type_ids_from_sequences(\n\
+  \        self,\n        token_ids_0: list[int],\n        token_ids_1: Optional[list[int]]\
+  \ = None\n    ) -> list[int]:\n        \"\"\"\n\n                Create a mask from\
+  \ the two sequences passed to be used in a sequence-pair classification task. Longformer\
+  \ does not\n                make use of token type ids, therefore a list of zeros\
+  \ is returned.\n\n                Args:\n                    token_ids_0 (`list[int]`):\n\
+  \                        List of IDs.\n                    token_ids_1 (`list[int]`,\
+  \ *optional*):\n                        Optional second list of IDs for sequence\
+  \ pairs.\n\n                Returns:\n                    `list[int]`: List of zeros.\n\
+  \n        \"\"\"\n        <your code>\n"
+interface_code_example: "class LongformerTokenizer(PreTrainedTokenizer):\n    \"\"\
+  \"\n    \n        Constructs a Longformer tokenizer, derived from the GPT-2 tokenizer,\
+  \ using byte-level Byte-Pair-Encoding.\n    \n        This tokenizer has been trained\
+  \ to treat spaces like parts of the tokens (a bit like sentencepiece) so a word\
+  \ will\n        be encoded differently whether it is at the beginning of the sentence\
+  \ (without space) or not:\n    \n        ```python\n        >>> from transformers\
+  \ import LongformerTokenizer\n    \n        >>> tokenizer = LongformerTokenizer.from_pretrained(\"\
+  allenai/longformer-base-4096\")\n        >>> tokenizer(\"Hello world\")[\"input_ids\"\
+  ]\n        [0, 31414, 232, 2]\n    \n        >>> tokenizer(\" Hello world\")[\"\
+  input_ids\"]\n        [0, 20920, 232, 2]\n        ```\n    \n        You can get\
+  \ around that behavior by passing `add_prefix_space=True` when instantiating this\
+  \ tokenizer or when you\n        call it on some text, but since the model was not\
+  \ pretrained this way, it might yield a decrease in performance.\n    \n       \
+  \ <Tip>\n    \n        When used with `is_split_into_words=True`, this tokenizer\
+  \ will add a space before each word (even the first one).\n    \n        </Tip>\n\
+  \    \n        This tokenizer inherits from [`PreTrainedTokenizer`] which contains\
+  \ most of the main methods. Users should refer to\n        this superclass for more\
+  \ information regarding those methods.\n    \n        Args:\n            vocab_file\
+  \ (`str`):\n                Path to the vocabulary file.\n            merges_file\
+  \ (`str`):\n                Path to the merges file.\n            errors (`str`,\
+  \ *optional*, defaults to `\"replace\"`):\n                Paradigm to follow when\
+  \ decoding bytes to UTF-8. See\n                [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)\
+  \ for more information.\n            bos_token (`str`, *optional*, defaults to `\"\
+  <s>\"`):\n                The beginning of sequence token that was used during pretraining.\
+  \ Can be used a sequence classifier token.\n    \n                <Tip>\n    \n\
+  \                When building a sequence using special tokens, this is not the\
+  \ token that is used for the beginning of\n                sequence. The token used\
+  \ is the `cls_token`.\n    \n                </Tip>\n    \n            eos_token\
+  \ (`str`, *optional*, defaults to `\"</s>\"`):\n                The end of sequence\
+  \ token.\n    \n                <Tip>\n    \n                When building a sequence\
+  \ using special tokens, this is not the token that is used for the end of sequence.\n\
+  \                The token used is the `sep_token`.\n    \n                </Tip>\n\
+  \    \n            sep_token (`str`, *optional*, defaults to `\"</s>\"`):\n    \
+  \            The separator token, which is used when building a sequence from multiple\
+  \ sequences, e.g. two sequences for\n                sequence classification or\
+  \ for a text and a question for question answering. It is also used as the last\n\
+  \                token of a sequence built with special tokens.\n            cls_token\
+  \ (`str`, *optional*, defaults to `\"<s>\"`):\n                The classifier token\
+  \ which is used when doing sequence classification (classification of the whole\
+  \ sequence\n                instead of per-token classification). It is the first\
+  \ token of the sequence when built with special tokens.\n            unk_token (`str`,\
+  \ *optional*, defaults to `\"<unk>\"`):\n                The unknown token. A token\
+  \ that is not in the vocabulary cannot be converted to an ID and is set to be this\n\
+  \                token instead.\n            pad_token (`str`, *optional*, defaults\
+  \ to `\"<pad>\"`):\n                The token used for padding, for example when\
+  \ batching sequences of different lengths.\n            mask_token (`str`, *optional*,\
+  \ defaults to `\"<mask>\"`):\n                The token used for masking values.\
+  \ This is the token used when training this model with masked language\n       \
+  \         modeling. This is the token which the model will try to predict.\n   \
+  \         add_prefix_space (`bool`, *optional*, defaults to `False`):\n        \
+  \        Whether or not to add an initial space to the input. This allows to treat\
+  \ the leading word just as any\n                other word. (Longformer tokenizer\
+  \ detect beginning of words by the preceding space).\n        \n    \"\"\"\n\n \
+  \   vocab_files_names = \"VOCAB_FILES_NAMES\"\n    model_input_names = ['input_ids',\
+  \ 'attention_mask']\n\n    def __init__(\n        self,\n        vocab_file,\n \
+  \       merges_file,\n        errors = 'replace',\n        bos_token = '<s>',\n\
+  \        eos_token = '</s>',\n        sep_token = '</s>',\n        cls_token = '<s>',\n\
+  \        unk_token = '<unk>',\n        pad_token = '<pad>',\n        mask_token\
+  \ = '<mask>',\n        add_prefix_space = False,\n        **kwargs\n    ):\n   \
+  \     \"\"\"\n        Initialize a LongformerTokenizer instance.\n\n        This\
+  \ constructor sets up a Longformer tokenizer, which is derived from the GPT-2 tokenizer\
+  \ and uses \n        byte-level Byte-Pair-Encoding (BPE). The tokenizer is designed\
+  \ to handle long sequences and treats \n        spaces as parts of tokens, similar\
+  \ to sentencepiece.\n\n        Parameters:\n            vocab_file (str): Path to\
+  \ the vocabulary file containing the token-to-ID mappings in JSON format.\n    \
+  \        merges_file (str): Path to the merges file containing BPE merge rules.\n\
+  \            errors (str, optional): Paradigm to follow when decoding bytes to UTF-8.\
+  \ Defaults to 'replace'.\n                See Python's bytes.decode() documentation\
+  \ for more information.\n            bos_token (str, optional): The beginning of\
+  \ sequence token used during pretraining. Defaults to '<s>'.\n                Note\
+  \ that when building sequences with special tokens, cls_token is used instead.\n\
+  \            eos_token (str, optional): The end of sequence token. Defaults to '</s>'.\n\
+  \                Note that when building sequences with special tokens, sep_token\
+  \ is used instead.\n            sep_token (str, optional): The separator token used\
+  \ when building sequences from multiple sequences\n                or as the last\
+  \ token of a sequence built with special tokens. Defaults to '</s>'.\n         \
+  \   cls_token (str, optional): The classifier token used for sequence classification\
+  \ tasks.\n                It becomes the first token when building sequences with\
+  \ special tokens. Defaults to '<s>'.\n            unk_token (str, optional): The\
+  \ unknown token used for out-of-vocabulary words. Defaults to '<unk>'.\n       \
+  \     pad_token (str, optional): The padding token used when batching sequences\
+  \ of different lengths.\n                Defaults to '<pad>'.\n            mask_token\
+  \ (str, optional): The token used for masking values in masked language modeling\
+  \ tasks.\n                Defaults to '<mask>'.\n            add_prefix_space (bool,\
+  \ optional): Whether to add an initial space to the input text.\n              \
+  \  This allows treating the leading word like any other word. Defaults to False.\n\
+  \            **kwargs: Additional keyword arguments passed to the parent PreTrainedTokenizer\
+  \ class.\n\n        Returns:\n            None: This is a constructor method that\
+  \ initializes the tokenizer instance.\n\n        Notes:\n            - The tokenizer\
+  \ encodes words differently depending on whether they appear at the beginning\n\
+  \              of a sentence (without preceding space) or not.\n            - When\
+  \ used with is_split_into_words=True, the tokenizer adds a space before each word,\n\
+  \              including the first one.\n            - The mask_token behaves like\
+  \ a normal word and includes the space before it.\n            - All special tokens\
+  \ are converted to AddedToken objects with specific lstrip/rstrip settings.\n  \
+  \          - The tokenizer loads vocabulary and merge files during initialization\
+  \ and sets up internal\n              mappings for encoding/decoding operations.\n\
+  \n        Raises:\n            FileNotFoundError: If vocab_file or merges_file cannot\
+  \ be found.\n            json.JSONDecodeError: If vocab_file contains invalid JSON.\n\
+  \            UnicodeDecodeError: If files cannot be decoded with UTF-8 encoding.\n\
+  \        \"\"\"\n        <your code>\n..."

@@ -1,0 +1,47 @@
+{
+    "file_stats": {
+        "total_files": 131,
+        "patch_count": 2,
+        "left_count": 129,
+        "distribution": {
+            "left": 129,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 958,
+        "top_count": 2,
+        "specific_count": 5,
+        "others_count": 951,
+        "distribution": {
+            "others": 951,
+            "specific": 5,
+            "top": 2
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/gettext.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/transforms/i18n.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/gettext.py:Catalog",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/transforms/i18n.py:Locale"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/gettext.py:Message",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/gettext.py:MsgOrigin",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/transforms/i18n.py:_NodeUpdater",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/transforms/i18n.py:parse_noqa",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/transforms/i18n.py:_publish_msgstr"
+    ],
+    "lines_code": 276,
+    "lines_code_level3": 276,
+    "test_name": "intl",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/tests/test_intl/test_intl.py",
+    "top_imports": [
+        "babel.messages.pofile",
+        "babel.messages.catalog.Catalog",
+        "babel.messages.mofile",
+        "sphinx.locale"
+    ]
+}

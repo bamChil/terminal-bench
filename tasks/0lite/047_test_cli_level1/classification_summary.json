@@ -1,0 +1,53 @@
+{
+    "file_stats": {
+        "total_files": 18,
+        "patch_count": 2,
+        "left_count": 16,
+        "distribution": {
+            "left": 16,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 97,
+        "top_count": 5,
+        "specific_count": 5,
+        "others_count": 87,
+        "distribution": {
+            "others": 87,
+            "top": 5,
+            "specific": 5
+        }
+    },
+    "patch_files": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/tests/test_apps/cliapp/factory.py"
+    ],
+    "top_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:find_best_app",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:prepare_import",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:locate_app",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:get_version",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:load_dotenv"
+    ],
+    "specific_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:_called_with_wrong_args",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/src/flask/cli.py:find_app_by_string",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/tests/test_apps/cliapp/factory.py:create_app",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/tests/test_apps/cliapp/factory.py:create_app2",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/tests/test_apps/cliapp/factory.py:no_app"
+    ],
+    "lines_code": 280,
+    "lines_code_level3": 280,
+    "test_name": "cli",
+    "test_file": "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/flask/tests/test_cli.py",
+    "top_imports": [
+        "flask.cli.get_version",
+        "flask.cli.run_command",
+        "flask.cli.prepare_import",
+        "flask.cli.cli",
+        "flask.cli.load_dotenv",
+        "flask.cli.locate_app",
+        "flask.cli.find_best_app"
+    ]
+}

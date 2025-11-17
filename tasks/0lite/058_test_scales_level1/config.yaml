@@ -1,0 +1,836 @@
+base_image: pb-python310-base_7ba262c1
+black_links:
+- https://github.com/mwaskom/seaborn/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e '.[dev]'
+instance_image: pb-instance_4948071e
+library_name: seaborn
+pip_packages: []
+python: '3.10'
+repo_name: seaborn
+repository: mwaskom/seaborn
+task_level: 1
+task_name: seaborn_scales
+task_statement: '## Task Statement: Statistical Data Visualization Interface
+
+
+  **Core Functionality:**
+
+  Implement a declarative plotting system that allows users to create statistical
+  visualizations by specifying data mappings, visual marks, and transformations without
+  imperative plotting commands.
+
+
+  **Main Features & Requirements:**
+
+  - **Declarative API**: Build plots through method chaining with data sources, variable
+  mappings, and visual properties
+
+  - **Layered Architecture**: Support multiple visualization layers with different
+  marks, statistics, and data transformations
+
+  - **Flexible Data Mapping**: Map data variables to visual properties (position,
+  color, size, etc.) with automatic or custom scaling
+
+  - **Subplot Generation**: Create faceted plots through data grouping or variable
+  pairing
+
+  - **Property System**: Handle diverse visual properties (colors, markers, fills)
+  with type-specific standardization and scaling
+
+  - **Integration**: Seamlessly work with matplotlib backend while providing higher-level
+  abstractions
+
+
+  **Key Challenges:**
+
+  - **Type Safety**: Handle diverse data types and visual property specifications
+  with robust validation
+
+  - **Scale Inference**: Automatically determine appropriate scaling (continuous,
+  nominal, temporal) based on data characteristics
+
+  - **Method Chaining**: Maintain immutable plot specifications while supporting fluent
+  interface patterns
+
+  - **Backend Abstraction**: Bridge high-level declarative specifications with low-level
+  matplotlib rendering
+
+  - **Property Standardization**: Convert flexible user inputs to consistent internal
+  representations across different property types'
+technical_docs: []
+test_cmd: pytest --no-header -rA --timeout=20
+test_code1: 'from seaborn._core.plot import Plot
+
+  from seaborn._core.properties import IntervalProperty
+
+  from seaborn._core.properties import ObjectProperty
+
+  from seaborn._core.properties import Coordinate
+
+  from seaborn._core.properties import Alpha
+
+  from seaborn._core.properties import Color
+
+  from seaborn._core.properties import Fill
+
+  from seaborn.palettes import color_palette
+
+  from seaborn.utils import _version_predates'
+test_code_example: from seaborn._core.plot import Plot
+test_code_example_obj: Plot
+test_code_example_path: /testbed/seaborn/_core/plot.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: seaborn-_core-plot.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "@build_plot_signature\nclass Plot:\n    \"\"\"\n    \n        An\
+  \ interface for declaratively specifying statistical graphics.\n    \n        Plots\
+  \ are constructed by initializing this class and adding one or more\n        layers,\
+  \ comprising a `Mark` and optional `Stat` or `Move`.  Additionally,\n        faceting\
+  \ variables or variable pairings may be defined to divide the space\n        into\
+  \ multiple subplots. The mappings from data values to visual properties\n      \
+  \  can be parametrized using scales, although the plot will try to infer good\n\
+  \        defaults when scales are not explicitly defined.\n    \n        The constructor\
+  \ accepts a data source (a :class:`pandas.DataFrame` or\n        dictionary with\
+  \ columnar values) and variable assignments. Variables can be\n        passed as\
+  \ keys to the data source or directly as data vectors.  If multiple\n        data-containing\
+  \ objects are provided, they will be index-aligned.\n    \n        The data source\
+  \ and variables defined in the constructor will be used for\n        all layers\
+  \ in the plot, unless overridden or disabled when adding a layer.\n    \n      \
+  \  The following variables can be defined in the constructor:\n            {known_properties}\n\
+  \    \n        The `data`, `x`, and `y` variables can be passed as positional arguments\
+  \ or\n        using keywords. Whether the first positional argument is interpreted\
+  \ as a\n        data source or `x` variable depends on its type.\n    \n       \
+  \ The methods of this class return a copy of the instance; use chaining to\n   \
+  \     build up a plot through multiple calls. Methods can be called in any order.\n\
+  \    \n        Most methods only add information to the plot spec; no actual processing\n\
+  \        happens until the plot is shown or saved. It is also possible to compile\n\
+  \        the plot without rendering it to access the lower-level representation.\n\
+  \    \n        \n    \"\"\"\n\n    config = \"PlotConfig()\"\n    _data: PlotData\n\
+  \    _layers: list[Layer]\n    _scales: dict[str, Scale]\n    _shares: dict[str,\
+  \ bool | str]\n    _limits: dict[str, tuple[Any, Any]]\n    _labels: dict[str, str\
+  \ | Callable[[str], str]]\n    _theme: dict[str, Any]\n    _facet_spec: FacetSpec\n\
+  \    _pair_spec: PairSpec\n    _figure_spec: dict[str, Any]\n    _subplot_spec:\
+  \ dict[str, Any]\n    _layout_spec: dict[str, Any]\n\n    def __init__(\n      \
+  \  self,\n        *args: DataSource | VariableSpec,\n        **variables: VariableSpec\n\
+  \    ):\n        \"\"\"\n        Initialize a Plot object with data and variable\
+  \ mappings.\n\n        This constructor sets up the foundation for a declarative\
+  \ statistical visualization.\n        It accepts a data source and variable assignments\
+  \ that will be used across all\n        layers in the plot unless overridden when\
+  \ adding individual layers.\n\n        Parameters\n        ----------\n        *args\
+  \ : DataSource or VariableSpec\n            Positional arguments that can include:\n\
+  \            - A data source (DataFrame, dict, or object with __dataframe__ method)\
+  \ as first argument\n            - x variable as first or second positional argument\
+  \ (depending on whether data is provided)\n            - y variable as second or\
+  \ third positional argument\n            Maximum of 3 positional arguments allowed:\
+  \ (data, x, y)\n        **variables : VariableSpec\n            Keyword arguments\
+  \ specifying variable mappings. Valid variable names include\n            coordinate\
+  \ variables (x, y) and semantic variables (color, size, etc.).\n            Variables\
+  \ can reference columns in the data source or be passed as direct data vectors.\n\
+  \n        Notes\n        -----\n        - If multiple data-containing objects are\
+  \ provided, they will be index-aligned\n        - The first positional argument\
+  \ is interpreted as a data source if it's a mapping,\n          DataFrame, or has\
+  \ a __dataframe__ method; otherwise it's treated as the x variable\n        - Variables\
+  \ defined here serve as defaults for all plot layers but can be overridden\n   \
+  \       or disabled when adding individual layers via the add() method\n       \
+  \ - Variable assignments can be provided either positionally (for data, x, y) or\
+  \ as\n          keyword arguments\n\n        Raises\n        ------\n        TypeError\n\
+  \            If more than 3 positional arguments are provided, if the same variable\
+  \ is\n            specified both positionally and by keyword, or if unknown variable\
+  \ names\n            are used in keyword arguments\n\n        Examples\n       \
+  \ --------\n        Basic initialization with DataFrame:\n            Plot(data=df,\
+  \ x=\"column1\", y=\"column2\")\n\n        Using positional arguments:\n       \
+  \     Plot(df, \"column1\", \"column2\")\n\n        Direct data vectors:\n     \
+  \       Plot(x=[1, 2, 3], y=[4, 5, 6])\n        \"\"\"\n        <your code>\n\n\
+  \    def _resolve_positionals(\n        self,\n        args: tuple[DataSource |\
+  \ VariableSpec, ...],\n        data: DataSource,\n        variables: dict[str, VariableSpec]\n\
+  \    ) -> tuple[DataSource, dict[str, VariableSpec]]:\n        \"\"\"\n        Handle\
+  \ positional arguments, which may contain data / x / y.\n        \"\"\"\n      \
+  \  <your code>\n\n    def __add__(self, other):\n        \"\"\"\n        Implement\
+  \ addition operation for Plot objects.\n\n        This method is called when the\
+  \ `+` operator is used with a Plot object on the left side.\n        It provides\
+  \ helpful error messages to guide users away from ggplot-style syntax toward\n \
+  \       the correct seaborn objects interface.\n\n        Parameters\n        ----------\n\
+  \        other : object\n            The object being added to the Plot instance.\
+  \ Common incorrect usage includes\n            attempting to add Mark or Stat objects\
+  \ directly.\n\n        Raises\n        ------\n        TypeError\n            Always\
+  \ raised with specific guidance based on the type of `other`:\n            - If\
+  \ `other` is a Mark or Stat instance, suggests using Plot.add() instead\n      \
+  \      - For any other type, indicates that the operation is not supported\n\n \
+  \       Notes\n        -----\n        This method exists primarily for user experience,\
+  \ intercepting common mistakes\n        from users familiar with ggplot2's `+` syntax.\
+  \ In seaborn's objects interface,\n        layers should be added using the `add()`\
+  \ method rather than the `+` operator.\n\n        The method intentionally never\
+  \ returns a valid result, always raising TypeError\n        to redirect users to\
+  \ the correct API.\n\n        Examples\n        --------\n        Incorrect usage\
+  \ that will raise TypeError:\n            plot = Plot(data, x=\"x\", y=\"y\")\n\
+  \            plot + Mark()  # Raises TypeError with helpful message\n\n        Correct\
+  \ usage:\n            plot = Plot(data, x=\"x\", y=\"y\")\n            plot.add(Mark())\
+  \  # Proper way to add layers\n        \"\"\"\n        <your code>\n\n    def _repr_png_(self)\
+  \ -> tuple[bytes, dict[str, float]] | None:\n        \"\"\"\n        Generate PNG\
+  \ representation of the plot for Jupyter notebook display.\n\n        This method\
+  \ is automatically called by Jupyter's display system when the plot\n        object\
+  \ is the last expression in a cell and the display format is set to PNG.\n     \
+  \   It compiles the plot if necessary and returns the PNG image data along with\n\
+  \        metadata for proper display sizing.\n\n        Returns\n        -------\n\
+  \        tuple[bytes, dict[str, float]] | None\n            A tuple containing:\n\
+  \            - bytes: PNG image data as bytes\n            - dict[str, float]: Metadata\
+  \ dictionary with 'width' and 'height' keys\n              specifying display dimensions\
+  \ in pixels, adjusted for scaling and HiDPI settings\n\n            Returns None\
+  \ if the configured display format is not 'png', allowing other\n            representation\
+  \ methods to be tried.\n\n        Notes\n        -----\n        The PNG generation\
+  \ respects the following configuration settings from Plot.config.display:\n    \
+  \    - format: Must be \"png\" for this method to return data\n        - scaling:\
+  \ Relative scaling factor applied to the embedded image size\n        - hidpi: When\
+  \ True, doubles the DPI while preserving display size for high-resolution displays\n\
+  \n        The actual image rendering is delegated to the compiled Plotter object's\
+  \ _repr_png_ method,\n        which handles the matplotlib figure-to-PNG conversion\
+  \ with appropriate DPI and scaling settings.\n\n        This method is part of Jupyter's\
+  \ rich display protocol and should not typically be\n        called directly by\
+  \ users. The plot will be automatically displayed when it's the\n        result\
+  \ of the last expression in a notebook cell.\n        \"\"\"\n        <your code>\n\
+  \n    def _repr_svg_(self) -> str | None:\n        \"\"\"\n        Generate SVG\
+  \ representation of the plot for rich display in Jupyter notebooks.\n\n        This\
+  \ method is automatically called by Jupyter's display system when the plot\n   \
+  \     object is the last expression in a cell and the display format is configured\n\
+  \        for SVG output.\n\n        Returns\n        -------\n        str or None\n\
+  \            SVG string representation of the compiled plot if the display format\
+  \ is\n            set to \"svg\", otherwise None. The SVG includes proper scaling\
+  \ based on\n            the configured display parameters.\n\n        Notes\n  \
+  \      -----\n        - This method is part of Jupyter's rich display protocol and\
+  \ should not be\n          called directly by users\n        - The method only returns\
+  \ SVG content when Plot.config.display[\"format\"] is\n          set to \"svg\"\
+  ; otherwise it returns None to allow other display methods\n          to handle\
+  \ the output\n        - The SVG output respects the scaling factor defined in Plot.config.display\n\
+  \        - The plot is compiled with the current theme settings before generating\n\
+  \          the SVG representation\n        - Uses matplotlib's SVG backend with\
+  \ bbox_inches=\"tight\" for optimal layout\n        \"\"\"\n        <your code>\n\
+  \n    def _clone(self) -> Plot:\n        \"\"\"\n        Generate a new object with\
+  \ the same information as the current spec.\n        \"\"\"\n        <your code>\n\
+  \n    def _theme_with_defaults(self) -> dict[str, Any]:\n        \"\"\"\n      \
+  \  Generate a detailed docstring for the `_theme_with_defaults` method:\n\n    \
+  \    Merge the plot's custom theme parameters with the default theme configuration.\n\
+  \n        This private method combines the global default theme settings from the\
+  \ Plot\n        configuration with any custom theme parameters that have been specified\
+  \ for\n        this particular plot instance. Custom parameters take precedence\
+  \ over defaults.\n\n        Returns\n        -------\n        dict[str, Any]\n \
+  \           A dictionary containing matplotlib rc parameters that represents the\
+  \ complete\n            theme configuration for this plot. Keys are matplotlib rc\
+  \ parameter names\n            (e.g., 'axes.labelsize', 'figure.facecolor') and\
+  \ values are the corresponding\n            parameter values. Custom theme parameters\
+  \ specified via the `theme()` method\n            override the default configuration\
+  \ values.\n\n        Notes\n        -----\n        This method is used internally\
+  \ during plot compilation to establish the complete\n        theming context before\
+  \ rendering. The returned dictionary is typically passed to\n        matplotlib's\
+  \ rcParams or used with the `theme_context` context manager to\n        temporarily\
+  \ apply the theme settings during plot generation.\n\n        The method performs\
+  \ a shallow copy of the default theme configuration and then\n        updates it\
+  \ with any custom theme parameters, ensuring that the original\n        configuration\
+  \ objects remain unmodified.\n        \"\"\"\n        <your code>\n\n    @property\n\
+  \    def _variables(self) -> list[str]:\n        \"\"\"\n        Property that returns\
+  \ a list of all variable names used in the plot.\n\n        This property collects\
+  \ variable names from multiple sources within the plot\n        specification, including\
+  \ the main data frame, pair specification variables,\n        facet specification\
+  \ variables, and layer-specific variables.\n\n        Returns\n        -------\n\
+  \        list[str]\n            A list of all variable names (as strings) used across\
+  \ all components\n            of the plot. This includes:\n            - Variables\
+  \ from the main data frame\n            - Variables defined in pair specifications\
+  \ (for paired plots)\n            - Variables defined in facet specifications (for\
+  \ faceted plots)\n            - Layer-specific variables from all layers\n\n   \
+  \         Variables are deduplicated, so each unique variable name appears only\n\
+  \            once in the returned list, regardless of how many plot components use\
+  \ it.\n\n        Notes\n        -----\n        The return type is explicitly cast\
+  \ to list[str] to satisfy type checking,\n        as DataFrame column names could\
+  \ theoretically be other types, but in practice\n        will always be strings\
+  \ in the seaborn plotting context.\n\n        This property is used internally for\
+  \ scale setup and other operations that\n        need to know all variables present\
+  \ in the plot specification.\n        \"\"\"\n        <your code>\n\n    def on(\n\
+  \        self,\n        target: Axes | SubFigure | Figure\n    ) -> Plot:\n    \
+  \    \"\"\"\n\n                Provide existing Matplotlib figure or axes for drawing\
+  \ the plot.\n\n                When using this method, you will also need to explicitly\
+  \ call a method that\n                triggers compilation, such as :meth:`Plot.show`\
+  \ or :meth:`Plot.save`. If you\n                want to postprocess using matplotlib,\
+  \ you'd need to call :meth:`Plot.plot`\n                first to compile the plot\
+  \ without rendering it.\n\n                Parameters\n                ----------\n\
+  \                target : Axes, SubFigure, or Figure\n                    Matplotlib\
+  \ object to use. Passing :class:`matplotlib.axes.Axes` will add\n              \
+  \      artists without otherwise modifying the figure. Otherwise, subplots will\
+  \ be\n                    created within the space of the given :class:`matplotlib.figure.Figure`\
+  \ or\n                    :class:`matplotlib.figure.SubFigure`.\n\n            \
+  \    Examples\n                --------\n                .. include:: ../docstrings/objects.Plot.on.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def add(\n        self,\n       \
+  \ mark: Mark,\n        *transforms: Stat | Move,\n        **variables: VariableSpec\n\
+  \    ) -> Plot:\n        \"\"\"\n\n                Specify a layer of the visualization\
+  \ in terms of mark and data transform(s).\n\n                This is the main method\
+  \ for specifying how the data should be visualized.\n                It can be called\
+  \ multiple times with different arguments to define\n                a plot with\
+  \ multiple layers.\n\n                Parameters\n                ----------\n \
+  \               mark : :class:`Mark`\n                    The visual representation\
+  \ of the data to use in this layer.\n                transforms : :class:`Stat`\
+  \ or :class:`Move`\n                    Objects representing transforms to be applied\
+  \ before plotting the data.\n                    Currently, at most one :class:`Stat`\
+  \ can be used, and it\n                    must be passed first. This constraint\
+  \ will be relaxed in the future.\n                orient : \"x\", \"y\", \"v\",\
+  \ or \"h\"\n                    The orientation of the mark, which also affects\
+  \ how transforms are computed.\n                    Typically corresponds to the\
+  \ axis that defines groups for aggregation.\n                    The \"v\" (vertical)\
+  \ and \"h\" (horizontal) options are synonyms for \"x\" / \"y\",\n             \
+  \       but may be more intuitive with some marks. When not provided, an\n     \
+  \               orientation will be inferred from characteristics of the data and\
+  \ scales.\n                legend : bool\n                    Option to suppress\
+  \ the mark/mappings for this layer from the legend.\n                label : str\n\
+  \                    A label to use for the layer in the legend, independent of\
+  \ any mappings.\n                data : DataFrame or dict\n                    Data\
+  \ source to override the global source provided in the constructor.\n          \
+  \      variables : data vectors or identifiers\n                    Additional layer-specific\
+  \ variables, including variables that will be\n                    passed directly\
+  \ to the transforms without scaling.\n\n                Examples\n             \
+  \   --------\n                .. include:: ../docstrings/objects.Plot.add.rst\n\n\
+  \n        \"\"\"\n        <your code>\n\n    def pair(\n        self,\n        x:\
+  \ VariableSpecList = None,\n        y: VariableSpecList = None,\n        wrap: int\
+  \ | None = None,\n        cross: bool = True\n    ) -> Plot:\n        \"\"\"\n\n\
+  \                Produce subplots by pairing multiple `x` and/or `y` variables.\n\
+  \n                Parameters\n                ----------\n                x, y :\
+  \ sequence(s) of data vectors or identifiers\n                    Variables that\
+  \ will define the grid of subplots.\n                wrap : int\n              \
+  \      When using only `x` or `y`, \"wrap\" subplots across a two-dimensional grid\n\
+  \                    with this many columns (when using `x`) or rows (when using\
+  \ `y`).\n                cross : bool\n                    When False, zip the `x`\
+  \ and `y` lists such that the first subplot gets the\n                    first\
+  \ pair, the second gets the second pair, etc. Otherwise, create a\n            \
+  \        two-dimensional grid from the cartesian product of the lists.\n\n     \
+  \           Examples\n                --------\n                .. include:: ../docstrings/objects.Plot.pair.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def facet(\n        self,\n     \
+  \   col: VariableSpec = None,\n        row: VariableSpec = None,\n        order:\
+  \ OrderSpec | dict[str, OrderSpec] = None,\n        wrap: int | None = None\n  \
+  \  ) -> Plot:\n        \"\"\"\n\n                Produce subplots with conditional\
+  \ subsets of the data.\n\n                Parameters\n                ----------\n\
+  \                col, row : data vectors or identifiers\n                    Variables\
+  \ used to define subsets along the columns and/or rows of the grid.\n          \
+  \          Can be references to the global data source passed in the constructor.\n\
+  \                order : list of strings, or dict with dimensional keys\n      \
+  \              Define the order of the faceting variables.\n                wrap\
+  \ : int\n                    When using only `col` or `row`, wrap subplots across\
+  \ a two-dimensional\n                    grid with this many subplots on the faceting\
+  \ dimension.\n\n                Examples\n                --------\n           \
+  \     .. include:: ../docstrings/objects.Plot.facet.rst\n\n\n        \"\"\"\n  \
+  \      <your code>\n\n    def scale(self, **scales: Scale) -> Plot:\n        \"\"\
+  \"\n\n                Specify mappings from data units to visual properties.\n\n\
+  \                Keywords correspond to variables defined in the plot, including\
+  \ coordinate\n                variables (`x`, `y`) and semantic variables (`color`,\
+  \ `pointsize`, etc.).\n\n                A number of \"magic\" arguments are accepted,\
+  \ including:\n                    - The name of a transform (e.g., `\"log\"`, `\"\
+  sqrt\"`)\n                    - The name of a palette (e.g., `\"viridis\"`, `\"\
+  muted\"`)\n                    - A tuple of values, defining the output range (e.g.\
+  \ `(1, 5)`)\n                    - A dict, implying a :class:`Nominal` scale (e.g.\
+  \ `{\"a\": .2, \"b\": .5}`)\n                    - A list of values, implying a\
+  \ :class:`Nominal` scale (e.g. `[\"b\", \"r\"]`)\n\n                For more explicit\
+  \ control, pass a scale spec object such as :class:`Continuous`\n              \
+  \  or :class:`Nominal`. Or pass `None` to use an \"identity\" scale, which treats\n\
+  \                data values as literally encoding visual properties.\n\n      \
+  \          Examples\n                --------\n                .. include:: ../docstrings/objects.Plot.scale.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def share(self, **shares: bool |\
+  \ str) -> Plot:\n        \"\"\"\n\n                Control sharing of axis limits\
+  \ and ticks across subplots.\n\n                Keywords correspond to variables\
+  \ defined in the plot, and values can be\n                boolean (to share across\
+  \ all subplots), or one of \"row\" or \"col\" (to share\n                more selectively\
+  \ across one dimension of a grid).\n\n                Behavior for non-coordinate\
+  \ variables is currently undefined.\n\n                Examples\n              \
+  \  --------\n                .. include:: ../docstrings/objects.Plot.share.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def limit(\n        self,\n     \
+  \   **limits: tuple[Any, Any]\n    ) -> Plot:\n        \"\"\"\n\n              \
+  \  Control the range of visible data.\n\n                Keywords correspond to\
+  \ variables defined in the plot, and values are a\n                `(min, max)`\
+  \ tuple (where either can be `None` to leave unset).\n\n                Limits apply\
+  \ only to the axis; data outside the visible range are\n                still used\
+  \ for any stat transforms and added to the plot.\n\n                Behavior for\
+  \ non-coordinate variables is currently undefined.\n\n                Examples\n\
+  \                --------\n                .. include:: ../docstrings/objects.Plot.limit.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def label(\n        self,\n     \
+  \   **variables: str | Callable[[str], str]\n    ) -> Plot:\n        \"\"\"\n\n\
+  \                Control the labels and titles for axes, legends, and subplots.\n\
+  \n                Additional keywords correspond to variables defined in the plot.\n\
+  \                Values can be one of the following types:\n\n                -\
+  \ string (used literally; pass \"\" to clear the default label)\n              \
+  \  - function (called on the default label)\n\n                For coordinate variables,\
+  \ the value sets the axis label.\n                For semantic variables, the value\
+  \ sets the legend title.\n                For faceting variables, `title=` modifies\
+  \ the subplot-specific label,\n                while `col=` and/or `row=` add a\
+  \ label for the faceting variable.\n\n                When using a single subplot,\
+  \ `title=` sets its title.\n\n                The `legend=` parameter sets the title\
+  \ for the \"layer\" legend\n                (i.e., when using `label` in :meth:`Plot.add`).\n\
+  \n                Examples\n                --------\n                .. include::\
+  \ ../docstrings/objects.Plot.label.rst\n\n\n\n        \"\"\"\n        <your code>\n\
+  \n    def layout(self) -> Plot:\n        \"\"\"\n\n                Control the figure\
+  \ size and layout.\n\n                .. note::\n\n                    Default figure\
+  \ sizes and the API for specifying the figure size are subject\n               \
+  \     to change in future \"experimental\" releases of the objects API. The default\n\
+  \                    layout engine may also change.\n\n                Parameters\n\
+  \                ----------\n                size : (width, height)\n          \
+  \          Size of the resulting figure, in inches. Size is inclusive of legend\
+  \ when\n                    using pyplot, but not otherwise.\n                engine\
+  \ : {{\"tight\", \"constrained\", \"none\"}}\n                    Name of method\
+  \ for automatically adjusting the layout to remove overlap.\n                  \
+  \  The default depends on whether :meth:`Plot.on` is used.\n                extent\
+  \ : (left, bottom, right, top)\n                    Boundaries of the plot layout,\
+  \ in fractions of the figure size. Takes\n                    effect through the\
+  \ layout engine; exact results will vary across engines.\n                    Note:\
+  \ the extent includes axis decorations when using a layout engine,\n           \
+  \         but it is exclusive of them when `engine=\"none\"`.\n\n              \
+  \  Examples\n                --------\n                .. include:: ../docstrings/objects.Plot.layout.rst\n\
+  \n\n        \"\"\"\n        <your code>\n\n    def theme() -> Plot:\n        \"\"\
+  \"\n\n                Control the appearance of elements in the plot.\n\n      \
+  \          .. note::\n\n                    The API for customizing plot appearance\
+  \ is not yet finalized.\n                    Currently, the only valid argument\
+  \ is a dict of matplotlib rc parameters.\n                    (This dict must be\
+  \ passed as a positional argument.)\n\n                    It is likely that this\
+  \ method will be enhanced in future releases.\n\n                Matplotlib rc parameters\
+  \ are documented on the following page:\n                https://matplotlib.org/stable/tutorials/introductory/customizing.html\n\
+  \n                Examples\n                --------\n                .. include::\
+  \ ../docstrings/objects.Plot.theme.rst\n\n\n        \"\"\"\n        <your code>\n\
+  \n    def save(self, loc, **kwargs) -> Plot:\n        \"\"\"\n\n               \
+  \ Compile the plot and write it to a buffer or file on disk.\n\n               \
+  \ Parameters\n                ----------\n                loc : str, path, or buffer\n\
+  \                    Location on disk to save the figure, or a buffer to write into.\n\
+  \                kwargs\n                    Other keyword arguments are passed\
+  \ through to\n                    :meth:`matplotlib.figure.Figure.savefig`.\n\n\n\
+  \        \"\"\"\n        <your code>\n\n    def show(self, **kwargs) -> None:\n\
+  \        \"\"\"\n\n                Compile the plot and display it by hooking into\
+  \ pyplot.\n\n                Calling this method is not necessary to render a plot\
+  \ in notebook context,\n                but it may be in other environments (e.g.,\
+  \ in a terminal). After compiling the\n                plot, it calls :func:`matplotlib.pyplot.show`\
+  \ (passing any keyword parameters).\n\n                Unlike other :class:`Plot`\
+  \ methods, there is no return value. This should be\n                the last method\
+  \ you call when specifying a plot.\n\n\n        \"\"\"\n        <your code>\n\n\
+  \    def plot(self, pyplot: bool = False) -> Plotter:\n        \"\"\"\n\n      \
+  \          Compile the plot spec and return the Plotter object.\n\n        \"\"\"\
+  \n        <your code>\n\n    def _plot(self, pyplot: bool = False) -> Plotter:\n\
+  \        \"\"\"\n        Generate a matplotlib Plotter object for rendering the\
+  \ plot.\n\n        This is an internal method that compiles the plot specification\
+  \ into a Plotter\n        object, which handles the actual rendering using matplotlib.\
+  \ The method processes\n        all plot components including data, scales, statistical\
+  \ transforms, marks, and\n        layout specifications.\n\n        Parameters\n\
+  \        ----------\n        pyplot : bool, default False\n            Whether to\
+  \ integrate with pyplot's state machine. When True, the resulting\n            plot\
+  \ will be managed by pyplot and can be displayed using plt.show().\n           \
+  \ When False, the plot exists independently of pyplot.\n\n        Returns\n    \
+  \    -------\n        Plotter\n            A compiled Plotter object containing\
+  \ the matplotlib figure and all\n            associated artists. The Plotter can\
+  \ be used to save the plot, display it,\n            or access the underlying matplotlib\
+  \ objects for further customization.\n\n        Notes\n        -----\n        This\
+  \ method performs the complete plot compilation process:\n        - Extracts and\
+  \ processes data from all layers\n        - Sets up the figure and subplot structure\n\
+  \        - Configures scales for all variables\n        - Applies statistical transformations\n\
+  \        - Renders marks and visual elements\n        - Creates legends and applies\
+  \ styling\n\n        The compilation is done within the context of the plot's theme\
+  \ settings,\n        ensuring consistent styling across all plot elements.\n\n \
+  \       This method is typically called internally by other Plot methods like show(),\n\
+  \        save(), or plot(). Direct calls are useful when you need access to the\n\
+  \        underlying Plotter object for advanced customization.\n        \"\"\"\n\
+  \        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: seaborn-_core-properties.py
+
+
+  This file contains 4 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class IntervalProperty(Property):\n    \"\"\"\n    A numeric property\
+  \ where scale range can be defined as an interval.\n    \"\"\"\n\n    legend = True\n\
+  \    normed = True\n    _default_range = (0, 1)\n\n    @property\n    def default_range(self)\
+  \ -> tuple[float, float]:\n        \"\"\"\n        Min and max values used by default\
+  \ for semantic mapping.\n        \"\"\"\n        <your code>\n\n    def _forward(self,\
+  \ values: ArrayLike) -> ArrayLike:\n        \"\"\"\n        Transform applied to\
+  \ native values before linear mapping into interval.\n        \"\"\"\n        <your\
+  \ code>\n\n    def _inverse(self, values: ArrayLike) -> ArrayLike:\n        \"\"\
+  \"\n        Transform applied to results of mapping that returns to native values.\n\
+  \        \"\"\"\n        <your code>\n\n    def infer_scale(self, arg: Any, data:\
+  \ Series) -> Scale:\n        \"\"\"\n        Given data and a scaling argument,\
+  \ initialize appropriate scale class.\n        \"\"\"\n        <your code>\n\n \
+  \   def get_mapping(self, scale: Scale, data: Series) -> Mapping:\n        \"\"\"\
+  \n        Return a function that maps from data domain to property range.\n    \
+  \    \"\"\"\n        <your code>\n\n    def _get_nominal_mapping(self, scale: Nominal,\
+  \ data: Series) -> Mapping:\n        \"\"\"\n        Identify evenly-spaced values\
+  \ using interval or explicit mapping.\n        \"\"\"\n        <your code>\n\n \
+  \   def _get_boolean_mapping(self, scale: Boolean, data: Series) -> Mapping:\n \
+  \       \"\"\"\n        Identify evenly-spaced values using interval or explicit\
+  \ mapping.\n        \"\"\"\n        <your code>\n\n    def _get_values(self, scale:\
+  \ Scale, levels: list) -> list:\n        \"\"\"\n        Validate scale.values and\
+  \ identify a value for each level.\n        \"\"\"\n        <your code>\n\nclass\
+  \ ObjectProperty(Property):\n    \"\"\"\n    A property defined by arbitrary an\
+  \ object, with inherently nominal scaling.\n    \"\"\"\n\n    legend = True\n  \
+  \  normed = False\n    null_value = None\n\n    def _default_values(self, n: int)\
+  \ -> list:\n        \"\"\"\n        Generate a list of n default values for this\
+  \ property.\n\n        This method creates a sequence of default values that can\
+  \ be used when no explicit\n        values are provided for a property scale. The\
+  \ specific values generated depend on\n        the property type and are designed\
+  \ to be visually distinguishable when used in\n        plots.\n\n        Parameters\n\
+  \        ----------\n        n : int\n            The number of default values to\
+  \ generate. Must be a positive integer.\n\n        Returns\n        -------\n  \
+  \      list\n            A list containing n default values appropriate for this\
+  \ property type.\n            The exact type and content of the values depends on\
+  \ the specific property\n            subclass implementation.\n\n        Raises\n\
+  \        ------\n        NotImplementedError\n            This base method must\
+  \ be implemented by subclasses. Each property type\n            defines its own\
+  \ logic for generating appropriate default values.\n\n        Notes\n        -----\n\
+  \        This is an abstract method in the ObjectProperty base class that must be\n\
+  \        overridden by concrete property implementations. Different property types\n\
+  \        will generate different kinds of default values:\n\n        - Marker properties\
+  \ generate distinguishable marker styles\n        - LineStyle properties generate\
+  \ different dash patterns  \n        - Color properties generate color palettes\n\
+  \        - Other properties generate appropriate sequences for their domain\n\n\
+  \        The generated values are typically designed to cycle through visually\n\
+  \        distinct options that work well for categorical data visualization.\n \
+  \       \"\"\"\n        <your code>\n\n    def default_scale(self, data: Series)\
+  \ -> Scale:\n        \"\"\"\n        Determine the appropriate scale type for the\
+  \ given data series.\n\n        This method analyzes the data type and characteristics\
+  \ of the input series to automatically\n        select the most suitable scale class\
+  \ for mapping data values to visual properties.\n\n        Parameters\n        ----------\n\
+  \        data : Series\n            A pandas Series containing the data values to\
+  \ be analyzed. The data can be of\n            various types including numeric,\
+  \ datetime, boolean, or categorical.\n\n        Returns\n        -------\n     \
+  \   Scale\n            An instance of the appropriate scale class based on the data\
+  \ type:\n            - Continuous: For numeric data types\n            - Temporal:\
+  \ For datetime data types  \n            - Boolean: For boolean data types (with\
+  \ strict boolean checking enabled)\n            - Nominal: For categorical or other\
+  \ non-numeric data types\n\n        Notes\n        -----\n        The method uses\
+  \ seaborn's variable_type function to determine the data type with\n        strict\
+  \ boolean type checking enabled. This ensures that boolean data is properly\n  \
+  \      identified and handled with a Boolean scale rather than being treated as\
+  \ categorical.\n\n        The scale selection follows this hierarchy:\n        1.\
+  \ Numeric data → Continuous scale\n        2. Datetime data → Temporal scale\n \
+  \       3. Boolean data → Boolean scale (with strict checking)\n        4. All other\
+  \ data types → Nominal scale\n\n        This is the base implementation that can\
+  \ be overridden by subclasses to provide\n        property-specific scale inference\
+  \ logic.\n        \"\"\"\n        <your code>\n\n    def infer_scale(self, arg:\
+  \ Any, data: Series) -> Scale:\n        \"\"\"\n        Infer the appropriate scale\
+  \ type for a visual property based on the scaling argument and data characteristics.\n\
+  \n        This method analyzes the provided scaling argument and determines the\
+  \ most suitable scale class to use for mapping data values to visual property values.\
+  \ It handles various types of scaling arguments including transformation strings\
+  \ and validates the argument type.\n\n        Parameters\n        ----------\n \
+  \       arg : Any\n            The scaling argument that specifies how data should\
+  \ be mapped to the visual property.\n            Can be a string specifying transformations\
+  \ (e.g., \"log\", \"symlog\", \"logit\", \"pow\", \"sqrt\")\n            or other\
+  \ scale-specific arguments.\n        data : Series\n            The pandas Series\
+  \ containing the data values that will be scaled. Used to determine\n          \
+  \  appropriate scale characteristics but may not be directly used in all cases.\n\
+  \n        Returns\n        -------\n        Scale\n            An initialized Scale\
+  \ object appropriate for the given argument and data type.\n            Returns\
+  \ a Continuous scale with the specified transformation for valid transform\n   \
+  \         strings.\n\n        Raises\n        ------\n        ValueError\n     \
+  \       If the scaling argument is a string that doesn't match any known transformation\n\
+  \            patterns. The error message indicates the unknown argument and the\
+  \ property\n            variable name.\n        TypeError\n            If the scaling\
+  \ argument is not a string type. Only string arguments are accepted\n          \
+  \  for magic scaling arguments.\n\n        Notes\n        -----\n        This is\
+  \ the base implementation that handles transformation strings. Subclasses\n    \
+  \    may override this method to handle property-specific scaling arguments (e.g.,\n\
+  \        color palettes for Color properties) before falling back to the parent\n\
+  \        implementation.\n\n        The currently supported transformation strings\
+  \ are: \"log\", \"symlog\", \"logit\", \n        \"pow\", and \"sqrt\". These can\
+  \ be used as prefixes (e.g., \"log10\", \"pow2\").\n        \"\"\"\n        <your\
+  \ code>\n\n    def get_mapping(self, scale: Scale, data: Series) -> Mapping:\n \
+  \       \"\"\"\n        Define mapping as lookup into list of object values.\n \
+  \       \"\"\"\n        <your code>\n\n    def _get_values(self, scale: Scale, levels:\
+  \ list) -> list:\n        \"\"\"\n        Validate scale.values and identify a value\
+  \ for each level.\n        \"\"\"\n        <your code>\n\nclass Color(Property):\n\
+  \    \"\"\"\n    Color, as RGB(A), scalable with nominal palettes or continuous\
+  \ gradients.\n    \"\"\"\n\n    legend = True\n    normed = True\n\n    def standardize(self,\
+  \ val: ColorSpec) -> RGBTuple | RGBATuple:\n        \"\"\"\n        Standardize\
+  \ a color specification to a consistent RGB or RGBA tuple format.\n\n        This\
+  \ method converts various color input formats (color names, hex codes, RGB tuples,\
+  \ \n        RGBA tuples) into a standardized tuple representation that can be used\
+  \ consistently \n        throughout the plotting system.\n\n        Parameters\n\
+  \        ----------\n        val : ColorSpec\n            A color specification\
+  \ that can be one of:\n            - str: Named color (e.g., 'red', 'blue') or hex\
+  \ color code (e.g., '#FF0000')\n            - RGBTuple: 3-tuple of float values\
+  \ representing (red, green, blue) in [0,1]\n            - RGBATuple: 4-tuple of\
+  \ float values representing (red, green, blue, alpha) in [0,1]\n\n        Returns\n\
+  \        -------\n        RGBTuple or RGBATuple\n            Standardized color\
+  \ representation as a tuple of float values in [0,1] range.\n            Returns\
+  \ RGBTuple (3 values) if the input color has no alpha channel or alpha=1.0.\n  \
+  \          Returns RGBATuple (4 values) if the input color explicitly specifies\
+  \ an alpha \n            channel with a value other than 1.0.\n\n        Notes\n\
+  \        -----\n        The method preserves alpha channel information only when\
+  \ it is explicitly provided\n        and differs from the default value of 1.0.\
+  \ This allows RGBA colors to override\n        the Alpha property in the plotting\
+  \ system when needed.\n\n        The standardization uses matplotlib's color conversion\
+  \ functions (to_rgb, to_rgba)\n        internally, so it supports all color specifications\
+  \ that matplotlib recognizes.\n        \"\"\"\n        <your code>\n\n    def _standardize_color_sequence(self,\
+  \ colors: ArrayLike) -> ArrayLike:\n        \"\"\"\n        Convert color sequence\
+  \ to RGB(A) array, preserving but not adding alpha.\n        \"\"\"\n        <your\
+  \ code>\n\n    def infer_scale(self, arg: Any, data: Series) -> Scale:\n       \
+  \ \"\"\"\n        Infer the appropriate scale type for a visual property based on\
+  \ the scaling argument and data characteristics.\n\n        This method analyzes\
+  \ the provided scaling argument and determines the most suitable scale class to\
+  \ use for mapping data values to visual property values. It handles various types\
+  \ of scaling arguments including transformation strings and validates the argument\
+  \ type.\n\n        Parameters\n        ----------\n        arg : Any\n         \
+  \   The scaling argument that specifies how data should be mapped to the visual\
+  \ property.\n            Can be a string specifying transformations (e.g., \"log\"\
+  , \"symlog\", \"logit\", \"pow\", \"sqrt\")\n            or other scale-specific\
+  \ arguments.\n        data : Series\n            The pandas Series containing the\
+  \ data values that will be scaled. Used to determine\n            appropriate scale\
+  \ characteristics but may not be directly used in all cases.\n\n        Returns\n\
+  \        -------\n        Scale\n            An initialized Scale object appropriate\
+  \ for the given argument and data type.\n            Returns a Continuous scale\
+  \ with the specified transformation for valid transform\n            strings.\n\n\
+  \        Raises\n        ------\n        ValueError\n            If the scaling\
+  \ argument is a string that doesn't match any known transformation\n           \
+  \ patterns. The error message indicates the unknown argument and the property\n\
+  \            variable name.\n        TypeError\n            If the scaling argument\
+  \ is not a string type. Only string arguments are accepted\n            for magic\
+  \ scaling arguments.\n\n        Notes\n        -----\n        This is the base implementation\
+  \ that handles transformation strings. Subclasses\n        may override this method\
+  \ to handle property-specific scaling arguments (e.g.,\n        color palettes for\
+  \ Color properties) before falling back to this base behavior.\n\n        The supported\
+  \ transformation strings are: \"log\", \"symlog\", \"logit\", \"pow\", \"sqrt\"\
+  .\n        These can be used as prefixes (e.g., \"log10\", \"pow2\") for parameterized\
+  \ transforms.\n        \"\"\"\n        <your code>\n\n    def get_mapping(self,\
+  \ scale: Scale, data: Series) -> Mapping:\n        \"\"\"\n        Return a function\
+  \ that maps from data domain to color values.\n        \"\"\"\n        <your code>\n\
+  \n    def _get_nominal_mapping(self, scale: Nominal, data: Series) -> Mapping:\n\
+  \        \"\"\"\n        Generate a mapping function for nominal (categorical) scale\
+  \ data to property values.\n\n        This method creates a mapping function that\
+  \ converts categorical data values to their\n        corresponding property values\
+  \ (such as colors, markers, etc.) based on the nominal\n        scale configuration.\n\
+  \n        Parameters\n        ----------\n        scale : Nominal\n            A\
+  \ nominal scale object that defines how categorical data should be mapped to\n \
+  \           property values. Contains information about value ordering, explicit\
+  \ value\n            mappings, and other scale configuration.\n        data : Series\n\
+  \            A pandas Series containing the categorical data to be mapped. Used\
+  \ to determine\n            the categorical levels and their order for the mapping\
+  \ function.\n\n        Returns\n        -------\n        Mapping\n            A\
+  \ callable function that takes an array-like input of categorical indices and\n\
+  \            returns an array of corresponding property values. The mapping function\
+  \ handles\n            NaN/invalid values by returning NaN in the output array.\n\
+  \n        Notes\n        -----\n        - The mapping function expects input data\
+  \ to be converted to integer indices\n          corresponding to categorical levels,\
+  \ not the original categorical values\n        - Invalid or NaN input values are\
+  \ preserved as NaN in the output\n        - The categorical order is determined\
+  \ by the scale's order parameter if specified,\n          otherwise uses the natural\
+  \ order found in the data\n        - This is an internal method used by the property\
+  \ system to create data-to-visual\n          mappings for nominal scales\n     \
+  \   \"\"\"\n        <your code>\n\n    def _get_boolean_mapping(self, scale: Boolean,\
+  \ data: Series) -> Mapping:\n        \"\"\"\n        Generate a mapping function\
+  \ for boolean-scaled data to property values.\n\n        This method creates a mapping\
+  \ function that converts boolean data values to \n        corresponding property\
+  \ values based on the scale configuration. The mapping \n        handles True/False\
+  \ values and maps them to appropriate visual property values.\n\n        Parameters\n\
+  \        ----------\n        scale : Boolean\n            A Boolean scale object\
+  \ that defines how boolean data should be mapped\n            to property values.\
+  \ Contains configuration such as scale.values which\n            can be a list,\
+  \ dict, or None to determine the mapping behavior.\n        data : Series\n    \
+  \        A pandas Series containing the boolean data to be mapped. Used to\n   \
+  \         determine the levels/categories present in the data for mapping.\n\n \
+  \       Returns\n        -------\n        Mapping\n            A callable function\
+  \ that takes an array-like input of boolean values\n            and returns an array\
+  \ of corresponding property values. The returned\n            function handles NaN\
+  \ values by setting them to NaN in the output,\n            and uses np.where to\
+  \ efficiently map True/False values to their\n            corresponding property\
+  \ values.\n\n        Notes\n        -----\n        - The mapping function uses np.where(x[use],\
+  \ *values) where values is a\n          2-element list corresponding to [True_value,\
+  \ False_value]\n        - NaN or infinite input values are preserved as NaN in the\
+  \ output\n        - The scale.values are processed through _get_values() which handles\n\
+  \          list, dict, or None value specifications\n        - This method is specifically\
+  \ designed for IntervalProperty subclasses\n          where boolean data needs to\
+  \ be mapped to numeric intervals\n        \"\"\"\n        <your code>\n\n    def\
+  \ _get_values(self, scale: Scale, levels: list) -> ArrayLike:\n        \"\"\"\n\
+  \        Validate scale.values and identify a value for each level.\n        \"\"\
+  \"\n        <your code>\n\nclass Fill(Property):\n    \"\"\"\n    Boolean property\
+  \ of points/bars/patches that can be solid or outlined.\n    \"\"\"\n\n    legend\
+  \ = True\n    normed = False\n\n    def default_scale(self, data: Series) -> Scale:\n\
+  \        \"\"\"\n        Determine the appropriate scale type for the given data\
+  \ series.\n\n        This method analyzes the data type and characteristics of the\
+  \ input series to automatically\n        select the most suitable scale class for\
+  \ mapping data values to visual properties.\n\n        Parameters\n        ----------\n\
+  \        data : Series\n            A pandas Series containing the data values to\
+  \ be analyzed. The data can be of\n            various types including numeric,\
+  \ datetime, boolean, or categorical.\n\n        Returns\n        -------\n     \
+  \   Scale\n            An instance of the appropriate scale class based on the data\
+  \ type:\n            - Continuous: For numeric data types\n            - Temporal:\
+  \ For datetime data types  \n            - Boolean: For boolean data types (when\
+  \ strict_boolean=True)\n            - Nominal: For categorical or other non-numeric\
+  \ data types\n\n        Notes\n        -----\n        The method uses the `variable_type`\
+  \ function to determine the data type with\n        `boolean_type=\"boolean\"` and\
+  \ `strict_boolean=True` parameters. This ensures\n        that boolean data is properly\
+  \ identified and handled with a Boolean scale\n        rather than being treated\
+  \ as categorical data.\n\n        The scale selection follows this hierarchy:\n\
+  \        1. Numeric data → Continuous scale\n        2. Datetime data → Temporal\
+  \ scale  \n        3. Boolean data → Boolean scale\n        4. All other data types\
+  \ → Nominal scale\n\n        This is the default scale inference behavior that can\
+  \ be overridden by\n        explicitly specifying scale parameters or using the\
+  \ `infer_scale` method\n        with custom arguments.\n        \"\"\"\n       \
+  \ <your code>\n\n    def infer_scale(self, arg: Any, data: Series) -> Scale:\n \
+  \       \"\"\"\n        Infer the appropriate scale type for a visual property based\
+  \ on the scaling argument and data characteristics.\n\n        This method analyzes\
+  \ the provided scaling argument and determines the most suitable scale class to\
+  \ use for mapping data values to visual property values. It handles various types\
+  \ of scaling arguments including transformation strings and validates the argument\
+  \ type.\n\n        Parameters\n        ----------\n        arg : Any\n         \
+  \   The scaling argument that specifies how data should be mapped to the visual\
+  \ property.\n            Can be a string specifying transformations (e.g., \"log\"\
+  , \"symlog\", \"logit\", \"pow\", \"sqrt\")\n            or other scale-specific\
+  \ arguments.\n        data : Series\n            The pandas Series containing the\
+  \ data values that will be scaled. Used to determine\n            appropriate scale\
+  \ characteristics but may not be directly used in all cases.\n\n        Returns\n\
+  \        -------\n        Scale\n            An initialized Scale object appropriate\
+  \ for the given argument and data type.\n            Returns a Continuous scale\
+  \ with the specified transformation for valid transform\n            strings.\n\n\
+  \        Raises\n        ------\n        ValueError\n            If the scaling\
+  \ argument is a string that doesn't match any known transformation\n           \
+  \ patterns. The error message indicates the unknown argument and the property\n\
+  \            variable name.\n        TypeError\n            If the scaling argument\
+  \ is not a string type. Only string arguments are accepted\n            for magic\
+  \ scaling arguments.\n\n        Notes\n        -----\n        This is the base implementation\
+  \ that handles transformation strings. Subclasses\n        may override this method\
+  \ to handle property-specific scaling arguments (e.g.,\n        color palettes for\
+  \ Color properties) before falling back to this base behavior.\n\n        The supported\
+  \ transformation strings are: \"log\", \"symlog\", \"logit\", \"pow\", \"sqrt\"\
+  .\n        These can be used as prefixes (e.g., \"log10\", \"pow2\") for parameterized\
+  \ transforms.\n        \"\"\"\n        <your code>\n\n    def standardize(self,\
+  \ val: Any) -> bool:\n        \"\"\"\n        Coerce flexible property value to\
+  \ standardized representation.\n\n        This method converts a property value\
+  \ from its flexible input format to a \n        standardized internal representation\
+  \ that can be consistently used throughout\n        the visualization system. The\
+  \ base implementation performs no transformation\n        and returns the value\
+  \ as-is, but subclasses override this method to implement\n        property-specific\
+  \ standardization logic.\n\n        Parameters\n        ----------\n        val\
+  \ : Any\n            The input value to be standardized. Can be any type depending\
+  \ on the\n            specific property implementation. For example, color values\
+  \ might accept\n            strings, RGB tuples, or hex codes, while marker values\
+  \ might accept\n            strings, numbers, or matplotlib MarkerStyle objects.\n\
+  \n        Returns\n        -------\n        bool\n            The standardized representation\
+  \ of the input value. Note that while this\n            base method signature indicates\
+  \ a boolean return type, subclass \n            implementations may return different\
+  \ types appropriate for their specific\n            property (e.g., RGBTuple for\
+  \ colors, MarkerStyle for markers).\n\n        Notes\n        -----\n        - This\
+  \ is a base implementation that performs no transformation\n        - Subclasses\
+  \ should override this method to implement property-specific\n          standardization\
+  \ logic\n        - The standardized format ensures consistent internal representation\n\
+  \          regardless of the input format used by the user\n        - Invalid input\
+  \ values may raise appropriate exceptions depending on the\n          property type\n\
+  \n        Examples\n        --------\n        For a Color property, this might convert\
+  \ \"red\" to (1.0, 0.0, 0.0).\n        For a Marker property, this might convert\
+  \ \"o\" to MarkerStyle(\"o\").\n        For a Fill property, this might convert\
+  \ 1 to True.\n        \"\"\"\n        <your code>\n\n    def _default_values(self,\
+  \ n: int) -> list:\n        \"\"\"\n        Return a list of n values, alternating\
+  \ True and False.\n        \"\"\"\n        <your code>\n\n    def get_mapping(self,\
+  \ scale: Scale, data: Series) -> Mapping:\n        \"\"\"\n        Return a function\
+  \ that maps each data value to True or False.\n        \"\"\"\n        <your code>\n\
+  \n    def _get_values(self, scale: Scale, levels: list) -> list:\n        \"\"\"\
+  \n        Validate scale.values and identify a value for each level.\n        \"\
+  \"\"\n        <your code>\n"
+interface_description3: 'Below is **Interface Description 3** for file: seaborn-utils.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code3: "def _version_predates(lib: ModuleType, version: str) -> bool:\n\
+  \    \"\"\"\n    Helper function for checking version compatibility.\n    \"\"\"\
+  \n    <your code>\n"
+interface_description4: 'Below is **Interface Description 4** for file: seaborn-palettes.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code4: "def color_palette(\n    palette = None,\n    n_colors = None,\n\
+  \    desat = None,\n    as_cmap = False\n):\n    \"\"\"\n    Return a list of colors\
+  \ or continuous colormap defining a palette.\n    \n        Possible ``palette``\
+  \ values include:\n            - Name of a seaborn palette (deep, muted, bright,\
+  \ pastel, dark, colorblind)\n            - Name of matplotlib colormap\n       \
+  \     - 'husl' or 'hls'\n            - 'ch:<cubehelix arguments>'\n            -\
+  \ 'light:<color>', 'dark:<color>', 'blend:<color>,<color>',\n            - A sequence\
+  \ of colors in any format matplotlib accepts\n    \n        Calling this function\
+  \ with ``palette=None`` will return the current\n        matplotlib color cycle.\n\
+  \    \n        This function can also be used in a ``with`` statement to temporarily\n\
+  \        set the color cycle for a plot or set of plots.\n    \n        See the\
+  \ :ref:`tutorial <palette_tutorial>` for more information.\n    \n        Parameters\n\
+  \        ----------\n        palette : None, string, or sequence, optional\n   \
+  \         Name of palette or None to return current palette. If a sequence, input\n\
+  \            colors are used but possibly cycled and desaturated.\n        n_colors\
+  \ : int, optional\n            Number of colors in the palette. If ``None``, the\
+  \ default will depend\n            on how ``palette`` is specified. Named palettes\
+  \ default to 6 colors,\n            but grabbing the current palette or passing\
+  \ in a list of colors will\n            not change the number of colors unless this\
+  \ is specified. Asking for\n            more colors than exist in the palette will\
+  \ cause it to cycle. Ignored\n            when ``as_cmap`` is True.\n        desat\
+  \ : float, optional\n            Proportion to desaturate each color by.\n     \
+  \   as_cmap : bool\n            If True, return a :class:`matplotlib.colors.ListedColormap`.\n\
+  \    \n        Returns\n        -------\n        list of RGB tuples or :class:`matplotlib.colors.ListedColormap`\n\
+  \    \n        See Also\n        --------\n        set_palette : Set the default\
+  \ color cycle for all plots.\n        set_color_codes : Reassign color codes like\
+  \ ``\"b\"``, ``\"g\"``, etc. to\n                          colors from one of the\
+  \ seaborn palettes.\n    \n        Examples\n        --------\n    \n        ..\
+  \ include:: ../docstrings/color_palette.rst\n    \n        \n    \"\"\"\n    <your\
+  \ code>\n"
+interface_code_example: "class Plot:\n    \"\"\"\n    \n        An interface for declaratively\
+  \ specifying statistical graphics.\n    \n        Plots are constructed by initializing\
+  \ this class and adding one or more\n        layers, comprising a `Mark` and optional\
+  \ `Stat` or `Move`.  Additionally,\n        faceting variables or variable pairings\
+  \ may be defined to divide the space\n        into multiple subplots. The mappings\
+  \ from data values to visual properties\n        can be parametrized using scales,\
+  \ although the plot will try to infer good\n        defaults when scales are not\
+  \ explicitly defined.\n    \n        The constructor accepts a data source (a :class:`pandas.DataFrame`\
+  \ or\n        dictionary with columnar values) and variable assignments. Variables\
+  \ can be\n        passed as keys to the data source or directly as data vectors.\
+  \  If multiple\n        data-containing objects are provided, they will be index-aligned.\n\
+  \    \n        The data source and variables defined in the constructor will be\
+  \ used for\n        all layers in the plot, unless overridden or disabled when adding\
+  \ a layer.\n    \n        The following variables can be defined in the constructor:\n\
+  \            {known_properties}\n    \n        The `data`, `x`, and `y` variables\
+  \ can be passed as positional arguments or\n        using keywords. Whether the\
+  \ first positional argument is interpreted as a\n        data source or `x` variable\
+  \ depends on its type.\n    \n        The methods of this class return a copy of\
+  \ the instance; use chaining to\n        build up a plot through multiple calls.\
+  \ Methods can be called in any order.\n    \n        Most methods only add information\
+  \ to the plot spec; no actual processing\n        happens until the plot is shown\
+  \ or saved. It is also possible to compile\n        the plot without rendering it\
+  \ to access the lower-level representation.\n    \n        \n    \"\"\"\n\n    config\
+  \ = \"PlotConfig()\"\n    _data: PlotData\n    _layers: list[Layer]\n    _scales:\
+  \ dict[str, Scale]\n    _shares: dict[str, bool | str]\n    _limits: dict[str, tuple[Any,\
+  \ Any]]\n    _labels: dict[str, str | Callable[[str], str]]\n    _theme: dict[str,\
+  \ Any]\n    _facet_spec: FacetSpec\n    _pair_spec: PairSpec\n    _figure_spec:\
+  \ dict[str, Any]\n    _subplot_spec: dict[str, Any]\n    _layout_spec: dict[str,\
+  \ Any]\n\n    def __init__(\n        self,\n        *args: DataSource | VariableSpec,\n\
+  \        **variables: VariableSpec\n    ):\n        \"\"\"\n        Initialize a\
+  \ Plot object with data and variable mappings.\n\n        This constructor sets\
+  \ up the foundation for a declarative statistical visualization.\n        It accepts\
+  \ a data source and variable assignments that will be used across all\n        layers\
+  \ in the plot unless overridden when adding individual layers.\n\n        Parameters\n\
+  \        ----------\n        *args : DataSource or VariableSpec\n            Positional\
+  \ arguments that can include:\n            - A data source (DataFrame, dict, or\
+  \ object with __dataframe__ method) as first argument\n            - x variable\
+  \ as first or second positional argument (depending on whether data is provided)\n\
+  \            - y variable as second or third positional argument\n            Maximum\
+  \ of 3 positional arguments allowed: (data, x, y)\n        **variables : VariableSpec\n\
+  \            Keyword arguments specifying variable mappings. Valid variable names\
+  \ include\n            coordinate variables (x, y) and semantic variables (color,\
+  \ size, etc.).\n            Variables can reference columns in the data source or\
+  \ be passed as direct data vectors.\n\n        Notes\n        -----\n        - If\
+  \ multiple data-containing objects are provided, they will be index-aligned\n  \
+  \      - The first positional argument is interpreted as a data source if it's a\
+  \ mapping,\n          DataFrame, or has a __dataframe__ method; otherwise it's treated\
+  \ as the x variable\n        - Variables defined here serve as defaults for all\
+  \ plot layers but can be overridden\n          or disabled when adding individual\
+  \ layers via the add() method\n        - Variable assignments can be provided either\
+  \ positionally (for data, x, y) or as\n          keyword arguments\n\n        Raises\n\
+  \        ------\n        TypeError\n            If more than 3 positional arguments\
+  \ are provided, if the same variable is\n            specified both positionally\
+  \ and by keyword, or if unknown variable names\n            are used in keyword\
+  \ arguments\n\n        Examples\n        --------\n        Basic initialization\
+  \ with DataFrame:\n            Plot(data=df, x=\"column1\", y=\"column2\")\n\n \
+  \       Using positional arguments:\n            Plot(df, \"column1\", \"column2\"\
+  )\n\n        Direct data vectors:\n            Plot(x=[1, 2, 3], y=[4, 5, 6])\n\
+  \        \"\"\"\n        <your code>\n..."

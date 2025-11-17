@@ -1,0 +1,12 @@
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Requirement already satisfied: build in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (1.3.0)
+Requirement already satisfied: meson-python in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (0.18.0)
+Requirement already satisfied: Cython in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (3.1.3)
+Requirement already satisfied: ninja in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (1.13.0)
+Requirement already satisfied: pkgconfig in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (1.5.5)
+Requirement already satisfied: patchelf in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (0.17.2.4)
+Requirement already satisfied: packaging>=19.1 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from build) (25.0)
+Requirement already satisfied: pyproject_hooks in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from build) (1.2.0)
+Requirement already satisfied: tomli>=1.1.0 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from build) (2.2.1)
+Requirement already satisfied: meson>=0.64.0 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from meson-python) (1.9.0)
+Requirement already satisfied: pyproject-metadata>=0.9.0 in /opt/miniconda3/envs/testbed/lib/python3.10/site-packages (from meson-python) (0.9.1)

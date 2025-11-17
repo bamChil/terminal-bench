@@ -1,0 +1,53 @@
+{
+    "file_stats": {
+        "total_files": 16,
+        "patch_count": 4,
+        "left_count": 12,
+        "distribution": {
+            "left": 12,
+            "patch": 4
+        }
+    },
+    "obj_stats": {
+        "total_objects": 99,
+        "top_count": 2,
+        "specific_count": 11,
+        "others_count": 86,
+        "distribution": {
+            "others": 86,
+            "top": 2,
+            "specific": 11
+        }
+    },
+    "patch_files": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/grpo_config.py",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/grpo_trainer.py",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/extras/profiling.py"
+    ],
+    "top_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/grpo_config.py:GRPOConfig",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/grpo_trainer.py:GRPOTrainer"
+    ],
+    "specific_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/extras/profiling.py:profiling_decorator",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/extras/profiling.py:profiling_context",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:truncate_with_protected_tokens",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:nanstd",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:split_pixel_values_by_grid",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:shuffle_sequence_dict",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:split_tensor_dict",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:unsplit_pixel_values_by_grid",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:entropy_from_logits",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:nanmin",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/utils.py:nanmax"
+    ],
+    "lines_code": 2733,
+    "lines_code_level3": 2733,
+    "test_name": "grpo_trainer",
+    "test_file": "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/tests/test_grpo_trainer.py",
+    "top_imports": [
+        "trl.GRPOConfig",
+        "trl.GRPOTrainer"
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "file_stats": {
+        "total_files": 15,
+        "patch_count": 2,
+        "left_count": 13,
+        "distribution": {
+            "patch": 2,
+            "left": 13
+        }
+    },
+    "obj_stats": {
+        "total_objects": 31,
+        "top_count": 2,
+        "specific_count": 1,
+        "others_count": 28,
+        "distribution": {
+            "specific": 1,
+            "top": 2,
+            "others": 28
+        }
+    },
+    "patch_files": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/fused_linear_distillation.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/cosine_similarity_loss.py"
+    ],
+    "top_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/cosine_similarity_loss.py:LigerFusedLinearCosineSimilarityFunction",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/cosine_similarity_loss.py:LigerFusedLinearCosineSimilarityLoss"
+    ],
+    "specific_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/fused_linear_distillation.py:LigerFusedLinearDistillationBase"
+    ],
+    "lines_code": 389,
+    "lines_code_level3": 389,
+    "test_name": "cosine_loss",
+    "test_file": "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/test/chunked_loss/test_cosine_loss.py",
+    "top_imports": [
+        "liger_kernel.chunked_loss.functional.liger_fused_linear_cosine",
+        "liger_kernel.chunked_loss.cosine_similarity_loss.LigerFusedLinearCosineSimilarityFunction",
+        "liger_kernel.chunked_loss.cosine_similarity_loss.LigerFusedLinearCosineSimilarityLoss"
+    ]
+}

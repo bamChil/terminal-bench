@@ -1,0 +1,825 @@
+base_image: pb-python310-base_1da72186
+black_links:
+- https://github.com/pytest-dev/pytest
+commit: null
+custom_instance_image_build:
+- '# 设置 Hugging Face 相关环境变量'
+- ENV HF_HOME=/root/my_cache/huggingface
+- ENV HF_HUB_CACHE=/root/my_cache/huggingface/hub
+docker_specs:
+  custom_docker_args:
+  - -v /data2/cache_pb_datapipeline:/root/my_cache/
+  run_args:
+    cap_add: []
+    enable_gpu: true
+exclude_keywords: []
+install: pip install --upgrade pip setuptools wheel setuptools_scm && pip install
+  -e .[testing]
+instance_image: pb-instance_6cfcafe5
+library_name: pytest
+pip_packages:
+- pytest
+- pytest_mock
+- attr
+pre_install: []
+repo_name: pytest
+repository: pytest-dev/pytest
+start_time: '2024-01-01'
+task_level: 3
+task_name: pytest_pprint
+task_statement: '**Task: Implement a Configurable Pretty Printer for Python Objects**
+
+
+  **Core Functionalities:**
+
+  - Format complex Python data structures (dictionaries, lists, tuples, sets, dataclasses,
+  etc.) into human-readable, indented text representations
+
+  - Provide intelligent line wrapping and layout control based on configurable width
+  constraints
+
+  - Handle nested objects with proper indentation levels and depth limiting
+
+
+  **Main Features & Requirements:**
+
+  - **Configurable formatting**: Support customizable indentation spacing, maximum
+  line width, and maximum nesting depth
+
+  - **Type-specific formatting**: Implement specialized formatters for different object
+  types (dicts, lists, strings, bytes, collections, etc.)
+
+  - **Intelligent layout**: Break long lines appropriately, wrap text at word boundaries,
+  and maintain readable structure
+
+  - **Circular reference detection**: Safely handle self-referencing objects without
+  infinite recursion
+
+  - **Stream-based output**: Write formatted results directly to output streams for
+  memory efficiency
+
+
+  **Key Challenges:**
+
+  - **Recursion management**: Track object IDs to detect and handle circular references
+  gracefully
+
+  - **Width calculation**: Balance line length constraints with readability across
+  nested structures
+
+  - **Type dispatch**: Route different object types to appropriate specialized formatting
+  methods
+
+  - **Context preservation**: Maintain proper indentation and formatting state across
+  recursive calls
+
+  - **Performance optimization**: Handle large or deeply nested data structures efficiently
+
+
+  The task requires building a robust, extensible pretty-printing system that produces
+  consistently formatted, readable output while handling edge cases like circular
+  references and deeply nested structures.'
+technical_docs: []
+test_cmd: pytest -rA --timeout=10
+test_code1: from agent_code._pytest._io.pprint import PrettyPrinter
+test_code_example: from agent_code._pytest._io.pprint import PrettyPrinter
+test_code_example_obj: PrettyPrinter
+test_code_example_path: /testbed/agent_code/_pytest/_io/pprint.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 10
+interface_description1: 'Below is **Interface Description 1** for file: src-_pytest-_io-pprint.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class PrettyPrinter:\n    \"\"\"\n    A configurable pretty printer\
+  \ for Python objects that formats complex data structures\n    in a human-readable\
+  \ way with proper indentation and line wrapping.\n    \n    The PrettyPrinter class\
+  \ provides sophisticated formatting capabilities for nested data\n    structures\
+  \ like dictionaries, lists, tuples, sets, dataclasses, and other Python objects.\n\
+  \    It intelligently handles line wrapping, indentation, and recursion detection\
+  \ to produce\n    clean, readable output that respects specified width constraints.\n\
+  \    \n    Attributes:\n        _indent_per_level (int): Number of spaces to indent\
+  \ for each nesting level\n        _width (int): Maximum number of columns attempted\
+  \ in output formatting  \n        _depth (int | None): Maximum depth to traverse\
+  \ when formatting nested structures\n    \n    Methods:\n        __init__(indent=4,\
+  \ width=80, depth=None): \n            Initialize the pretty printer with formatting\
+  \ parameters.\n            \n            Args:\n                indent: Spaces per\
+  \ indentation level (must be >= 0)\n                width: Target maximum line width\
+  \ (must be != 0) \n                depth: Maximum nesting depth to format (must\
+  \ be > 0 if specified)\n                \n        pformat(object):\n           \
+  \ Format an object and return the result as a string.\n            \n          \
+  \  Args:\n                object: Any Python object to format\n                \n\
+  \            Returns:\n                str: Pretty-formatted string representation\n\
+  \                \n        _format(object, stream, indent, allowance, context, level):\n\
+  \            Internal method that handles the core formatting logic. Writes formatted\n\
+  \            output directly to a stream, managing indentation, recursion detection,\n\
+  \            and dispatching to specialized formatters for different object types.\n\
+  \            \n        _pprint_dataclass(object, stream, indent, allowance, context,\
+  \ level):\n            Specialized formatter for dataclass instances. Formats dataclasses\
+  \ with\n            their class name followed by field names and values in a readable\
+  \ layout.\n            \n        _pprint_dict(object, stream, indent, allowance,\
+  \ context, level):\n            Specialized formatter for dictionary objects. Handles\
+  \ key-value pair\n            formatting with proper indentation and sorting for\
+  \ consistent output.\n    \n    Usage Examples:\n        # Basic usage with default\
+  \ settings\n        pp = PrettyPrinter()\n        data = {'users': [{'name': 'Alice',\
+  \ 'age': 30}, {'name': 'Bob', 'age': 25}]}\n        formatted = pp.pformat(data)\n\
+  \        \n        # Custom indentation and width\n        pp = PrettyPrinter(indent=2,\
+  \ width=60)\n        nested_list = [[1, 2, [3, 4]], [5, 6, [7, 8, [9, 10]]]]\n \
+  \       print(pp.pformat(nested_list))\n        \n        # Limit formatting depth\n\
+  \        pp = PrettyPrinter(depth=2)\n        deep_structure = {'a': {'b': {'c':\
+  \ {'d': 'too deep'}}}}\n        formatted = pp.pformat(deep_structure)  # Will truncate\
+  \ at depth 2\n    \"\"\"\n\n    _dispatch = {}\n\n    def __init__(\n        self,\n\
+  \        indent: int = 4,\n        width: int = 80,\n        depth: int | None =\
+  \ None\n    ) -> None:\n        \"\"\"\n        Handle pretty printing operations\
+  \ onto a stream using a set of\n                configured parameters.\n\n     \
+  \           indent\n                    Number of spaces to indent for each level\
+  \ of nesting.\n\n                width\n                    Attempted maximum number\
+  \ of columns in the output.\n\n                depth\n                    The maximum\
+  \ depth to print out nested structures.\n\n\n        \"\"\"\n        <your code>\n\
+  \n    def pformat(self, object: Any) -> str:\n        \"\"\"\n        Format an\
+  \ object into a pretty-printed string representation.\n\n        This method converts\
+  \ any Python object into a formatted string with proper\n        indentation and\
+  \ line breaks according to the PrettyPrinter's configuration\n        settings (width,\
+  \ depth, and indent).\n\n        Parameters\n        ----------\n        object\
+  \ : Any\n            The Python object to be formatted. Can be any type including\
+  \ built-in\n            types (dict, list, tuple, set, str, bytes, etc.), custom\
+  \ classes,\n            dataclasses, or nested structures.\n\n        Returns\n\
+  \        -------\n        str\n            A formatted string representation of\
+  \ the object with appropriate\n            indentation, line breaks, and structure\
+  \ formatting. The output\n            respects the PrettyPrinter's width limit and\
+  \ will break long lines\n            when necessary.\n\n        Notes\n        -----\n\
+  \        - The formatting behavior varies based on object type:\n          * Dictionaries\
+  \ are sorted by key and formatted with proper indentation\n          * Lists and\
+  \ tuples show each element on separate lines for complex structures\n          *\
+  \ Strings are intelligently wrapped at word boundaries when they exceed width\n\
+  \          * Dataclasses are formatted showing field names and values\n        \
+  \  * Circular references are detected and displayed as recursion indicators\n  \
+  \      - If the depth limit is set and exceeded, nested structures will be truncated\n\
+  \          with ellipsis notation\n        - The method handles special cases like\
+  \ empty containers, single-element tuples,\n          and various collection types\
+  \ from the collections module\n        - Output formatting is optimized for readability\
+  \ while respecting the configured\n          width constraints\n        \"\"\"\n\
+  \        <your code>\n\n    def _format(\n        self,\n        object: Any,\n\
+  \        stream: IO[str],\n        indent: int,\n        allowance: int,\n     \
+  \   context: set[int],\n        level: int\n    ) -> None:\n        \"\"\"\n   \
+  \     Format an object for pretty printing by writing its representation to a stream.\n\
+  \n        This is the core formatting method that handles the pretty printing of\
+  \ any Python object.\n        It determines the appropriate formatting strategy\
+  \ based on the object's type and handles\n        circular reference detection.\n\
+  \n        Parameters:\n            object (Any): The Python object to be formatted\
+  \ and written to the stream.\n            stream (IO[str]): The text stream where\
+  \ the formatted representation will be written.\n            indent (int): The current\
+  \ indentation level in spaces from the left margin.\n            allowance (int):\
+  \ The number of characters to reserve at the end of the current line\n         \
+  \                   for closing brackets, parentheses, or other delimiters.\n  \
+  \          context (set[int]): A set containing the object IDs of all objects currently\
+  \ being\n                               processed, used for detecting and handling\
+  \ circular references.\n            level (int): The current nesting depth level,\
+  \ used for depth limiting and formatting\n                        decisions.\n\n\
+  \        Returns:\n            None: This method writes directly to the provided\
+  \ stream and returns nothing.\n\n        Important Notes:\n            - Circular\
+  \ references are detected using the context set and are represented with\n     \
+  \         a special recursion marker instead of causing infinite loops.\n      \
+  \      - The method uses a dispatch table (_dispatch) to find specialized formatting\n\
+  \              functions for different object types based on their __repr__ method.\n\
+  \            - Special handling is provided for dataclasses that have auto-generated\
+  \ repr methods.\n            - If no specialized formatter is found, the method\
+  \ falls back to using the object's\n              standard repr() representation.\n\
+  \            - The object ID is temporarily added to the context set during processing\
+  \ to detect\n              circular references, then removed when formatting is\
+  \ complete.\n        \"\"\"\n        <your code>\n\n    def _pprint_dataclass(\n\
+  \        self,\n        object: Any,\n        stream: IO[str],\n        indent:\
+  \ int,\n        allowance: int,\n        context: set[int],\n        level: int\n\
+  \    ) -> None:\n        \"\"\"\n        Pretty print a dataclass object to a stream\
+  \ with proper formatting and indentation.\n\n        This method handles the pretty\
+  \ printing of dataclass instances by extracting their\n        field names and values,\
+  \ then formatting them in a readable structure. It writes\n        the class name\
+  \ followed by parentheses containing the formatted field assignments.\n\n      \
+  \  Parameters:\n            object (Any): The dataclass instance to be pretty printed.\
+  \ Must be a valid\n                dataclass object with repr-enabled fields.\n\
+  \            stream (IO[str]): The output stream where the formatted representation\
+  \ will\n                be written.\n            indent (int): The current indentation\
+  \ level in spaces from the left margin.\n            allowance (int): The number\
+  \ of characters reserved at the end of the line\n                for closing brackets,\
+  \ parentheses, or other structural elements.\n            context (set[int]): A\
+  \ set containing object IDs currently being processed,\n                used to\
+  \ detect and handle circular references.\n            level (int): The current nesting\
+  \ depth level, used for recursion control\n                and depth limiting.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and returns nothing.\n\n        Notes:\n            - Only processes dataclass\
+  \ fields that have repr=True in their field definition\n            - Writes output\
+  \ in the format: ClassName(field1=value1, field2=value2, ...)\n            - Handles\
+  \ nested structures by delegating to _format_namespace_items for proper\n      \
+  \        indentation and line breaking\n            - The object ID is managed in\
+  \ the context set by the calling _format method\n              to prevent infinite\
+  \ recursion on circular references\n            - This method is part of the internal\
+  \ pretty printing dispatch system and\n              should not be called directly\n\
+  \        \"\"\"\n        <your code>\n\n    def _pprint_dict(\n        self,\n \
+  \       object: Any,\n        stream: IO[str],\n        indent: int,\n        allowance:\
+  \ int,\n        context: set[int],\n        level: int\n    ) -> None:\n       \
+  \ \"\"\"\n        Pretty-print a dictionary object to a stream with proper formatting\
+  \ and indentation.\n\n        This method handles the formatting of dictionary objects\
+  \ by writing an opening brace,\n        sorting the dictionary items for consistent\
+  \ output, formatting each key-value pair\n        with proper indentation, and closing\
+  \ with a closing brace. The dictionary items\n        are sorted using a safe comparison\
+  \ function to handle unorderable types.\n\n        Parameters:\n            object\
+  \ (Any): The dictionary object to be pretty-printed. Expected to be a dict\n   \
+  \                      or dict-like object with an items() method.\n           \
+  \ stream (IO[str]): The output stream where the formatted dictionary representation\n\
+  \                             will be written.\n            indent (int): The current\
+  \ indentation level in spaces from the left margin.\n            allowance (int):\
+  \ The number of characters reserved at the end of the line for\n               \
+  \             closing brackets, parentheses, or other structural elements.\n   \
+  \         context (set[int]): A set containing object IDs currently being processed,\
+  \ used\n                               to detect and handle circular references\
+  \ during formatting.\n            level (int): The current nesting depth level,\
+  \ used for recursion control and\n                        depth limiting if configured.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and returns nothing.\n\n        Notes:\n            - Dictionary items\
+  \ are sorted using _safe_tuple() to ensure consistent output\n              even\
+  \ when keys are of different, unorderable types\n            - The method delegates\
+  \ the actual formatting of key-value pairs to \n              _format_dict_items()\n\
+  \            - This method is part of the dispatch system and is automatically called\
+  \ for\n              objects whose __repr__ method is dict.__repr__\n          \
+  \  - Circular references are handled by the context parameter tracking object IDs\n\
+  \        \"\"\"\n        <your code>\n\n    def _pprint_ordered_dict(\n        self,\n\
+  \        object: Any,\n        stream: IO[str],\n        indent: int,\n        allowance:\
+  \ int,\n        context: set[int],\n        level: int\n    ) -> None:\n       \
+  \ \"\"\"\n        Pretty-print an OrderedDict object to a stream with proper formatting\
+  \ and indentation.\n\n        This method handles the pretty-printing of collections.OrderedDict\
+  \ objects by writing\n        the class name followed by the dictionary contents\
+  \ in a formatted manner. For empty\n        OrderedDict objects, it uses the standard\
+  \ repr() output. For non-empty objects, it\n        writes the class name and delegates\
+  \ to _pprint_dict for formatting the contents.\n\n        Parameters:\n        \
+  \    object (Any): The OrderedDict object to be pretty-printed. Expected to be an\n\
+  \                         instance of collections.OrderedDict.\n            stream\
+  \ (IO[str]): The output stream where the formatted representation will be\n    \
+  \                         written. Must support write() method for string output.\n\
+  \            indent (int): The current indentation level in spaces. Used to maintain\
+  \ proper\n                         alignment of nested structures.\n           \
+  \ allowance (int): The number of characters reserved for closing brackets/parentheses\n\
+  \                            at the current level. Used for width calculations.\n\
+  \            context (set[int]): A set containing object IDs currently being processed,\
+  \ used\n                               to detect and handle circular references\
+  \ during formatting.\n            level (int): The current nesting depth level.\
+  \ Used for recursion control and\n                        depth limiting if configured.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and does not return\n                  any value.\n\n        Notes:\n \
+  \           - Empty OrderedDict objects are formatted using their standard repr()\
+  \ representation\n            - Non-empty OrderedDict objects are formatted as \"\
+  OrderedDict({...})\" where the\n              dictionary contents are pretty-printed\
+  \ using the same formatting rules as regular\n              dictionaries\n     \
+  \       - This method is part of the dispatch system and is automatically called\
+  \ for\n              OrderedDict objects during pretty-printing operations\n   \
+  \         - The method preserves the insertion order of items as maintained by OrderedDict\n\
+  \        \"\"\"\n        <your code>\n\n    def _pprint_list(\n        self,\n \
+  \       object: Any,\n        stream: IO[str],\n        indent: int,\n        allowance:\
+  \ int,\n        context: set[int],\n        level: int\n    ) -> None:\n       \
+  \ \"\"\"\n        Pretty print a list object to the output stream.\n\n        This\
+  \ method handles the formatting of list objects by writing the opening bracket,\n\
+  \        delegating the formatting of list items to _format_items, and writing the\
+  \ closing\n        bracket. The method is part of the PrettyPrinter's dispatch system\
+  \ for handling\n        different object types.\n\n        Parameters:\n       \
+  \     object (Any): The list object to be pretty printed. Expected to be a list\n\
+  \                or list-like object that can be processed by _format_items.\n \
+  \           stream (IO[str]): The output stream where the formatted representation\n\
+  \                will be written. Must support write() method for string output.\n\
+  \            indent (int): The current indentation level in spaces. Used to determine\n\
+  \                how much to indent nested elements.\n            allowance (int):\
+  \ The number of characters to reserve at the end of the line\n                for\
+  \ closing brackets, parentheses, or other delimiters.\n            context (set[int]):\
+  \ A set containing object IDs currently being processed,\n                used to\
+  \ detect and handle circular references during formatting.\n            level (int):\
+  \ The current nesting depth level, used for depth limiting\n                and\
+  \ formatting decisions.\n\n        Returns:\n            None: This method writes\
+  \ directly to the stream and returns nothing.\n\n        Notes:\n            - This\
+  \ method is registered in the _dispatch dictionary and called automatically\n  \
+  \            for list objects during pretty printing\n            - The actual formatting\
+  \ of list items is delegated to the _format_items method\n            - Opening\
+  \ '[' and closing ']' brackets are written directly to the stream\n            -\
+  \ The method assumes the object parameter is a list or list-compatible sequence\n\
+  \        \"\"\"\n        <your code>\n\n    def _pprint_tuple(\n        self,\n\
+  \        object: Any,\n        stream: IO[str],\n        indent: int,\n        allowance:\
+  \ int,\n        context: set[int],\n        level: int\n    ) -> None:\n       \
+  \ \"\"\"\n        Pretty print a tuple object to the output stream with proper formatting\
+  \ and indentation.\n\n        This method handles the pretty printing of tuple objects\
+  \ by writing opening parentheses,\n        formatting the tuple items with appropriate\
+  \ indentation and line breaks, and closing\n        with parentheses. It delegates\
+  \ the actual item formatting to the _format_items method\n        which handles\
+  \ the layout logic based on the configured width and indentation settings.\n\n \
+  \       Parameters:\n            object (Any): The tuple object to be pretty printed.\
+  \ Expected to be a tuple type.\n            stream (IO[str]): The output stream\
+  \ where the formatted tuple representation will be written.\n            indent\
+  \ (int): The current indentation level in spaces from the left margin.\n       \
+  \     allowance (int): The number of characters reserved at the end of the line\
+  \ for closing brackets/parentheses.\n            context (set[int]): A set containing\
+  \ object IDs currently being processed, used to detect and handle circular references.\n\
+  \            level (int): The current nesting depth level, used for depth limiting\
+  \ and formatting decisions.\n\n        Returns:\n            None: This method writes\
+  \ directly to the stream and does not return a value.\n\n        Notes:\n      \
+  \      - This method is part of the internal pretty printing dispatch system and\
+  \ is automatically\n              called when a tuple object is encountered during\
+  \ formatting\n            - The method writes the opening '(' immediately, then\
+  \ delegates to _format_items for\n              content formatting, and finally\
+  \ writes the closing ')'\n            - Circular reference detection is handled\
+  \ by the calling _format method through the context parameter\n            - The\
+  \ actual line breaking and indentation logic is implemented in the _format_items\
+  \ helper method\n        \"\"\"\n        <your code>\n\n    def _pprint_set(\n \
+  \       self,\n        object: Any,\n        stream: IO[str],\n        indent: int,\n\
+  \        allowance: int,\n        context: set[int],\n        level: int\n    )\
+  \ -> None:\n        \"\"\"\n        Pretty-print a set or frozenset object to the\
+  \ output stream.\n\n        This method handles the formatting of set and frozenset\
+  \ objects with proper\n        indentation and line breaking. For empty sets, it\
+  \ uses the standard repr().\n        For non-empty sets, it sorts the elements using\
+  \ _safe_key for consistent\n        output and formats them with appropriate delimiters.\n\
+  \n        Parameters:\n            object (Any): The set or frozenset object to\
+  \ be pretty-printed.\n            stream (IO[str]): The output stream where the\
+  \ formatted representation\n                will be written.\n            indent\
+  \ (int): The current indentation level in spaces.\n            allowance (int):\
+  \ The number of characters to reserve at the end of the\n                line for\
+  \ closing delimiters.\n            context (set[int]): A set of object IDs currently\
+  \ being processed, used\n                to detect and handle circular references.\n\
+  \            level (int): The current nesting depth level for recursion control.\n\
+  \n        Returns:\n            None: This method writes directly to the stream\
+  \ and returns nothing.\n\n        Notes:\n            - Empty sets are rendered\
+  \ using their standard repr() representation\n            - For regular sets, output\
+  \ is formatted as {element1, element2, ...}\n            - For frozenset and other\
+  \ set subclasses, output is formatted as\n              ClassName({element1, element2,\
+  \ ...})\n            - Elements are sorted using _safe_key to handle unorderable\
+  \ types\n            - The method delegates to _format_items for the actual element\
+  \ formatting\n            - This method is registered in the _dispatch dictionary\
+  \ for set.__repr__\n              and frozenset.__repr__\n        \"\"\"\n     \
+  \   <your code>\n\n    def _pprint_str(\n        self,\n        object: Any,\n \
+  \       stream: IO[str],\n        indent: int,\n        allowance: int,\n      \
+  \  context: set[int],\n        level: int\n    ) -> None:\n        \"\"\"\n    \
+  \    Pretty-print a string object with intelligent line wrapping and formatting.\n\
+  \n        This method handles the pretty-printing of string objects by breaking\
+  \ them into\n        multiple lines when they exceed the configured width limits.\
+  \ It intelligently\n        splits strings at word boundaries and handles multi-line\
+  \ strings by processing\n        each line separately.\n\n        Parameters:\n\
+  \            object (Any): The string object to be pretty-printed. Expected to be\
+  \ a string type.\n            stream (IO[str]): The output stream where the formatted\
+  \ string will be written.\n            indent (int): The current indentation level\
+  \ in spaces from the left margin.\n            allowance (int): The number of characters\
+  \ to reserve at the end of the line\n                            (typically for\
+  \ closing brackets or parentheses).\n            context (set[int]): A set of object\
+  \ IDs currently being processed, used to\n                               detect\
+  \ and handle circular references.\n            level (int): The current nesting\
+  \ depth level in the object hierarchy.\n\n        Returns:\n            None: This\
+  \ method writes directly to the provided stream and returns nothing.\n\n       \
+  \ Notes:\n            - For empty strings, writes the repr() directly without special\
+  \ formatting\n            - Splits multi-line strings by processing each line individually\n\
+  \            - Uses regex to find word boundaries (non-space followed by space patterns)\n\
+  \            - At level 1, wraps the entire output in parentheses for top-level\
+  \ strings\n            - Adjusts width calculations based on indentation and allowance\
+  \ parameters\n            - Falls back to single-line output if no splitting is\
+  \ beneficial\n            - Preserves string content accuracy by using repr() on\
+  \ each chunk\n        \"\"\"\n        <your code>\n\n    def _pprint_bytes(\n  \
+  \      self,\n        object: Any,\n        stream: IO[str],\n        indent: int,\n\
+  \        allowance: int,\n        context: set[int],\n        level: int\n    )\
+  \ -> None:\n        \"\"\"\n        Pretty print bytes objects with intelligent\
+  \ line wrapping and formatting.\n\n        This method handles the pretty printing\
+  \ of bytes objects by breaking them into\n        manageable chunks that fit within\
+  \ the specified width constraints. For small\n        bytes objects (4 bytes or\
+  \ less), it uses the standard repr. For larger objects,\n        it wraps the content\
+  \ across multiple lines with proper indentation.\n\n        Parameters:\n      \
+  \      object (Any): The bytes object to be pretty printed. Expected to be of type\
+  \ bytes.\n            stream (IO[str]): The output stream where the formatted representation\
+  \ will be written.\n            indent (int): The current indentation level in spaces\
+  \ for the formatted output.\n            allowance (int): The number of characters\
+  \ to reserve at the end of the line for\n                            closing delimiters\
+  \ or other formatting elements.\n            context (set[int]): A set of object\
+  \ IDs currently being processed, used to detect\n                              \
+  \ and handle circular references during pretty printing.\n            level (int):\
+  \ The current nesting depth level in the object hierarchy.\n\n        Return:\n\
+  \            None: This method writes directly to the provided stream and returns\
+  \ nothing.\n\n        Notes:\n            - For bytes objects with 4 or fewer bytes,\
+  \ the standard repr() is used without wrapping\n            - For larger bytes objects,\
+  \ the content is wrapped using the _wrap_bytes_repr helper function\n          \
+  \  - When level equals 1, parentheses are added around the output and indentation\
+  \ is adjusted\n            - The method respects the PrettyPrinter's width settings\
+  \ when determining line breaks\n            - Each wrapped line after the first\
+  \ is indented according to the current indent level\n            - This method is\
+  \ part of the dispatch table and is called automatically for bytes objects\n   \
+  \     \"\"\"\n        <your code>\n\n    def _pprint_bytearray(\n        self,\n\
+  \        object: Any,\n        stream: IO[str],\n        indent: int,\n        allowance:\
+  \ int,\n        context: set[int],\n        level: int\n    ) -> None:\n       \
+  \ \"\"\"\n        Pretty-print a bytearray object to the output stream.\n\n    \
+  \    This method formats a bytearray object by wrapping it in a bytearray() constructor\n\
+  \        call and delegating the formatting of the underlying bytes data to the\
+  \ _pprint_bytes\n        method. The output format will be \"bytearray(b'...')\"\
+  \ with appropriate line wrapping\n        and indentation for large byte arrays.\n\
+  \n        Parameters:\n            object (Any): The bytearray object to be pretty-printed.\
+  \ Expected to be a \n                bytearray instance.\n            stream (IO[str]):\
+  \ The output stream where the formatted representation will \n                be\
+  \ written.\n            indent (int): The current indentation level in spaces from\
+  \ the left margin.\n            allowance (int): The number of characters reserved\
+  \ at the end of the line \n                (typically for closing brackets/parentheses).\n\
+  \            context (set[int]): A set of object IDs currently being processed,\
+  \ used to \n                detect and handle circular references.\n           \
+  \ level (int): The current nesting depth level in the object hierarchy.\n\n    \
+  \    Returns:\n            None: This method writes directly to the stream and does\
+  \ not return a value.\n\n        Notes:\n            - The method writes \"bytearray(\"\
+  \ at the beginning and \")\" at the end\n            - The actual byte data formatting\
+  \ is handled by _pprint_bytes after converting \n              the bytearray to\
+  \ bytes\n            - Indentation is adjusted by +10 spaces to account for the\
+  \ \"bytearray(\" prefix\n            - Allowance is adjusted by +1 to account for\
+  \ the closing parenthesis\n            - The nesting level is incremented by 1 when\
+  \ calling _pprint_bytes\n            - This method is registered in the _dispatch\
+  \ dictionary for bytearray.__repr__\n        \"\"\"\n        <your code>\n\n   \
+  \ def _pprint_mappingproxy(\n        self,\n        object: Any,\n        stream:\
+  \ IO[str],\n        indent: int,\n        allowance: int,\n        context: set[int],\n\
+  \        level: int\n    ) -> None:\n        \"\"\"\n        Pretty-print a MappingProxyType\
+  \ object with proper formatting and indentation.\n\n        This method handles\
+  \ the pretty-printing of types.MappingProxyType objects by wrapping\n        the\
+  \ underlying mapping data in a \"mappingproxy(...)\" representation. It creates\
+  \ a copy\n        of the mapping proxy's data to avoid potential side effects during\
+  \ formatting.\n\n        Parameters:\n            object (Any): The MappingProxyType\
+  \ object to be pretty-printed. Expected to be an\n                         instance\
+  \ of types.MappingProxyType with a copy() method.\n            stream (IO[str]):\
+  \ The output stream where the formatted representation will be written.\n      \
+  \                       Typically a file-like object that supports write operations.\n\
+  \            indent (int): The current indentation level in spaces. Used to maintain\
+  \ proper\n                         alignment of nested structures.\n           \
+  \ allowance (int): The number of characters reserved for closing brackets/parentheses\n\
+  \                            at the current level. Used for width calculations.\n\
+  \            context (set[int]): A set containing object IDs currently being processed,\
+  \ used to\n                               detect and handle circular references\
+  \ during pretty-printing.\n            level (int): The current nesting depth level.\
+  \ Used for recursion control and\n                        depth-limited printing.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and does not return a value.\n\n        Notes:\n            - This method\
+  \ is part of the internal dispatch system for pretty-printing different\n      \
+  \        object types and should not be called directly by users.\n            -\
+  \ The method calls object.copy() to create a copy of the mapping proxy data before\n\
+  \              formatting, which helps avoid potential issues with the original\
+  \ object.\n            - The formatted output follows the pattern \"mappingproxy({...})\"\
+  \ where the contents\n              are formatted according to the pretty-printer's\
+  \ configuration.\n            - This method is automatically registered in the _dispatch\
+  \ dictionary and is called\n              when a MappingProxyType object is encountered\
+  \ during pretty-printing.\n        \"\"\"\n        <your code>\n\n    def _pprint_simplenamespace(\n\
+  \        self,\n        object: Any,\n        stream: IO[str],\n        indent:\
+  \ int,\n        allowance: int,\n        context: set[int],\n        level: int\n\
+  \    ) -> None:\n        \"\"\"\n        Pretty-print a types.SimpleNamespace object\
+  \ or its subclass to a stream.\n\n        This method formats SimpleNamespace objects\
+  \ by displaying their attributes in a\n        namespace-like representation. For\
+  \ the base SimpleNamespace type, it uses\n        \"namespace\" as the class name\
+  \ to match the standard repr behavior. For subclasses,\n        it uses the actual\
+  \ class name.\n\n        Parameters:\n            object (Any): The SimpleNamespace\
+  \ object or subclass instance to format.\n                Must be a types.SimpleNamespace\
+  \ or its subclass.\n            stream (IO[str]): The output stream where the formatted\
+  \ representation\n                will be written.\n            indent (int): The\
+  \ current indentation level in spaces from the left margin.\n            allowance\
+  \ (int): The number of characters reserved for closing delimiters\n            \
+  \    on the current line.\n            context (set[int]): A set of object IDs currently\
+  \ being processed, used\n                to detect and handle circular references.\n\
+  \            level (int): The current nesting depth level for the object being formatted.\n\
+  \n        Return:\n            None: This method writes directly to the stream and\
+  \ returns nothing.\n\n        Notes:\n            - For types.SimpleNamespace objects,\
+  \ the output uses \"namespace\" as the\n              class name to match Python's\
+  \ standard representation\n            - For subclasses of SimpleNamespace, the\
+  \ actual class name is used\n            - Attributes are formatted as key=value\
+  \ pairs separated by commas\n            - The method handles circular references\
+  \ by checking the context set\n            - Output format: \"namespace(attr1=value1,\
+  \ attr2=value2, ...)\" or\n              \"SubclassName(attr1=value1, attr2=value2,\
+  \ ...)\"\n        \"\"\"\n        <your code>\n\n    def _format_dict_items(\n \
+  \       self,\n        items: list[tuple[Any, Any]],\n        stream: IO[str],\n\
+  \        indent: int,\n        allowance: int,\n        context: set[int],\n   \
+  \     level: int\n    ) -> None:\n        \"\"\"\n        Format dictionary items\
+  \ for pretty printing with proper indentation and line breaks.\n\n        This method\
+  \ handles the formatting of dictionary key-value pairs, writing each pair\n    \
+  \    on a separate line with appropriate indentation. Each key-value pair is formatted\
+  \ as\n        \"key: value,\" with a trailing comma, and the entire block is properly\
+  \ indented\n        according to the current nesting level.\n\n        Parameters:\n\
+  \            items (list[tuple[Any, Any]]): A list of key-value pairs to format,\
+  \ typically\n                obtained from dict.items(). The items are expected\
+  \ to be pre-sorted if\n                ordering is desired.\n            stream\
+  \ (IO[str]): The output stream to write the formatted dictionary items to.\n   \
+  \         indent (int): The current base indentation level in spaces.\n        \
+  \    allowance (int): The number of characters to reserve for closing delimiters\n\
+  \                and other structural elements at the current level.\n         \
+  \   context (set[int]): A set of object IDs currently being processed, used to\n\
+  \                detect and handle circular references during formatting.\n    \
+  \        level (int): The current nesting depth level, used for recursion control\n\
+  \                and depth limiting.\n\n        Returns:\n            None: This\
+  \ method writes directly to the provided stream and returns nothing.\n\n       \
+  \ Notes:\n            - If the items list is empty, the method returns immediately\
+  \ without writing anything\n            - Each key-value pair is written on its\
+  \ own line with increased indentation\n            - Keys are formatted using _repr()\
+  \ while values are formatted using _format()\n            - All pairs include a\
+  \ trailing comma for consistent formatting\n            - The method writes a final\
+  \ newline with base indentation to properly close the block\n            - This\
+  \ method is specifically designed for dictionary-like structures and assumes\n \
+  \             the caller will handle opening and closing braces\n        \"\"\"\n\
+  \        <your code>\n\n    def _format_namespace_items(\n        self,\n      \
+  \  items: list[tuple[Any, Any]],\n        stream: IO[str],\n        indent: int,\n\
+  \        allowance: int,\n        context: set[int],\n        level: int\n    )\
+  \ -> None:\n        \"\"\"\n        Format namespace items (key=value pairs) for\
+  \ pretty printing.\n\n        This method handles the formatting of namespace-style\
+  \ items where each item\n        consists of a key-value pair that should be displayed\
+  \ in the format \"key=value\".\n        It's used for objects like SimpleNamespace\
+  \ and dataclasses where attributes\n        are displayed with their names and values.\n\
+  \n        Parameters:\n            items (list[tuple[Any, Any]]): A list of tuples\
+  \ where each tuple contains\n                a key-value pair to be formatted. The\
+  \ first element is typically a\n                string representing the attribute\
+  \ name, and the second element is the\n                attribute value.\n      \
+  \      stream (IO[str]): The output stream where the formatted representation\n\
+  \                will be written.\n            indent (int): The current indentation\
+  \ level in spaces.\n            allowance (int): The number of characters to reserve\
+  \ at the end of the line\n                for closing brackets or parentheses.\n\
+  \            context (set[int]): A set of object IDs currently being processed,\
+  \ used to\n                detect and handle circular references.\n            level\
+  \ (int): The current nesting level for depth control and formatting\n          \
+  \      decisions.\n\n        Returns:\n            None: This method writes directly\
+  \ to the provided stream and does not\n            return a value.\n\n        Notes:\n\
+  \            - If the items list is empty, the method returns immediately without\n\
+  \              writing anything to the stream.\n            - Each item is formatted\
+  \ on a new line with proper indentation.\n            - The method handles circular\
+  \ references by writing \"...\" when an object\n              ID is found in the\
+  \ context set.\n            - Each formatted item is followed by a comma and the\
+  \ final output includes\n              a newline with appropriate indentation for\
+  \ the closing delimiter.\n            - The key is written as-is (assumed to be\
+  \ a string), while the value is\n              formatted recursively using the _format\
+  \ method.\n        \"\"\"\n        <your code>\n\n    def _format_items(\n     \
+  \   self,\n        items: list[Any],\n        stream: IO[str],\n        indent:\
+  \ int,\n        allowance: int,\n        context: set[int],\n        level: int\n\
+  \    ) -> None:\n        \"\"\"\n        Format a list of items for pretty printing\
+  \ with proper indentation and line breaks.\n\n        This method handles the formatting\
+  \ of sequence-like objects (lists, tuples, sets, etc.)\n        by writing each\
+  \ item on a separate line with appropriate indentation. Each item is\n        formatted\
+  \ recursively and followed by a comma. The method writes directly to the\n     \
+  \   provided stream without returning any value.\n\n        Parameters:\n      \
+  \      items (list[Any]): The list of items to be formatted. Can contain any type\
+  \ of objects.\n            stream (IO[str]): The output stream where the formatted\
+  \ representation will be written.\n            indent (int): The current indentation\
+  \ level in spaces from the left margin.\n            allowance (int): The number\
+  \ of characters to reserve at the end of the line for\n                        \
+  \    closing brackets or other structural elements.\n            context (set[int]):\
+  \ A set of object IDs currently being processed, used to detect\n              \
+  \                 and handle circular references during recursive formatting.\n\
+  \            level (int): The current nesting depth level, used for depth limiting\
+  \ and\n                        recursion control.\n\n        Returns:\n        \
+  \    None: This method writes directly to the stream and does not return a value.\n\
+  \n        Notes:\n            - If the items list is empty, the method returns immediately\
+  \ without writing anything\n            - Each item is placed on its own line with\
+  \ increased indentation\n            - Items are formatted recursively using the\
+  \ _format method\n            - A comma is written after each item for proper syntax\n\
+  \            - The method handles circular references through the context parameter\n\
+  \            - Used internally by pretty printing methods for lists, tuples, sets,\
+  \ and other sequences\n        \"\"\"\n        <your code>\n\n    def _repr(\n \
+  \       self,\n        object: Any,\n        context: set[int],\n        level:\
+  \ int\n    ) -> str:\n        \"\"\"\n        Generate a string representation of\
+  \ an object for pretty printing purposes.\n\n        This is an internal method\
+  \ that creates a safe string representation of an object\n        while respecting\
+  \ depth limits and handling circular references. It serves as a\n        fallback\
+  \ when no specialized pretty printing method is available for the object's type.\n\
+  \n        Parameters:\n            object (Any): The object to generate a string\
+  \ representation for. Can be any\n                Python object including built-in\
+  \ types, custom classes, or complex nested\n                data structures.\n \
+  \           context (set[int]): A set containing the object IDs of objects currently\
+  \ being\n                processed in the formatting chain. Used to detect and handle\
+  \ circular\n                references by preventing infinite recursion.\n     \
+  \       level (int): The current nesting level in the object hierarchy. Used in\n\
+  \                conjunction with the depth limit to determine when to truncate\
+  \ the\n                representation of deeply nested structures.\n\n        Returns:\n\
+  \            str: A string representation of the object. For simple scalar types,\
+  \ this\n                returns the standard repr() output. For complex objects,\
+  \ it may return\n                a truncated or simplified representation based\
+  \ on depth limits and\n                circular reference detection.\n\n       \
+  \ Notes:\n            - This method is called internally by the PrettyPrinter when\
+  \ no specialized\n              formatting method exists for an object's type\n\
+  \            - The method delegates to _safe_repr() which handles depth limiting\
+  \ and\n              circular reference detection\n            - A copy of the context\
+  \ set is passed to _safe_repr() to avoid modifying\n              the original context\
+  \ during recursive calls\n            - The representation may be truncated with\
+  \ \"...\" if maximum depth is exceeded\n        \"\"\"\n        <your code>\n\n\
+  \    def _pprint_default_dict(\n        self,\n        object: Any,\n        stream:\
+  \ IO[str],\n        indent: int,\n        allowance: int,\n        context: set[int],\n\
+  \        level: int\n    ) -> None:\n        \"\"\"\n        Function _pprint_default_dict\
+  \ - docstring generation failed\n        \"\"\"\n        <your code>\n\n    def\
+  \ _pprint_counter(\n        self,\n        object: Any,\n        stream: IO[str],\n\
+  \        indent: int,\n        allowance: int,\n        context: set[int],\n   \
+  \     level: int\n    ) -> None:\n        \"\"\"\n        Internal method for pretty-printing\
+  \ collections.Counter objects with proper formatting and indentation.\n\n      \
+  \  This method handles the specialized formatting of Counter objects by displaying\
+  \ them in the format Counter({key: count, ...}) with items ordered by their frequency\
+  \ (most common first). The method writes the formatted output directly to the provided\
+  \ stream.\n\n        Parameters:\n            object (Any): The Counter object to\
+  \ be pretty-printed. Expected to be an instance of collections.Counter.\n      \
+  \      stream (IO[str]): The output stream where the formatted representation will\
+  \ be written.\n            indent (int): The current indentation level in spaces\
+  \ for proper nesting alignment.\n            allowance (int): The number of characters\
+  \ to reserve at the end of the line for closing brackets/parentheses.\n        \
+  \    context (set[int]): A set of object IDs currently being processed, used to\
+  \ detect and handle circular references.\n            level (int): The current nesting\
+  \ depth level for tracking recursion limits.\n\n        Returns:\n            None:\
+  \ This method writes directly to the stream and does not return a value.\n\n   \
+  \     Notes:\n            - Empty Counter objects are displayed as Counter() without\
+  \ the dictionary part\n            - Non-empty Counter objects show items ordered\
+  \ by frequency using most_common() method\n            - This method is part of\
+  \ the internal dispatch mechanism and should not be called directly\n          \
+  \  - The method assumes the object is a valid Counter instance and does not perform\
+  \ type checking\n            - Circular reference detection is handled through the\
+  \ context parameter\n        \"\"\"\n        <your code>\n\n    def _pprint_chain_map(\n\
+  \        self,\n        object: Any,\n        stream: IO[str],\n        indent:\
+  \ int,\n        allowance: int,\n        context: set[int],\n        level: int\n\
+  \    ) -> None:\n        \"\"\"\n        -\n        \"\"\"\n        <your code>\n\
+  \n    def _pprint_deque(\n        self,\n        object: Any,\n        stream: IO[str],\n\
+  \        indent: int,\n        allowance: int,\n        context: set[int],\n   \
+  \     level: int\n    ) -> None:\n        \"\"\"\n        Pretty-print a deque object\
+  \ to the output stream with proper formatting and indentation.\n\n        This method\
+  \ handles the pretty-printing of collections.deque objects by writing the class\
+  \ name,\n        optional maxlen parameter, and formatted contents to the output\
+  \ stream. The deque contents are\n        formatted as a list with proper indentation\
+  \ and line breaks when necessary.\n\n        Parameters:\n            object (Any):\
+  \ The deque object to be pretty-printed. Expected to be an instance of\n       \
+  \                  collections.deque with standard deque attributes (maxlen, items).\n\
+  \            stream (IO[str]): The output stream where the formatted representation\
+  \ will be written.\n                             Typically a file-like object that\
+  \ supports write operations.\n            indent (int): The current indentation\
+  \ level in spaces. Used to determine how far to\n                         indent\
+  \ nested elements from the left margin.\n            allowance (int): The number\
+  \ of characters to reserve at the end of the line for\n                        \
+  \    closing brackets, parentheses, or other structural elements.\n            context\
+  \ (set[int]): A set containing object IDs currently being processed, used to\n \
+  \                              detect and handle circular references during pretty-printing.\n\
+  \            level (int): The current nesting depth level, used for recursion control\
+  \ and\n                        depth-limited printing when maximum depth is specified.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and does not return a value.\n\n        Notes:\n            - The output\
+  \ format is \"deque([item1, item2, ...])\" for deques without maxlen\n         \
+  \   - For deques with maxlen, the format is \"deque(maxlen=N, [item1, item2, ...])\"\
+  \n            - Individual items within the deque are formatted recursively using\
+  \ _format_items\n            - The allowance is increased by 1 to account for the\
+  \ closing \"])\" characters\n            - This method is registered in the _dispatch\
+  \ dictionary for collections.deque.__repr__\n        \"\"\"\n        <your code>\n\
+  \n    def _pprint_user_dict(\n        self,\n        object: Any,\n        stream:\
+  \ IO[str],\n        indent: int,\n        allowance: int,\n        context: set[int],\n\
+  \        level: int\n    ) -> None:\n        \"\"\"\n        Pretty print a UserDict\
+  \ object by formatting its underlying data attribute.\n\n        This method handles\
+  \ the pretty printing of collections.UserDict objects by delegating\n        the\
+  \ formatting to the underlying data dictionary. UserDict is a dictionary-like\n\
+  \        container class that wraps a regular dictionary in its 'data' attribute.\n\
+  \n        Parameters:\n            object (Any): The UserDict object to be pretty\
+  \ printed. Expected to have a 'data' \n                         attribute containing\
+  \ the actual dictionary data.\n            stream (IO[str]): The output stream where\
+  \ the formatted representation will be written.\n            indent (int): The current\
+  \ indentation level in spaces from the left margin.\n            allowance (int):\
+  \ The number of characters reserved on the current line for closing\n          \
+  \                  delimiters (like brackets, braces, or parentheses).\n       \
+  \     context (set[int]): A set of object IDs currently being processed, used to\
+  \ detect\n                               and handle circular references during pretty\
+  \ printing.\n            level (int): The current nesting depth level in the object\
+  \ hierarchy, used for\n                        recursion control and depth limiting.\n\
+  \n        Returns:\n            None: This method writes directly to the provided\
+  \ stream and returns nothing.\n\n        Notes:\n            - The method decrements\
+  \ the level parameter (level - 1) when calling _format,\n              which is\
+  \ consistent with how UserDict objects should be treated as wrappers\n         \
+  \     rather than adding an additional nesting level.\n            - This method\
+  \ assumes the UserDict object has a 'data' attribute containing\n              the\
+  \ actual dictionary data to be formatted.\n            - The formatting behavior\
+  \ will follow the same rules as regular dictionary\n              pretty printing\
+  \ since it delegates to the underlying data dictionary.\n        \"\"\"\n      \
+  \  <your code>\n\n    def _pprint_user_list(\n        self,\n        object: Any,\n\
+  \        stream: IO[str],\n        indent: int,\n        allowance: int,\n     \
+  \   context: set[int],\n        level: int\n    ) -> None:\n        \"\"\"\n   \
+  \     Pretty print a UserList object by formatting its underlying data attribute.\n\
+  \n        This method handles the pretty printing of collections.UserList objects\
+  \ by delegating\n        the formatting to the underlying data attribute. UserList\
+  \ is a wrapper around a regular\n        list, so this method extracts and formats\
+  \ the actual list data.\n\n        Parameters:\n            object (Any): The UserList\
+  \ object to be pretty printed. Expected to have a 'data' \n                    \
+  \     attribute containing the actual list data.\n            stream (IO[str]):\
+  \ The output stream where the formatted representation will be written.\n      \
+  \      indent (int): The current indentation level in spaces for the output formatting.\n\
+  \            allowance (int): The number of characters to reserve at the end of\
+  \ the line for \n                            closing brackets, parentheses, or other\
+  \ delimiters.\n            context (set[int]): A set of object IDs currently being\
+  \ processed, used to detect \n                               and handle circular\
+  \ references during formatting.\n            level (int): The current nesting depth\
+  \ level in the object hierarchy.\n\n        Returns:\n            None: This method\
+  \ writes directly to the provided stream and does not return a value.\n\n      \
+  \  Notes:\n            - This method decrements the level by 1 when calling _format\
+  \ to maintain proper \n              nesting level tracking for UserList objects\n\
+  \            - The method assumes the object has a 'data' attribute containing the\
+  \ actual list\n            - This is part of the dispatch mechanism for pretty printing\
+  \ different object types\n            - Circular references are handled through\
+  \ the context parameter tracking\n        \"\"\"\n        <your code>\n\n    def\
+  \ _pprint_user_string(\n        self,\n        object: Any,\n        stream: IO[str],\n\
+  \        indent: int,\n        allowance: int,\n        context: set[int],\n   \
+  \     level: int\n    ) -> None:\n        \"\"\"\n        Internal method for pretty-printing\
+  \ UserString objects with proper formatting and indentation.\n\n        This method\
+  \ handles the pretty-printing of collections.UserString objects by delegating\n\
+  \        to the formatting of their underlying data attribute. It's part of the\
+  \ PrettyPrinter's\n        dispatch mechanism for type-specific formatting.\n\n\
+  \        Parameters:\n            object (Any): The UserString object to be pretty-printed.\
+  \ Expected to be an instance\n                         of collections.UserString\
+  \ with a 'data' attribute containing the actual\n                         string\
+  \ data.\n            stream (IO[str]): The output stream where the formatted representation\
+  \ will be written.\n                             Typically a file-like object that\
+  \ supports write operations.\n            indent (int): The current indentation\
+  \ level in spaces. Used to maintain proper\n                         alignment in\
+  \ nested structures.\n            allowance (int): The number of characters to reserve\
+  \ at the end of the current line\n                            for closing brackets,\
+  \ parentheses, or other delimiters.\n            context (set[int]): A set containing\
+  \ object IDs currently being processed, used to\n                              \
+  \ detect and handle circular references during pretty-printing.\n            level\
+  \ (int): The current nesting depth level. Used for recursion control and\n     \
+  \                   depth-limited printing.\n\n        Returns:\n            None:\
+  \ This method writes directly to the provided stream and does not return a value.\n\
+  \n        Notes:\n            - This method decrements the level parameter (level\
+  \ - 1) when calling _format,\n              which is consistent with other UserType\
+  \ pretty-printing methods in this class\n            - The method relies on the\
+  \ UserString object having a 'data' attribute that\n              contains the actual\
+  \ string content\n            - This is an internal method (indicated by the leading\
+  \ underscore) and is\n              automatically called through the dispatch mechanism\
+  \ when a UserString object\n              is encountered during pretty-printing\n\
+  \        \"\"\"\n        <your code>\n\n    def _safe_repr(\n        self,\n   \
+  \     object: Any,\n        context: set[int],\n        maxlevels: int | None,\n\
+  \        level: int\n    ) -> str:\n        \"\"\"\n        Generate a safe string\
+  \ representation of an object with recursion detection and depth limiting.\n\n \
+  \       This method creates a string representation of any Python object while safely\
+  \ handling\n        circular references and respecting maximum depth constraints.\
+  \ It provides special\n        handling for built-in collection types (dict, list,\
+  \ tuple) to maintain readable\n        formatting even when standard pretty-printing\
+  \ is not used.\n\n        Parameters:\n            object (Any): The object to generate\
+  \ a string representation for. Can be any\n                Python object including\
+  \ nested collections, custom classes, or built-in types.\n            context (set[int]):\
+  \ A set containing the object IDs of objects currently being\n                processed\
+  \ in the representation chain. Used to detect circular references\n            \
+  \    and prevent infinite recursion.\n            maxlevels (int | None): The maximum\
+  \ depth to traverse when representing nested\n                objects. If None,\
+  \ no depth limit is enforced. If an integer, representation\n                will\
+  \ be truncated with \"...\" when this depth is exceeded.\n            level (int):\
+  \ The current nesting level in the object hierarchy. Used in\n                conjunction\
+  \ with maxlevels to determine when to truncate representation.\n\n        Returns:\n\
+  \            str: A string representation of the object. For built-in scalars (str,\
+  \ int, \n                float, etc.), returns the standard repr(). For collections,\
+  \ returns a\n                formatted representation with proper handling of nested\
+  \ structures.\n                Circular references are represented as \"<Recursion\
+  \ on {type} with id={id}>\".\n                Objects exceeding maxlevels are truncated\
+  \ with \"...\" notation.\n\n        Notes:\n            - Built-in scalar types\
+  \ (str, bytes, bytearray, float, complex, bool, None, int)\n              are handled\
+  \ directly with repr() for efficiency\n            - Dictionary representations\
+  \ are sorted by key for consistent output\n            - The context set is modified\
+  \ during execution to track recursion but is\n              properly cleaned up\
+  \ before returning\n            - This method is primarily used internally by the\
+  \ PrettyPrinter class when\n              standard pretty-printing formatters are\
+  \ not available or appropriate\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class PrettyPrinter:\n    \"\"\"\n    A configurable pretty\
+  \ printer for Python objects that formats complex data structures\n    in a human-readable\
+  \ way with proper indentation and line wrapping.\n    \n    The PrettyPrinter class\
+  \ provides sophisticated formatting capabilities for nested data\n    structures\
+  \ like dictionaries, lists, tuples, sets, dataclasses, and other Python objects.\n\
+  \    It intelligently handles line wrapping, indentation, and recursion detection\
+  \ to produce\n    clean, readable output that respects specified width constraints.\n\
+  \    \n    Attributes:\n        _indent_per_level (int): Number of spaces to indent\
+  \ for each nesting level\n        _width (int): Maximum number of columns attempted\
+  \ in output formatting  \n        _depth (int | None): Maximum depth to traverse\
+  \ when formatting nested structures\n    \n    Methods:\n        __init__(indent=4,\
+  \ width=80, depth=None): \n            Initialize the pretty printer with formatting\
+  \ parameters.\n            \n            Args:\n                indent: Spaces per\
+  \ indentation level (must be >= 0)\n                width: Target maximum line width\
+  \ (must be != 0) \n                depth: Maximum nesting depth to format (must\
+  \ be > 0 if specified)\n                \n        pformat(object):\n           \
+  \ Format an object and return the result as a string.\n            \n          \
+  \  Args:\n                object: Any Python object to format\n                \n\
+  \            Returns:\n                str: Pretty-formatted string representation\n\
+  \                \n        _format(object, stream, indent, allowance, context, level):\n\
+  \            Internal method that handles the core formatting logic. Writes formatted\n\
+  \            output directly to a stream, managing indentation, recursion detection,\n\
+  \            and dispatching to specialized formatters for different object types.\n\
+  \            \n        _pprint_dataclass(object, stream, indent, allowance, context,\
+  \ level):\n            Specialized formatter for dataclass instances. Formats dataclasses\
+  \ with\n            their class name followed by field names and values in a readable\
+  \ layout.\n            \n        _pprint_dict(object, stream, indent, allowance,\
+  \ context, level):\n            Specialized formatter for dictionary objects. Handles\
+  \ key-value pair\n            formatting with proper indentation and sorting for\
+  \ consistent output.\n    \n    Usage Examples:\n        # Basic usage with default\
+  \ settings\n        pp = PrettyPrinter()\n        data = {'users': [{'name': 'Alice',\
+  \ 'age': 30}, {'name': 'Bob', 'age': 25}]}\n        formatted = pp.pformat(data)\n\
+  \        \n        # Custom indentation and width\n        pp = PrettyPrinter(indent=2,\
+  \ width=60)\n        nested_list = [[1, 2, [3, 4]], [5, 6, [7, 8, [9, 10]]]]\n \
+  \       print(pp.pformat(nested_list))\n        \n        # Limit formatting depth\n\
+  \        pp = PrettyPrinter(depth=2)\n        deep_structure = {'a': {'b': {'c':\
+  \ {'d': 'too deep'}}}}\n        formatted = pp.pformat(deep_structure)  # Will truncate\
+  \ at depth 2\n    \"\"\"\n\n    _dispatch = {}\n\n    def __init__(\n        self,\n\
+  \        indent: int = 4,\n        width: int = 80,\n        depth: int | None =\
+  \ None\n    ) -> None:\n        \"\"\"\n        Handle pretty printing operations\
+  \ onto a stream using a set of\n                configured parameters.\n\n     \
+  \           indent\n                    Number of spaces to indent for each level\
+  \ of nesting.\n\n                width\n                    Attempted maximum number\
+  \ of columns in the output.\n\n                depth\n                    The maximum\
+  \ depth to print out nested structures.\n\n\n        \"\"\"\n        <your code>\n\
+  ..."

@@ -1,0 +1,6 @@
+sphinx/tests/test_domains/test_domain_py.py
+sphinx/tests/test_util/test_util_uri.py
+sphinx/tests/test_pycode/test_pycode_parser.py
+sphinx/tests/test_util/test_util_typing.py
+sphinx/tests/test_util/test_util_lines.py
+sphinx/tests/test_extensions/test_ext_autodoc_mock.py

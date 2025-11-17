@@ -1,0 +1,6 @@
+trl/tests/test_kto_trainer.py
+trl/tests/test_cli_utils.py
+trl/tests/test_orpo_trainer.py
+trl/tests/test_online_dpo_trainer.py
+trl/tests/test_best_of_n_sampler.py
+trl/tests/test_cpo_trainer.py

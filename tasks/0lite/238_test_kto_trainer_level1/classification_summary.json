@@ -1,0 +1,50 @@
+{
+    "file_stats": {
+        "total_files": 12,
+        "patch_count": 3,
+        "left_count": 9,
+        "distribution": {
+            "left": 9,
+            "patch": 3
+        }
+    },
+    "obj_stats": {
+        "total_objects": 61,
+        "top_count": 5,
+        "specific_count": 3,
+        "others_count": 53,
+        "distribution": {
+            "others": 53,
+            "top": 5,
+            "specific": 3
+        }
+    },
+    "patch_files": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_config.py",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/data_utils.py",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_trainer.py"
+    ],
+    "top_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_config.py:KTOConfig",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_trainer.py:KTOTrainer",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_trainer.py:_tokenize",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_trainer.py:_process_tokens",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/trainer/kto_trainer.py:_get_kl_dataset"
+    ],
+    "specific_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/data_utils.py:maybe_unpair_preference_dataset",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/data_utils.py:unpair_preference_dataset",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/trl/data_utils.py:_unpair_row"
+    ],
+    "lines_code": 1964,
+    "lines_code_level3": 1964,
+    "test_name": "kto_trainer",
+    "test_file": "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/trl/tests/test_kto_trainer.py",
+    "top_imports": [
+        "trl.trainer.kto_trainer._process_tokens",
+        "trl.trainer.kto_trainer._tokenize",
+        "trl.KTOTrainer",
+        "trl.KTOConfig",
+        "trl.trainer.kto_trainer._get_kl_dataset"
+    ]
+}

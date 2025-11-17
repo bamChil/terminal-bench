@@ -1,0 +1,99 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/pandas-dev/pandas
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: python -m pip install -r requirements-dev.txt && python -m pip install -ve
+  . --no-build-isolation -Ceditable-verbose=true
+instance_image: pb-instance_68a9f628
+library_name: pandas
+pip_packages: []
+pre_install: []
+repo_name: pandas
+repository: pandas-dev/pandas
+task_level: 1
+task_name: pandas_iceberg
+task_statement: "**Task: Implement Apache Iceberg Table Reader**\n\nCreate a function\
+  \ to read Apache Iceberg tables and convert them into pandas DataFrames. The core\
+  \ functionality should support:\n\n1. **Data Access**: Connect to and read from\
+  \ Iceberg tables using table identifiers and optional catalog configurations\n2.\
+  \ **Query Capabilities**: Enable data filtering, column selection, row limiting,\
+  \ and time-travel queries via snapshot IDs\n3. **Flexibility**: Handle various catalog\
+  \ properties, case-sensitive column matching, and additional scan configurations\n\
+  \n**Key Considerations**: \n- Maintain compatibility with different catalog systems\
+  \ and storage backends\n- Optimize performance for large-scale data operations\n\
+  - Handle experimental API status with potential future changes\n- Ensure proper\
+  \ error handling for invalid table identifiers or connection issues\n\nThe implementation\
+  \ should balance ease of use with advanced querying capabilities while maintaining\
+  \ efficient data transfer from distributed Iceberg tables to local pandas DataFrames."
+technical_docs: []
+test_cmd: pytest -rA --timeout=20
+test_code1: from pandas.io.iceberg import read_iceberg
+test_code_example: from pandas.io.iceberg import read_iceberg
+test_code_example_obj: read_iceberg
+test_code_example_path: /testbed/pandas/io/iceberg.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: pandas-io-iceberg.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def read_iceberg(\n    table_identifier: str,\n    catalog_name:\
+  \ str | None = None\n) -> DataFrame:\n    \"\"\"\n    \n        Read an Apache Iceberg\
+  \ table into a pandas DataFrame.\n    \n        .. versionadded:: 3.0.0\n    \n\
+  \        .. warning::\n    \n           read_iceberg is experimental and may change\
+  \ without warning.\n    \n        Parameters\n        ----------\n        table_identifier\
+  \ : str\n            Table identifier.\n        catalog_name : str, optional\n \
+  \           The name of the catalog.\n        catalog_properties : dict of {str:\
+  \ str}, optional\n            The properties that are used next to the catalog configuration.\n\
+  \        row_filter : str, optional\n            A string that describes the desired\
+  \ rows.\n        selected_fields : tuple of str, optional\n            A tuple of\
+  \ strings representing the column names to return in the output\n            dataframe.\n\
+  \        case_sensitive : bool, default True\n            If True column matching\
+  \ is case sensitive.\n        snapshot_id : int, optional\n            Snapshot\
+  \ ID to time travel to. By default the table will be scanned as of the\n       \
+  \     current snapshot ID.\n        limit : int, optional\n            An integer\
+  \ representing the number of rows to return in the scan result.\n            By\
+  \ default all matching rows will be fetched.\n        scan_properties : dict of\
+  \ {str: obj}, optional\n            Additional Table properties as a dictionary\
+  \ of string key value pairs to use\n            for this scan.\n    \n        Returns\n\
+  \        -------\n        DataFrame\n            DataFrame based on the Iceberg\
+  \ table.\n    \n        See Also\n        --------\n        read_parquet : Read\
+  \ a Parquet file.\n    \n        Examples\n        --------\n        >>> df = pd.read_iceberg(\n\
+  \        ...     table_identifier=\"my_table\",\n        ...     catalog_name=\"\
+  my_catalog\",\n        ...     catalog_properties={\"s3.secret-access-key\": \"\
+  my-secret\"},\n        ...     row_filter=\"trip_distance >= 10.0\",\n        ...\
+  \     selected_fields=(\"VendorID\", \"tpep_pickup_datetime\"),\n        ... ) \
+  \ # doctest: +SKIP\n        \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def read_iceberg(\n    table_identifier: str,\n    catalog_name:\
+  \ str | None = None\n) -> DataFrame:\n    \"\"\"\n    \n        Read an Apache Iceberg\
+  \ table into a pandas DataFrame.\n    \n        .. versionadded:: 3.0.0\n    \n\
+  \        .. warning::\n    \n           read_iceberg is experimental and may change\
+  \ without warning.\n    \n        Parameters\n        ----------\n        table_identifier\
+  \ : str\n            Table identifier.\n        catalog_name : str, optional\n \
+  \           The name of the catalog.\n        catalog_properties : dict of {str:\
+  \ str}, optional\n            The properties that are used next to the catalog configuration.\n\
+  \        row_filter : str, optional\n            A string that describes the desired\
+  \ rows.\n        selected_fields : tuple of str, optional\n            A tuple of\
+  \ strings representing the column names to return in the output\n            dataframe.\n\
+  \        case_sensitive : bool, default True\n            If True column matching\
+  \ is case sensitive.\n        snapshot_id : int, optional\n            Snapshot\
+  \ ID to time travel to. By default the table will be scanned as of the\n       \
+  \     current snapshot ID.\n        limit : int, optional\n            An integer\
+  \ representing the number of rows to return in the scan result.\n            By\
+  \ default all matching rows will be fetched.\n        scan_properties : dict of\
+  \ {str: obj}, optional\n            Additional Table properties as a dictionary\
+  \ of string key value pairs to use\n            for this scan.\n    \n        Returns\n\
+  \        -------\n        DataFrame\n            DataFrame based on the Iceberg\
+  \ table.\n    \n        See Also\n        --------\n        read_parquet : Read\
+  \ a Parquet file.\n    \n        Examples\n        --------\n        >>> df = pd.read_iceberg(\n\
+  \        ...     table_identifier=\"my_table\",\n        ...     catalog_name=\"\
+  my_catalog\",\n        ...     catalog_properties={\"s3.secret-access-key\": \"\
+  my-secret\"},\n        ...     row_filter=\"trip_distance >= 10.0\",\n        ...\
+  \     selected_fields=(\"VendorID\", \"tpep_pickup_datetime\"),\n        ... ) \
+  \ # doctest: +SKIP\n        \n    \"\"\"\n    <your code>\n..."

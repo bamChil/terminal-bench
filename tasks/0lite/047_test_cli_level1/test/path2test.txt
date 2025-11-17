@@ -1,0 +1,6 @@
+flask/tests/test_cli.py
+flask/tests/test_subclassing.py
+flask/tests/test_async.py
+flask/tests/test_helpers.py
+flask/tests/test_blueprints.py
+flask/tests/test_regression.py

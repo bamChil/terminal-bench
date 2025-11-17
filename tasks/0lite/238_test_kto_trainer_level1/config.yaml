@@ -1,0 +1,784 @@
+base_image: pb-python312_cu121_torch28-base_0953d328
+black_links:
+- https://github.com/huggingface/trl/
+commit: null
+custom_instance_image_build: []
+docker_specs:
+  custom_docker_args:
+  - -e HTTP_PROXY=http://172.17.0.1:7893
+  - -e HTTPS_PROXY=http://172.17.0.1:7893
+  run_args:
+    cap_add: []
+    cuda_visible_devices: '7'
+    shm_size: 8g
+install: pip install -e . --no-build-isolation
+instance_image: pb-instance_7a199856
+library_name: trl
+pip_packages:
+- rich
+- peft
+- diffusers
+- bitsandbytes
+- pytest
+- pytest-datadir
+- parameterized
+pre_install: []
+repo_name: trl
+repository: huggingface/trl
+task_level: 1
+task_name: trl_kto_trainer
+task_statement: '## Task: Implement KTO (Kahneman-Tversky Optimization) Training System
+
+
+  **Core Functionality:**
+
+  Develop a training framework for aligning language models with human preferences
+  using prospect theory-based optimization, supporting both standard and encoder-decoder
+  architectures.
+
+
+  **Main Features & Requirements:**
+
+  - Configure KTO-specific hyperparameters (beta, loss types, sequence lengths, weights)
+
+  - Process datasets with prompt-completion pairs and preference labels (desirable/undesirable)
+
+  - Implement KTO loss computation using policy vs reference model comparisons
+
+  - Support PEFT integration, mixed precision training, and gradient checkpointing
+
+  - Handle data preprocessing including tokenization, truncation, and KL dataset creation
+
+  - Provide evaluation capabilities with metric computation and model card generation
+
+
+  **Key Challenges:**
+
+  - Manage dual model architecture (policy + reference) with proper memory optimization
+
+  - Ensure batch-level KL divergence calculations with sequential data sampling
+
+  - Balance desirable vs undesirable examples through weighted loss computation
+
+  - Handle variable sequence lengths and proper label masking for different model
+  types
+
+  - Integrate with existing HuggingFace training infrastructure while maintaining
+  KTO-specific requirements'
+technical_docs: []
+test_cmd: pytest -rA --timeout=300
+test_code1: 'from trl import KTOConfig
+
+  from trl import KTOTrainer
+
+  from trl.trainer.kto_trainer import _get_kl_dataset
+
+  from trl.trainer.kto_trainer import _process_tokens
+
+  from trl.trainer.kto_trainer import _tokenize'
+test_code_example: from trl import KTOConfig
+test_code_example_obj: KTOConfig
+test_code_example_path: /testbed/trl/trainer/kto_config.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 300
+timeout_dynamic: 3600
+timeout_run: 3600
+timeout_scanner: 3600
+interface_description1: 'Below is **Interface Description 1** for file: trl-trainer-kto_config.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "@dataclass\nclass KTOConfig(TrainingArguments):\n    \"\"\"\n  \
+  \  \n        Configuration class for the [`KTOTrainer`].\n    \n        This class\
+  \ includes only the parameters that are specific to KTO training. For a full list\
+  \ of training arguments,\n        please refer to the [`~transformers.TrainingArguments`]\
+  \ documentation. Note that default values in this class may\n        differ from\
+  \ those in [`~transformers.TrainingArguments`].\n    \n        Using [`~transformers.HfArgumentParser`]\
+  \ we can turn this class into\n        [argparse](https://docs.python.org/3/library/argparse#module-argparse)\
+  \ arguments that can be specified on the\n        command line.\n    \n        Parameters:\n\
+  \            max_length (`int` or `None`, *optional*, defaults to `1024`):\n   \
+  \             Maximum length of the sequences (prompt + completion) in the batch.\
+  \ This argument is required if you want\n                to use the default data\
+  \ collator.\n            max_prompt_length (`int` or `None`, *optional*, defaults\
+  \ to `512`):\n                Maximum length of the prompt. This argument is required\
+  \ if you want to use the default data collator.\n            max_completion_length\
+  \ (`int`, *optional*):\n                Maximum length of the completion. This argument\
+  \ is required if you want to use the default data collator\n                and\
+  \ your model is an encoder-decoder.\n            beta (`float`, *optional*, defaults\
+  \ to `0.1`):\n                Parameter controlling the deviation from the reference\
+  \ model. Higher β means less deviation from the\n                reference model.\n\
+  \            loss_type (`str`, *optional*, defaults to `\"kto\"`):\n           \
+  \     Type of loss to use. Possible values are:\n    \n                    - `\"\
+  kto\"`: KTO loss from the [KTO](https://huggingface.co/papers/2402.01306) paper.\n\
+  \                    - `\"apo_zero_unpaired\"`: Unpaired variant of APO-zero loss\
+  \ from the\n                      [APO](https://huggingface.co/papers/2408.06266)\
+  \ paper.\n    \n            desirable_weight (`float`, *optional*, defaults to `1.0`):\n\
+  \                Desirable losses are weighed by this factor to counter unequal\
+  \ number of desirable and undesirable paris.\n            undesirable_weight (`float`,\
+  \ *optional*, defaults to `1.0`):\n                Undesirable losses are weighed\
+  \ by this factor to counter unequal number of desirable and undesirable pairs.\n\
+  \            label_pad_token_id (`int`, *optional*, defaults to `-100`):\n     \
+  \           Label pad token id. This argument is required if you want to use the\
+  \ default data collator.\n            padding_value (`int`, *optional*):\n     \
+  \           Padding value to use. If `None`, the padding value of the tokenizer\
+  \ is used.\n            truncation_mode (`str`, *optional*, defaults to `\"keep_end\"\
+  `):\n                Truncation mode to use when the prompt is too long. Possible\
+  \ values are `\"keep_end\"` or `\"keep_start\"`.\n                This argument\
+  \ is required if you want to use the default data collator.\n            generate_during_eval\
+  \ (`bool`, *optional*, defaults to `False`):\n                If `True`, generates\
+  \ and logs completions from both the model and the reference model to W&B or Comet\n\
+  \                during evaluation.\n            is_encoder_decoder (`bool`, *optional*):\n\
+  \                When using the `model_init` argument (callable) to instantiate\
+  \ the model instead of the `model` argument,\n                you need to specify\
+  \ if the model returned by the callable is an encoder-decoder model.\n         \
+  \   precompute_ref_log_probs (`bool`, *optional*, defaults to `False`):\n      \
+  \          Whether to precompute reference model log probabilities for training\
+  \ and evaluation datasets. This is\n                useful when training without\
+  \ the reference model to reduce the total GPU memory needed.\n            model_init_kwargs\
+  \ (`dict[str, Any]`, *optional*):\n                Keyword arguments to pass to\
+  \ `AutoModelForCausalLM.from_pretrained` when instantiating the model from a\n \
+  \               string.\n            ref_model_init_kwargs (`dict[str, Any]`, *optional*):\n\
+  \                Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the reference model\n                from a string.\n     \
+  \       dataset_num_proc: (`int`, *optional*):\n                Number of processes\
+  \ to use for processing the dataset.\n            disable_dropout (`bool`, *optional*,\
+  \ defaults to `True`):\n                Whether to disable dropout in the model\
+  \ and reference model.\n            use_liger_loss (`bool`, *optional*, defaults\
+  \ to `False`):\n                Whether to use Liger loss. It requires liger-kernel\
+  \ to be installed.\n            base_model_attribute_name (`str`, *optional*, defaults\
+  \ to `\"model\"`):\n                Name of the attribute in the model that contains\
+  \ the base model. This is used to get the base model from\n                the model\
+  \ when the model does not have a `get_decoder` method in the case when `use_liger_loss`\
+  \ is `True`.\n        \n    \"\"\"\n\n    _VALID_DICT_FIELDS = \"TrainingArguments._VALID_DICT_FIELDS\
+  \ + ['model_init_kwargs', 'ref_model_init_kwargs']\"\n    learning_rate = \"field(default=1e-06,\
+  \ metadata={'help': 'The initial learning rate for AdamW.'})\"\n    logging_steps\
+  \ = \"field(default=10, metadata={'help': 'Log every X updates steps. Should be\
+  \ an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted\
+  \ as ratio of total training steps.'})\"\n    gradient_checkpointing = \"field(default=True,\
+  \ metadata={'help': 'If True, use gradient checkpointing to save memory at the expense\
+  \ of slower backward pass.'})\"\n    bf16 = \"field(default=None, metadata={'help':\
+  \ 'Whether to use bf16 (mixed) precision instead of 32-bit. Requires Ampere or higher\
+  \ NVIDIA architecture or Intel XPU or using CPU (use_cpu) or Ascend NPU. If not\
+  \ set, it defaults to `True` if `fp16` is not set.'})\"\n    max_length = \"field(default=1024,\
+  \ metadata={'help': 'Maximum length of the sequences (prompt + completion) in the\
+  \ batch.'})\"\n    max_prompt_length = \"field(default=512, metadata={'help': 'Maximum\
+  \ length of the prompt. This argument is required if you want to use the default\
+  \ data collator and your model is an encoder-decoder.'})\"\n    max_completion_length\
+  \ = \"field(default=None, metadata={'help': 'Maximum length of the completion. This\
+  \ argument is required if you want to use the default data collator and your model\
+  \ is an encoder-decoder.'})\"\n    beta = \"field(default=0.1, metadata={'help':\
+  \ 'Parameter controlling the deviation from the reference model. Higher β means\
+  \ less deviation from the reference model.'})\"\n    loss_type = \"field(default='kto',\
+  \ metadata={'help': 'Type of loss to use.', 'choices': ['kto', 'apo_zero_unpaired']})\"\
+  \n    desirable_weight = \"field(default=1.0, metadata={'help': 'Desirable losses\
+  \ are weighed by this factor to counter unequal number of desirable and undesirable\
+  \ pairs.'})\"\n    undesirable_weight = \"field(default=1.0, metadata={'help': 'Undesirable\
+  \ losses are weighed by this factor to counter unequal number of desirable and undesirable\
+  \ pairs.'})\"\n    label_pad_token_id = \"field(default=-100, metadata={'help':\
+  \ 'Label pad token id. This argument is required if you want to use the default\
+  \ data collator.'})\"\n    padding_value = \"field(default=None, metadata={'help':\
+  \ 'Padding value to use. If `None`, the padding value of the tokenizer is used.'})\"\
+  \n    truncation_mode = \"field(default='keep_end', metadata={'help': 'Truncation\
+  \ mode to use when the prompt is too long.', 'choices': ['keep_end', 'keep_start']})\"\
+  \n    generate_during_eval = \"field(default=False, metadata={'help': 'If `True`,\
+  \ generates and logs completions from both the model and the reference model to\
+  \ W&B during evaluation.'})\"\n    is_encoder_decoder = \"field(default=None, metadata={'help':\
+  \ 'When using the `model_init` argument (callable) to instantiate the model instead\
+  \ of the `model` argument, you need to specify if the model returned by the callable\
+  \ is an encoder-decoder model.'})\"\n    disable_dropout = \"field(default=True,\
+  \ metadata={'help': 'Whether to disable dropout in the model.'})\"\n    precompute_ref_log_probs\
+  \ = \"field(default=False, metadata={'help': 'Whether to precompute reference model\
+  \ log probabilities for training and evaluation datasets. This is useful when training\
+  \ without the reference model to reduce the total GPU memory needed.'})\"\n    model_init_kwargs\
+  \ = \"field(default=None, metadata={'help': 'Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the model from a string.'})\"\n    ref_model_init_kwargs =\
+  \ \"field(default=None, metadata={'help': 'Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the reference model from a string.'})\"\n    dataset_num_proc\
+  \ = \"field(default=None, metadata={'help': 'Number of processes to use for processing\
+  \ the dataset.'})\"\n    use_liger_loss = \"field(default=False, metadata={'help':\
+  \ 'Whether to use Liger loss. It requires liger-kernel to be installed.'})\"\n \
+  \   base_model_attribute_name = \"field(default='model', metadata={'help': 'Name\
+  \ of the attribute in the model that contains the base model. This is used to get\
+  \ the base model from the model when the model does not have a `get_decoder` method\
+  \ in the case when `use_liger_loss` is `True`.'})\"\n\n    def __post_init__(self):\n\
+  \        \"\"\"\n        Post-initialization method for KTOConfig that sets default\
+  \ values and validates configuration.\n\n        This method is automatically called\
+  \ after the dataclass instance is created. It performs\n        necessary post-processing\
+  \ of the configuration parameters, including setting conditional\n        default\
+  \ values and calling the parent class's post-initialization method.\n\n        Parameters:\n\
+  \            self: The KTOConfig instance being initialized.\n\n        Return value:\n\
+  \            None: This method modifies the instance in-place and does not return\
+  \ a value.\n\n        Important notes:\n            - Automatically sets bf16 to\
+  \ True if fp16 is False and bf16 was not explicitly specified (None)\n         \
+  \   - Calls the parent TrainingArguments.__post_init__() method to ensure proper\
+  \ initialization\n              of inherited configuration parameters\n        \
+  \    - This method is part of the dataclass lifecycle and should not be called manually\n\
+  \            - The bf16 parameter logic ensures that mixed precision training defaults\
+  \ to bf16 when\n              fp16 is not being used, unless explicitly overridden\n\
+  \        \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: trl-trainer-kto_trainer.py
+
+
+  This file contains 4 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "def _get_kl_dataset(\n    batch: dict[str, list[Any]]\n) -> dict[str,\
+  \ list[Any]]:\n    \"\"\"\n    \n        Creates mismatched pairs of prompts and\
+  \ completions for the KL dataset by adding a +1 offset to the order of\n       \
+  \ completions. For best results, the mismatched outputs y' used to estimate the\
+  \ KL term for a batch should be the\n        same set as the matched outputs y used\
+  \ to estimate the rewards in that batch, just paired with different x.\n       \
+  \ \n    \"\"\"\n    <your code>\n\ndef _tokenize(\n    batch: dict[str, list[Any]],\n\
+  \    tokenizer: 'PreTrainedTokenizer'\n) -> dict[str, list[Any]]:\n    \"\"\"\n\
+  \    Tokenize a batch from a KTO specific dataset.\n    \"\"\"\n    <your code>\n\
+  \ndef _process_tokens(\n    example: dict[str, Any],\n    model: 'PreTrainedModel'\
+  \ = None,\n    **kwargs\n) -> dict:\n    \"\"\"\n    Process tokens of a KTO specific\
+  \ dataset.\n    \n        At this stage, we don't convert to PyTorch tensors yet;\
+  \ we just handle the truncation in case the prompt +\n        completion responses\
+  \ is/are too long. First we truncate the prompt; if we're still too long, we truncate\
+  \ the\n        completion.\n    \n        We also create the labels for the completion\
+  \ responses, which are of length equal to the sum of the length of the\n       \
+  \ prompt and the completion response, with label_pad_token_id for the prompt tokens.\n\
+  \        \n    \"\"\"\n    <your code>\n\nclass KTOTrainer(Trainer):\n    \"\"\"\
+  \n    \n        Initialize KTOTrainer.\n    \n        Args:\n            model (`transformers.PreTrainedModel`):\n\
+  \                The model to train, preferably an `AutoModelForSequenceClassification`.\n\
+  \            ref_model (`PreTrainedModelWrapper`):\n                Hugging Face\
+  \ transformer model with a casual language modelling head. Used for implicit reward\
+  \ computation\n                and loss. If no reference model is provided, the\
+  \ trainer will create a reference model with the same\n                architecture\
+  \ as the model to be optimized.\n            args (`KTOConfig`):\n             \
+  \   The arguments to use for training.\n            train_dataset (`datasets.Dataset`):\n\
+  \                The dataset to use for training.\n            eval_dataset (`datasets.Dataset`):\n\
+  \                The dataset to use for evaluation.\n            processing_class\
+  \ ([`~transformers.PreTrainedTokenizerBase`], [`~transformers.BaseImageProcessor`],\
+  \ [`~transformers.FeatureExtractionMixin`] or [`~transformers.ProcessorMixin`],\
+  \ *optional*):\n                Processing class used to process the data. If provided,\
+  \ will be used to automatically process the inputs\n                for the model,\
+  \ and it will be saved along the model to make it easier to rerun an interrupted\
+  \ training or\n                reuse the fine-tuned model.\n            data_collator\
+  \ (`transformers.DataCollator`, *optional*):\n                The data collator\
+  \ to use for training. If None is specified, the default data collator\n       \
+  \         (`DPODataCollatorWithPadding`) will be used which will pad the sequences\
+  \ to the maximum length of the\n                sequences in the batch, given a\
+  \ dataset of paired sequences.\n            model_init (`Callable[[], transformers.PreTrainedModel]`):\n\
+  \                The model initializer to use for training. If None is specified,\
+  \ the default model initializer will be\n                used.\n            callbacks\
+  \ (`list[transformers.TrainerCallback]`):\n                The callbacks to use\
+  \ for training.\n            optimizers (`tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR]`):\n\
+  \                The optimizer and scheduler to use for training.\n            preprocess_logits_for_metrics\
+  \ (`Callable[[torch.Tensor, torch.Tensor], torch.Tensor]`):\n                The\
+  \ function to use to preprocess the logits before computing the metrics.\n     \
+  \       peft_config (`dict`, defaults to `None`):\n                The PEFT configuration\
+  \ to use for training. If you pass a PEFT configuration, the model will be wrapped\
+  \ in\n                a PEFT model.\n            compute_metrics (`Callable[[EvalPrediction],\
+  \ dict]`, *optional*):\n                The function to use to compute the metrics.\
+  \ Must take a `EvalPrediction` and return a dictionary string to\n             \
+  \   metric values.\n            model_adapter_name (`str`, defaults to `None`):\n\
+  \                Name of the train target PEFT adapter, when using LoRA with multiple\
+  \ adapters.\n            ref_adapter_name (`str`, defaults to `None`):\n       \
+  \         Name of the reference PEFT adapter, when using LoRA with multiple adapters.\n\
+  \        \n    \"\"\"\n\n    _tag_names = ['trl', 'kto']\n\n    def __init__(\n\
+  \        self,\n        model: Union[PreTrainedModel, nn.Module, str] = None,\n\
+  \        ref_model: Optional[Union[PreTrainedModel, nn.Module, str]] = None,\n \
+  \       args: KTOConfig = None,\n        train_dataset: Optional[Dataset] = None,\n\
+  \        eval_dataset: Optional[Union[Dataset, dict[str, Dataset]]] = None,\n  \
+  \      processing_class: Optional[Union[PreTrainedTokenizerBase, BaseImageProcessor,\
+  \ FeatureExtractionMixin, ProcessorMixin]] = None,\n        data_collator: Optional[DataCollator]\
+  \ = None,\n        model_init: Optional[Callable[[], PreTrainedModel]] = None,\n\
+  \        callbacks: Optional[list[TrainerCallback]] = None,\n        optimizers:\
+  \ tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),\n\
+  \        preprocess_logits_for_metrics: Optional[Callable[[torch.Tensor, torch.Tensor],\
+  \ torch.Tensor]] = None,\n        peft_config: Optional[dict] = None,\n        compute_metrics:\
+  \ Optional[Callable[[EvalLoopOutput], dict]] = None,\n        model_adapter_name:\
+  \ Optional[str] = None,\n        ref_adapter_name: Optional[str] = None\n    ):\n\
+  \        \"\"\"\n        Initialize a KTO (Kahneman-Tversky Optimization) trainer\
+  \ for model alignment using prospect theory.\n\n        This trainer implements\
+  \ the KTO algorithm for aligning language models with human preferences\n      \
+  \  using a prospect theory-based approach. It supports both encoder-decoder and\
+  \ decoder-only models,\n        with optional PEFT (Parameter Efficient Fine-Tuning)\
+  \ integration.\n\n        Parameters:\n            model (Union[PreTrainedModel,\
+  \ nn.Module, str], optional): \n                The model to train. Can be a PreTrainedModel\
+  \ instance, nn.Module, or string path to model.\n                If string, will\
+  \ be loaded using AutoModelForCausalLM.from_pretrained().\n\n            ref_model\
+  \ (Optional[Union[PreTrainedModel, nn.Module, str]], optional):\n              \
+  \  Reference model for computing implicit rewards and KL divergence. If None and\
+  \ not using\n                PEFT, a reference model will be created automatically.\
+  \ If using PEFT, the base model\n                with adapters disabled serves as\
+  \ reference.\n\n            args (KTOConfig, optional):\n                Training\
+  \ configuration containing hyperparameters, loss settings, and other options.\n\
+  \                Must be KTOConfig instance, not TrainingArguments.\n\n        \
+  \    train_dataset (Optional[Dataset], optional):\n                Training dataset\
+  \ containing prompts, completions, and preference labels.\n\n            eval_dataset\
+  \ (Optional[Union[Dataset, dict[str, Dataset]]], optional):\n                Evaluation\
+  \ dataset(s) for validation during training.\n\n            processing_class (Optional[Union[PreTrainedTokenizerBase,\
+  \ BaseImageProcessor, FeatureExtractionMixin, ProcessorMixin]], optional):\n   \
+  \             Tokenizer or processor for handling model inputs. Required for proper\
+  \ data processing.\n\n            data_collator (Optional[DataCollator], optional):\n\
+  \                Custom data collator. If None, uses DPODataCollatorWithPadding\
+  \ with appropriate settings.\n\n            model_init (Optional[Callable[[], PreTrainedModel]],\
+  \ optional):\n                Function that returns a model instance. Used for hyperparameter\
+  \ search.\n\n            callbacks (Optional[list[TrainerCallback]], optional):\n\
+  \                List of callback functions to customize training behavior.\n\n\
+  \            optimizers (tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR],\
+  \ optional):\n                Tuple of (optimizer, scheduler). Defaults to (None,\
+  \ None) for automatic selection.\n\n            preprocess_logits_for_metrics (Optional[Callable[[torch.Tensor,\
+  \ torch.Tensor], torch.Tensor]], optional):\n                Function to preprocess\
+  \ logits before metric computation.\n\n            peft_config (Optional[dict],\
+  \ optional):\n                PEFT configuration dictionary. If provided, model\
+  \ will be wrapped with PEFT.\n                Requires peft library to be installed.\n\
+  \n            compute_metrics (Optional[Callable[[EvalLoopOutput], dict]], optional):\n\
+  \                Function to compute custom metrics during evaluation.\n\n     \
+  \       model_adapter_name (Optional[str], optional):\n                Name of the\
+  \ target PEFT adapter for training when using multiple LoRA adapters.\n\n      \
+  \      ref_adapter_name (Optional[str], optional):\n                Name of the\
+  \ reference PEFT adapter when using multiple LoRA adapters.\n\n        Raises:\n\
+  \            ValueError: If args is TrainingArguments instead of KTOConfig, if model\
+  \ and ref_model\n                are the same object, if model_init_kwargs provided\
+  \ with instantiated model,\n                if PEFT config provided but PEFT not\
+  \ available, or if batch size <= 1 for KL calculation.\n\n            ImportError:\
+  \ If PEFT config provided but peft library not installed.\n\n        Notes:\n  \
+  \          - KTO requires actual batch size > 1 for proper KL term calculation\n\
+  \            - The trainer automatically handles dataset preprocessing including\
+  \ tokenization,\n              chat template application, and KL dataset creation\n\
+  \            - Supports gradient checkpointing, mixed precision training, and DeepSpeed\
+  \ integration\n            - Reference log probabilities can be precomputed for\
+  \ efficiency when precompute_ref_log_probs=True\n            - Model cards are automatically\
+  \ generated and saved with checkpoints\n        \"\"\"\n        <your code>\n\n\
+  \    @contextmanager\n    def null_ref_context(self):\n        \"\"\"\n        Context\
+  \ manager for handling null reference model (that is, peft adapter manipulation).\n\
+  \        \"\"\"\n        <your code>\n\n    def get_train_dataloader(self) -> DataLoader:\n\
+  \        \"\"\"\n\n                Returns the training [`~torch.utils.data.DataLoader`].\n\
+  \n                Subclass of transformers.src.transformers.trainer.get_train_dataloader\
+  \ to precompute `ref_log_probs`.\n\n        \"\"\"\n        <your code>\n\n    def\
+  \ get_eval_dataloader(\n        self,\n        eval_dataset: Optional[Dataset] =\
+  \ None\n    ) -> DataLoader:\n        \"\"\"\n\n                Returns the evaluation\
+  \ [`~torch.utils.data.DataLoader`].\n\n                Subclass of transformers.src.transformers.trainer.get_eval_dataloader\
+  \ to precompute `ref_log_probs`.\n\n                Args:\n                    eval_dataset\
+  \ (`torch.utils.data.Dataset`, *optional*):\n                        If provided,\
+  \ will override `self.eval_dataset`. If it is a [`~datasets.Dataset`], columns not\
+  \ accepted\n                        by the `model.forward()` method are automatically\
+  \ removed. It must implement `__len__`.\n\n        \"\"\"\n        <your code>\n\
+  \n    def compute_reference_log_probs(self, padded_batch: dict) -> dict:\n     \
+  \   \"\"\"\n        Computes log probabilities of the reference model for a single\
+  \ padded batch of a KTO specific dataset.\n        \"\"\"\n        <your code>\n\
+  \n    @staticmethod\n    def get_batch_logps(\n        logits: torch.FloatTensor,\n\
+  \        labels: torch.LongTensor,\n        average_log_prob: bool = False,\n  \
+  \      label_pad_token_id: int = -100,\n        is_encoder_decoder: bool = False\n\
+  \    ) -> torch.FloatTensor:\n        \"\"\"\n        Compute the log probabilities\
+  \ of the given labels under the given logits.\n\n                Args:\n       \
+  \             logits:\n                        Logits of the model (unnormalized).\
+  \ Shape: (batch_size, sequence_length, vocab_size)\n                    labels:\n\
+  \                        Labels for which to compute the log probabilities. Label\
+  \ tokens with a value of label_pad_token_id are\n                        ignored.\
+  \ Shape: (batch_size, sequence_length)\n                    average_log_prob:\n\
+  \                        If True, return the average log probability per (non-masked)\
+  \ token. Otherwise, return the sum of the\n                        log probabilities\
+  \ of the (non-masked) tokens.\n                    label_pad_token_id:\n       \
+  \                 The label value to ignore when computing log probabilities.\n\
+  \                    is_encoder_decoder:\n                        Whether the model\
+  \ is an encoder-decoder model. If True, the labels are not shifted and the logits\
+  \ are\n                        assumed to already be aligned with the labels. If\
+  \ False, the labels are shifted to the right by one\n                        position,\
+  \ and the logits are assumed to be aligned with the shifted labels.\n\n        \
+  \        Returns:\n                    A tensor of shape (batch_size,) containing\
+  \ the average/sum log probabilities of the given labels under the\n            \
+  \        given logits.\n\n        \"\"\"\n        <your code>\n\n    def forward(\n\
+  \        self,\n        model: nn.Module,\n        batch: dict[str, Union[list,\
+  \ torch.LongTensor]]\n    ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor,\
+  \ torch.FloatTensor]:\n        \"\"\"\n        Performs a forward pass through the\
+  \ model to compute log probabilities and logits for KTO training.\n\n        This\
+  \ method processes a batch of training data through the model to extract the necessary\
+  \ components\n        for KTO (Kahneman-Tversky Optimization) loss computation.\
+  \ It handles both chosen and rejected examples,\n        computes their respective\
+  \ log probabilities and logits, and calculates KL divergence terms when required.\n\
+  \n        Args:\n            model (nn.Module): The neural network model to perform\
+  \ forward pass on. This should be the policy\n                model being trained,\
+  \ typically a language model with a causal language modeling head.\n           \
+  \ batch (dict[str, Union[list, torch.LongTensor]]): A dictionary containing the\
+  \ batch data with the\n                following expected keys:\n              \
+  \  - \"completion_input_ids\": Input token IDs for the full completion sequences\n\
+  \                - \"completion_attention_mask\": Attention mask for the completion\
+  \ sequences  \n                - \"completion_labels\": Labels for computing log\
+  \ probabilities\n                - \"label\": Boolean list indicating whether each\
+  \ example is chosen (True) or rejected (False)\n                - \"completion_decoder_input_ids\"\
+  : (encoder-decoder only) Decoder input IDs\n                - Additional KL-related\
+  \ keys if KL calculation is enabled\n\n        Returns:\n            tuple[torch.FloatTensor,\
+  \ torch.FloatTensor, torch.FloatTensor, torch.FloatTensor]: A tuple containing:\n\
+  \                - chosen_logps: Log probabilities for chosen examples, shape (num_chosen,)\n\
+  \                - rejected_logps: Log probabilities for rejected examples, shape\
+  \ (num_rejected,) \n                - chosen_logits: Raw logits for chosen examples,\
+  \ shape (num_chosen, seq_len, vocab_size)\n                - rejected_logits: Raw\
+  \ logits for rejected examples, shape (num_rejected, seq_len, vocab_size)\n    \
+  \            - KL_logps: KL divergence log probabilities if calculate_KL is True,\
+  \ otherwise None\n                - aux_loss: (optional) Auxiliary loss if auxiliary\
+  \ loss is enabled in the model\n\n        Important notes:\n            - The method\
+  \ automatically separates chosen and rejected examples based on the \"label\" field\n\
+  \            - For encoder-decoder models, additional decoder-specific inputs are\
+  \ handled automatically\n            - KL divergence computation is performed only\
+  \ if self.calculate_KL is True\n            - Auxiliary loss is included in the\
+  \ return tuple only if self.aux_loss_enabled is True\n            - The batch size\
+  \ for chosen and rejected examples may differ within the same batch\n          \
+  \  - All tensors are moved to the appropriate device automatically by the data collator\n\
+  \n        Raises:\n            ValueError: If there is a mismatch between the number\
+  \ of completion log probabilities and \n                the number of labels in\
+  \ the batch, indicating inconsistent batch processing.\n        \"\"\"\n       \
+  \ <your code>\n\n    def kto_loss(\n        self,\n        policy_chosen_logps:\
+  \ torch.FloatTensor,\n        policy_rejected_logps: torch.FloatTensor,\n      \
+  \  policy_KL_logps: torch.FloatTensor,\n        reference_chosen_logps: torch.FloatTensor,\n\
+  \        reference_rejected_logps: torch.FloatTensor,\n        reference_KL_logps:\
+  \ torch.FloatTensor\n    ) -> tuple[torch.FloatTensor, torch.FloatTensor, torch.FloatTensor,\
+  \ torch.FloatTensor]:\n        \"\"\"\n        Compute the KTO loss for a batch\
+  \ of policy and reference model log probabilities.\n\n                Args:\n  \
+  \                  policy_chosen_logps:\n                        Log probabilities\
+  \ of the policy model for the chosen responses. Shape: (num(chosen) in batch_size,)\n\
+  \                    policy_rejected_logps:\n                        Log probabilities\
+  \ of the policy model for the rejected responses. Shape: (num(rejected) in batch_size,)\n\
+  \                    policy_KL_logps: Log probabilities of the policy model for\
+  \ the KL responses. Shape: (batch_size,)\n                    reference_chosen_logps:\n\
+  \                        Log probabilities of the reference model for the chosen\
+  \ responses. Shape: (num(chosen) in batch_size,)\n                    reference_rejected_logps:\n\
+  \                        Log probabilities of the reference model for the rejected\
+  \ responses. Shape: (num(rejected) in\n                        batch_size,)\n  \
+  \                  reference_KL_logps: Log probabilities of the reference model\
+  \ for the KL responses. Shape: (batch_size,)\n\n                Returns:\n     \
+  \               A tuple of four tensors: (losses, chosen_rewards, rejected_rewards,\
+  \ KL). The losses tensor contains the KTO\n                    loss for each example\
+  \ in the batch. The chosen_rewards and rejected_rewards tensors contain the rewards\
+  \ for\n                    the chosen and rejected responses, respectively. The\
+  \ KL tensor contains the detached KL divergence estimate\n                    between\
+  \ the policy and reference models.\n\n        \"\"\"\n        <your code>\n\n  \
+  \  def _compute_kl_logps(self, model, batch):\n        \"\"\"\n        Compute KL\
+  \ log probabilities for a given batch.\n        \"\"\"\n        <your code>\n\n\
+  \    def _compute_loss_liger(self, model, batch):\n        \"\"\"\n\n          \
+  \      Compute the KTO loss using the Liger-Kernel's LigerFusedLinearKTOLoss.\n\n\
+  \                Args:\n                    model:\n                        The\
+  \ policy model used for generating log probabilities and outputs. It could be an\
+  \ encoder-decoder\n                        model or a regular language model.\n\
+  \                    batch: A dictionary containing the input data and labels for\
+  \ the batch.\n\n                Returns:\n                    A dictionary containing\
+  \ the following keys:\n                        - \"loss\": The computed KTO loss\
+  \ for the batch.\n                        - \"chosen_logits_sum\": Sum of the logits\
+  \ for the chosen responses from the policy model.\n                        - \"\
+  rejected_logits_sum\": Sum of the logits for the rejected responses from the policy\
+  \ model.\n                        - \"chosen_logps\": Log probabilities of the chosen\
+  \ responses from the policy model.\n                        - \"rejected_logps\"\
+  : Log probabilities of the rejected responses from the policy model.\n         \
+  \               - \"chosen_rewards\": Rewards for the chosen responses.\n      \
+  \                  - \"rejected_rewards\": Rewards for the rejected responses.\n\
+  \                        - \"kl\": The KL divergence between the policy and reference\
+  \ models (detached).\n\n                    If auxiliary loss is enabled, the dictionary\
+  \ will also include:\n                        - \"aux_loss\": The auxiliary loss\
+  \ from the model outputs.\n\n        \"\"\"\n        <your code>\n\n    def get_batch_loss_metrics(\n\
+  \        self,\n        model,\n        batch: dict[str, Union[list, torch.LongTensor]]\n\
+  \    ):\n        \"\"\"\n        Compute the KTO loss and other metrics for the\
+  \ given batch of inputs for train or test.\n        \"\"\"\n        <your code>\n\
+  \n    def compute_loss(\n        self,\n        model: Union[PreTrainedModel, nn.Module],\n\
+  \        inputs: dict[str, Union[torch.Tensor, Any]],\n        return_outputs =\
+  \ False,\n        num_items_in_batch = None\n    ) -> Union[torch.Tensor, tuple[torch.Tensor,\
+  \ dict[str, torch.Tensor]]]:\n        \"\"\"\n        Compute the KTO (Kaizen Training\
+  \ Optimization) loss for the given model and inputs.\n\n        This method serves\
+  \ as the main loss computation function for KTO training. It processes the input\
+  \ batch through the model, computes policy and reference log probabilities, and\
+  \ calculates the KTO loss using either the standard implementation or the optimized\
+  \ Liger kernel implementation.\n\n        Parameters:\n            model (Union[PreTrainedModel,\
+  \ nn.Module]): The model to compute the loss for. This is typically the policy model\
+  \ being trained.\n            inputs (dict[str, Union[torch.Tensor, Any]]): A dictionary\
+  \ containing the input batch data including:\n                - completion_input_ids:\
+  \ Token IDs for the full completion sequences\n                - completion_attention_mask:\
+  \ Attention masks for the completion sequences  \n                - completion_labels:\
+  \ Labels for computing loss (with label_pad_token_id for prompt tokens)\n      \
+  \          - label: Binary labels indicating whether each example is desirable (True)\
+  \ or undesirable (False)\n                - prompt_input_ids: Token IDs for just\
+  \ the prompt portion\n                - prompt_attention_mask: Attention masks for\
+  \ the prompt portion\n                - KL_* variants: Corresponding tensors for\
+  \ KL divergence computation (if calculate_KL is True)\n                - reference_logps:\
+  \ Precomputed reference log probabilities (optional, if precompute_ref_log_probs\
+  \ is True)\n            return_outputs (bool, optional): If True, returns both loss\
+  \ and metrics dictionary. If False, returns only the loss tensor. Defaults to False.\n\
+  \            num_items_in_batch (int, optional): Number of items in the batch. Currently\
+  \ unused but maintained for compatibility with the Trainer interface. Defaults to\
+  \ None.\n\n        Returns:\n            Union[torch.Tensor, tuple[torch.Tensor,\
+  \ dict[str, torch.Tensor]]]: \n                If return_outputs is False: Returns\
+  \ only the computed loss as a torch.Tensor.\n                If return_outputs is\
+  \ True: Returns a tuple containing:\n                    - loss (torch.Tensor):\
+  \ The computed KTO loss\n                    - metrics (dict[str, torch.Tensor]):\
+  \ Dictionary containing training metrics such as:\n                        - kl:\
+  \ KL divergence between policy and reference models\n                        - rewards/chosen_sum:\
+  \ Sum of rewards for chosen/desirable examples\n                        - rewards/rejected_sum:\
+  \ Sum of rewards for rejected/undesirable examples\n                        - logps/chosen_sum:\
+  \ Sum of log probabilities for chosen examples\n                        - logps/rejected_sum:\
+  \ Sum of log probabilities for rejected examples\n                        - count/chosen:\
+  \ Number of chosen examples in batch\n                        - count/rejected:\
+  \ Number of rejected examples in batch\n\n        Important Notes:\n           \
+  \ - The method automatically handles both encoder-decoder and decoder-only model\
+  \ architectures\n            - Uses mixed precision (autocast) when PEFT models\
+  \ have been cast to bf16 for compatibility\n            - Supports auxiliary loss\
+  \ computation for models with router mechanisms (e.g., MoE models)\n           \
+  \ - Can use either the standard KTO loss implementation or the optimized Liger kernel\
+  \ implementation based on args.use_liger_loss\n            - Reference model log\
+  \ probabilities can be precomputed (if precompute_ref_log_probs=True) or computed\
+  \ on-the-fly\n            - For PEFT models without a separate reference model,\
+  \ uses the base model with adapters disabled as reference\n            - Automatically\
+  \ moves tensors to the appropriate device and handles distributed training metrics\
+  \ gathering\n            - The loss is scaled appropriately for gradient accumulation\
+  \ since model_accepts_loss_kwargs is set to False\n        \"\"\"\n        <your\
+  \ code>\n\n    def store_metrics(\n        self,\n        metrics: dict[str, float],\n\
+  \        train_eval: Literal['train', 'eval'] = 'train'\n    ) -> None:\n      \
+  \  \"\"\"\n        Store training or evaluation metrics in the internal metrics\
+  \ storage.\n\n        This method accumulates metrics from training or evaluation\
+  \ batches into an internal\n        dictionary structure for later aggregation and\
+  \ logging. The metrics are organized\n        by training phase (train/eval) and\
+  \ metric name, with values stored as lists that\n        can be processed during\
+  \ the logging phase.\n\n        Parameters:\n            metrics (dict[str, float]):\
+  \ A dictionary containing metric names as keys and\n                their corresponding\
+  \ float values. Common metrics include loss values,\n                rewards, log\
+  \ probabilities, logits, and counts for chosen/rejected samples.\n            train_eval\
+  \ (Literal['train', 'eval'], optional): Specifies whether the metrics\n        \
+  \        are from training or evaluation phase. Defaults to 'train'.\n\n       \
+  \ Returns:\n            None: This method modifies the internal _stored_metrics\
+  \ dictionary in-place\n            and does not return any value.\n\n        Important\
+  \ Notes:\n            - Metrics are stored in self._stored_metrics[train_eval][key]\
+  \ as lists\n            - The stored metrics are later processed and aggregated\
+  \ in the log() method\n            - This method is typically called automatically\
+  \ during training/evaluation loops\n            - The metrics dictionary is expected\
+  \ to contain float values that can be\n              meaningfully aggregated across\
+  \ batches\n            - Common metric keys include 'kl', 'rewards/chosen_sum',\
+  \ 'rewards/rejected_sum',\n              'logps/chosen_sum', 'logps/rejected_sum',\
+  \ 'count/chosen', 'count/rejected'\n        \"\"\"\n        <your code>\n\n    def\
+  \ _get_train_sampler(\n        self,\n        dataset: Optional[Dataset] = None\n\
+  \    ) -> Optional[torch.utils.data.Sampler]:\n        \"\"\"\n        Get the training\
+  \ data sampler for the KTO trainer.\n\n        This method creates and returns a\
+  \ data sampler specifically for the training dataset.\n        Unlike the default\
+  \ Trainer behavior which may use random sampling, this implementation\n        always\
+  \ returns a SequentialSampler to ensure deterministic ordering of training data,\n\
+  \        which is important for KTO's batch-based KL divergence calculations.\n\n\
+  \        Parameters:\n            dataset (Optional[Dataset], default=None): The\
+  \ dataset to create a sampler for.\n                If None, uses self.train_dataset.\
+  \ The dataset should be a valid Dataset\n                object with a defined length.\n\
+  \n        Returns:\n            Optional[torch.utils.data.Sampler]: A SequentialSampler\
+  \ instance if the dataset\n                is valid and has length, None otherwise.\
+  \ The SequentialSampler ensures that\n                data is accessed in sequential\
+  \ order rather than randomly shuffled.\n\n        Important notes:\n           \
+  \ - This method overrides the parent Trainer's _get_train_sampler to enforce\n \
+  \             sequential sampling, which is crucial for KTO's algorithm that relies\
+  \ on\n              batch-level KL term calculations\n            - Returns None\
+  \ if the dataset is None or doesn't have a defined length,\n              following\
+  \ the same pattern as the parent class\n            - The sequential ordering is\
+  \ necessary because KTO creates mismatched pairs\n              for KL estimation\
+  \ by applying offsets within each batch\n        \"\"\"\n        <your code>\n\n\
+  \    def generate_from_model_and_ref(\n        self,\n        model,\n        batch:\
+  \ dict[str, torch.LongTensor]\n    ) -> tuple[str, str]:\n        \"\"\"\n     \
+  \   Generate samples from the model and reference model for the given batch of inputs.\n\
+  \        \"\"\"\n        <your code>\n\n    def prediction_step(\n        self,\n\
+  \        model: Union[PreTrainedModel, nn.Module],\n        inputs: dict[str, Union[torch.Tensor,\
+  \ Any]],\n        prediction_loss_only: bool,\n        ignore_keys: Optional[list[str]]\
+  \ = None\n    ):\n        \"\"\"\n        Perform a single prediction step on a\
+  \ batch of inputs during evaluation.\n\n        This method executes a forward pass\
+  \ through the model to compute loss and metrics for a given batch\n        during\
+  \ evaluation. It handles both prediction-only mode and full evaluation mode, computing\
+  \ KTO-specific\n        metrics and managing device placement and gradient contexts\
+  \ appropriately.\n\n        Parameters:\n            model (Union[PreTrainedModel,\
+  \ nn.Module]): The model to perform prediction with. Can be either a\n         \
+  \       HuggingFace PreTrainedModel or a PyTorch nn.Module.\n            inputs\
+  \ (dict[str, Union[torch.Tensor, Any]]): Dictionary containing the input data for\
+  \ the batch.\n                Expected to contain keys like 'completion_input_ids',\
+  \ 'completion_attention_mask', 'label', etc.\n                depending on the model\
+  \ configuration and task requirements.\n            prediction_loss_only (bool):\
+  \ If True, only compute and return the loss without additional outputs.\n      \
+  \          If False, also return logits and labels for further metric computation.\n\
+  \            ignore_keys (Optional[list[str]], optional): List of keys to ignore\
+  \ when extracting logits from\n                the model outputs. If None, will\
+  \ use the model's default ignore keys from config or an empty list.\n          \
+  \      Defaults to None.\n\n        Returns:\n            tuple: A tuple containing:\n\
+  \                - loss (torch.Tensor): The computed loss for the batch, detached\
+  \ from the computation graph\n                - logits (torch.Tensor or None): Model\
+  \ logits if prediction_loss_only is False, None otherwise.\n                  Contains\
+  \ chosen and rejected logits when available.\n                - labels (torch.Tensor\
+  \ or None): Labels tensor if prediction_loss_only is False, None otherwise.\n  \
+  \                Typically zeros tensor matching logits shape for KTO evaluation.\n\
+  \n        Important notes:\n            - The method automatically handles device\
+  \ placement and uses appropriate autocast context for models\n              that\
+  \ have been cast to bf16 with PEFT\n            - Metrics are automatically stored\
+  \ for logging when running on the main process\n            - The method operates\
+  \ under torch.no_grad() context to prevent gradient computation during evaluation\n\
+  \            - For KTO training, logits are extracted from metrics rather than direct\
+  \ model outputs\n            - The returned loss is moved to the appropriate device\
+  \ for compatibility with the Trainer class\n        \"\"\"\n        <your code>\n\
+  \n    def evaluation_loop(\n        self,\n        dataloader: DataLoader,\n   \
+  \     description: str,\n        prediction_loss_only: Optional[bool] = None,\n\
+  \        ignore_keys: Optional[list[str]] = None,\n        metric_key_prefix: str\
+  \ = 'eval'\n    ) -> EvalLoopOutput:\n        \"\"\"\n\n                Overriding\
+  \ built-in evaluation loop to store metrics for each batch. Prediction/evaluation\
+  \ loop, shared by\n                `Trainer.evaluate()` and `Trainer.predict()`.\n\
+  \n                Works both with or without labels.\n\n        \"\"\"\n       \
+  \ <your code>\n\n    def log(\n        self,\n        logs: dict[str, float],\n\
+  \        start_time: Optional[float] = None\n    ) -> None:\n        \"\"\"\n\n\
+  \                Log `logs` on the various objects watching training, including\
+  \ stored metrics.\n\n                Args:\n                    logs (`dict[str,\
+  \ float]`):\n                        The values to log.\n                    start_time\
+  \ (`float`, *optional*):\n                        Start time of the training.\n\n\
+  \        \"\"\"\n        <your code>\n\n    def _save_checkpoint(self, model, trial):\n\
+  \        \"\"\"\n        Save a model checkpoint during training.\n\n        This\
+  \ method creates a model card and then delegates to the parent class's checkpoint\
+  \ saving functionality. It ensures that model documentation is generated and saved\
+  \ alongside the model weights and configuration.\n\n        Parameters:\n      \
+  \      model: The model instance to save. This should be the trained model that\
+  \ will be checkpointed.\n            trial: Trial information used for hyperparameter\
+  \ optimization. This parameter is passed through to the parent class's checkpoint\
+  \ saving method and may contain trial-specific metadata.\n\n        Important notes:\n\
+  \            - This method automatically generates a model card before saving the\
+  \ checkpoint\n            - The model name is derived from either the hub_model_id\
+  \ argument or the output directory name\n            - The model card includes training\
+  \ information, citations, and metadata about the KTO training process\n        \
+  \    - This method extends the base Trainer's checkpoint saving functionality with\
+  \ KTO-specific documentation\n            - The actual checkpoint saving logic is\
+  \ handled by the parent class's _save_checkpoint method\n        \"\"\"\n      \
+  \  <your code>\n\n    def create_model_card(\n        self,\n        model_name:\
+  \ Optional[str] = None,\n        dataset_name: Optional[str] = None,\n        tags:\
+  \ Union[str, list[str], None] = None\n    ):\n        \"\"\"\n\n               \
+  \ Creates a draft of a model card using the information available to the `Trainer`.\n\
+  \n                Args:\n                    model_name (`str`, *optional*):\n \
+  \                       Name of the model.\n                    dataset_name (`str`,\
+  \ *optional*):\n                        Name of the dataset used for training.\n\
+  \                    tags (`str`, `list[str]`, *optional*):\n                  \
+  \      Tags to be associated with the model card.\n\n        \"\"\"\n        <your\
+  \ code>\n"
+interface_code_example: "class KTOConfig(TrainingArguments):\n    \"\"\"\n    \n \
+  \       Configuration class for the [`KTOTrainer`].\n    \n        This class includes\
+  \ only the parameters that are specific to KTO training. For a full list of training\
+  \ arguments,\n        please refer to the [`~transformers.TrainingArguments`] documentation.\
+  \ Note that default values in this class may\n        differ from those in [`~transformers.TrainingArguments`].\n\
+  \    \n        Using [`~transformers.HfArgumentParser`] we can turn this class into\n\
+  \        [argparse](https://docs.python.org/3/library/argparse#module-argparse)\
+  \ arguments that can be specified on the\n        command line.\n    \n        Parameters:\n\
+  \            max_length (`int` or `None`, *optional*, defaults to `1024`):\n   \
+  \             Maximum length of the sequences (prompt + completion) in the batch.\
+  \ This argument is required if you want\n                to use the default data\
+  \ collator.\n            max_prompt_length (`int` or `None`, *optional*, defaults\
+  \ to `512`):\n                Maximum length of the prompt. This argument is required\
+  \ if you want to use the default data collator.\n            max_completion_length\
+  \ (`int`, *optional*):\n                Maximum length of the completion. This argument\
+  \ is required if you want to use the default data collator\n                and\
+  \ your model is an encoder-decoder.\n            beta (`float`, *optional*, defaults\
+  \ to `0.1`):\n                Parameter controlling the deviation from the reference\
+  \ model. Higher β means less deviation from the\n                reference model.\n\
+  \            loss_type (`str`, *optional*, defaults to `\"kto\"`):\n           \
+  \     Type of loss to use. Possible values are:\n    \n                    - `\"\
+  kto\"`: KTO loss from the [KTO](https://huggingface.co/papers/2402.01306) paper.\n\
+  \                    - `\"apo_zero_unpaired\"`: Unpaired variant of APO-zero loss\
+  \ from the\n                      [APO](https://huggingface.co/papers/2408.06266)\
+  \ paper.\n    \n            desirable_weight (`float`, *optional*, defaults to `1.0`):\n\
+  \                Desirable losses are weighed by this factor to counter unequal\
+  \ number of desirable and undesirable paris.\n            undesirable_weight (`float`,\
+  \ *optional*, defaults to `1.0`):\n                Undesirable losses are weighed\
+  \ by this factor to counter unequal number of desirable and undesirable pairs.\n\
+  \            label_pad_token_id (`int`, *optional*, defaults to `-100`):\n     \
+  \           Label pad token id. This argument is required if you want to use the\
+  \ default data collator.\n            padding_value (`int`, *optional*):\n     \
+  \           Padding value to use. If `None`, the padding value of the tokenizer\
+  \ is used.\n            truncation_mode (`str`, *optional*, defaults to `\"keep_end\"\
+  `):\n                Truncation mode to use when the prompt is too long. Possible\
+  \ values are `\"keep_end\"` or `\"keep_start\"`.\n                This argument\
+  \ is required if you want to use the default data collator.\n            generate_during_eval\
+  \ (`bool`, *optional*, defaults to `False`):\n                If `True`, generates\
+  \ and logs completions from both the model and the reference model to W&B or Comet\n\
+  \                during evaluation.\n            is_encoder_decoder (`bool`, *optional*):\n\
+  \                When using the `model_init` argument (callable) to instantiate\
+  \ the model instead of the `model` argument,\n                you need to specify\
+  \ if the model returned by the callable is an encoder-decoder model.\n         \
+  \   precompute_ref_log_probs (`bool`, *optional*, defaults to `False`):\n      \
+  \          Whether to precompute reference model log probabilities for training\
+  \ and evaluation datasets. This is\n                useful when training without\
+  \ the reference model to reduce the total GPU memory needed.\n            model_init_kwargs\
+  \ (`dict[str, Any]`, *optional*):\n                Keyword arguments to pass to\
+  \ `AutoModelForCausalLM.from_pretrained` when instantiating the model from a\n \
+  \               string.\n            ref_model_init_kwargs (`dict[str, Any]`, *optional*):\n\
+  \                Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the reference model\n                from a string.\n     \
+  \       dataset_num_proc: (`int`, *optional*):\n                Number of processes\
+  \ to use for processing the dataset.\n            disable_dropout (`bool`, *optional*,\
+  \ defaults to `True`):\n                Whether to disable dropout in the model\
+  \ and reference model.\n            use_liger_loss (`bool`, *optional*, defaults\
+  \ to `False`):\n                Whether to use Liger loss. It requires liger-kernel\
+  \ to be installed.\n            base_model_attribute_name (`str`, *optional*, defaults\
+  \ to `\"model\"`):\n                Name of the attribute in the model that contains\
+  \ the base model. This is used to get the base model from\n                the model\
+  \ when the model does not have a `get_decoder` method in the case when `use_liger_loss`\
+  \ is `True`.\n        \n    \"\"\"\n\n    _VALID_DICT_FIELDS = \"TrainingArguments._VALID_DICT_FIELDS\
+  \ + ['model_init_kwargs', 'ref_model_init_kwargs']\"\n    learning_rate = \"field(default=1e-06,\
+  \ metadata={'help': 'The initial learning rate for AdamW.'})\"\n    logging_steps\
+  \ = \"field(default=10, metadata={'help': 'Log every X updates steps. Should be\
+  \ an integer or a float in range `[0,1)`. If smaller than 1, will be interpreted\
+  \ as ratio of total training steps.'})\"\n    gradient_checkpointing = \"field(default=True,\
+  \ metadata={'help': 'If True, use gradient checkpointing to save memory at the expense\
+  \ of slower backward pass.'})\"\n    bf16 = \"field(default=None, metadata={'help':\
+  \ 'Whether to use bf16 (mixed) precision instead of 32-bit. Requires Ampere or higher\
+  \ NVIDIA architecture or Intel XPU or using CPU (use_cpu) or Ascend NPU. If not\
+  \ set, it defaults to `True` if `fp16` is not set.'})\"\n    max_length = \"field(default=1024,\
+  \ metadata={'help': 'Maximum length of the sequences (prompt + completion) in the\
+  \ batch.'})\"\n    max_prompt_length = \"field(default=512, metadata={'help': 'Maximum\
+  \ length of the prompt. This argument is required if you want to use the default\
+  \ data collator and your model is an encoder-decoder.'})\"\n    max_completion_length\
+  \ = \"field(default=None, metadata={'help': 'Maximum length of the completion. This\
+  \ argument is required if you want to use the default data collator and your model\
+  \ is an encoder-decoder.'})\"\n    beta = \"field(default=0.1, metadata={'help':\
+  \ 'Parameter controlling the deviation from the reference model. Higher β means\
+  \ less deviation from the reference model.'})\"\n    loss_type = \"field(default='kto',\
+  \ metadata={'help': 'Type of loss to use.', 'choices': ['kto', 'apo_zero_unpaired']})\"\
+  \n    desirable_weight = \"field(default=1.0, metadata={'help': 'Desirable losses\
+  \ are weighed by this factor to counter unequal number of desirable and undesirable\
+  \ pairs.'})\"\n    undesirable_weight = \"field(default=1.0, metadata={'help': 'Undesirable\
+  \ losses are weighed by this factor to counter unequal number of desirable and undesirable\
+  \ pairs.'})\"\n    label_pad_token_id = \"field(default=-100, metadata={'help':\
+  \ 'Label pad token id. This argument is required if you want to use the default\
+  \ data collator.'})\"\n    padding_value = \"field(default=None, metadata={'help':\
+  \ 'Padding value to use. If `None`, the padding value of the tokenizer is used.'})\"\
+  \n    truncation_mode = \"field(default='keep_end', metadata={'help': 'Truncation\
+  \ mode to use when the prompt is too long.', 'choices': ['keep_end', 'keep_start']})\"\
+  \n    generate_during_eval = \"field(default=False, metadata={'help': 'If `True`,\
+  \ generates and logs completions from both the model and the reference model to\
+  \ W&B during evaluation.'})\"\n    is_encoder_decoder = \"field(default=None, metadata={'help':\
+  \ 'When using the `model_init` argument (callable) to instantiate the model instead\
+  \ of the `model` argument, you need to specify if the model returned by the callable\
+  \ is an encoder-decoder model.'})\"\n    disable_dropout = \"field(default=True,\
+  \ metadata={'help': 'Whether to disable dropout in the model.'})\"\n    precompute_ref_log_probs\
+  \ = \"field(default=False, metadata={'help': 'Whether to precompute reference model\
+  \ log probabilities for training and evaluation datasets. This is useful when training\
+  \ without the reference model to reduce the total GPU memory needed.'})\"\n    model_init_kwargs\
+  \ = \"field(default=None, metadata={'help': 'Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the model from a string.'})\"\n    ref_model_init_kwargs =\
+  \ \"field(default=None, metadata={'help': 'Keyword arguments to pass to `AutoModelForCausalLM.from_pretrained`\
+  \ when instantiating the reference model from a string.'})\"\n    dataset_num_proc\
+  \ = \"field(default=None, metadata={'help': 'Number of processes to use for processing\
+  \ the dataset.'})\"\n    use_liger_loss = \"field(default=False, metadata={'help':\
+  \ 'Whether to use Liger loss. It requires liger-kernel to be installed.'})\"\n \
+  \   base_model_attribute_name = \"field(default='model', metadata={'help': 'Name\
+  \ of the attribute in the model that contains the base model. This is used to get\
+  \ the base model from the model when the model does not have a `get_decoder` method\
+  \ in the case when `use_liger_loss` is `True`.'})\"\n\n    def __post_init__(self):\n\
+  \        \"\"\"\n        Post-initialization method for KTOConfig that sets default\
+  \ values and validates configuration.\n\n        This method is automatically called\
+  \ after the dataclass instance is created. It performs\n        necessary post-processing\
+  \ of the configuration parameters, including setting conditional\n        default\
+  \ values and calling the parent class's post-initialization method.\n\n        Parameters:\n\
+  \            self: The KTOConfig instance being initialized.\n\n        Return value:\n\
+  \            None: This method modifies the instance in-place and does not return\
+  \ a value.\n\n        Important notes:\n            - Automatically sets bf16 to\
+  \ True if fp16 is False and bf16 was not explicitly specified (None)\n         \
+  \   - Calls the parent TrainingArguments.__post_init__() method to ensure proper\
+  \ initialization\n              of inherited configuration parameters\n        \
+  \    - This method is part of the dataclass lifecycle and should not be called manually\n\
+  \            - The bf16 parameter logic ensures that mixed precision training defaults\
+  \ to bf16 when\n              fp16 is not being used, unless explicitly overridden\n\
+  \        \"\"\"\n        <your code>\n..."

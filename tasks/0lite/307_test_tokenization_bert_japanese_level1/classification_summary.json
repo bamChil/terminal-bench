@@ -1,0 +1,56 @@
+{
+    "file_stats": {
+        "total_files": 114,
+        "patch_count": 2,
+        "left_count": 112,
+        "distribution": {
+            "left": 112,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 736,
+        "top_count": 6,
+        "specific_count": 5,
+        "others_count": 725,
+        "distribution": {
+            "others": 725,
+            "top": 6,
+            "specific": 5
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert/tokenization_bert.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:BertJapaneseTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:MecabTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:SudachiTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:JumanppTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:CharacterTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:WordpieceTokenizer"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:BasicTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:SentencepieceTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert/tokenization_bert.py:load_vocab",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:load_vocab",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bert_japanese/tokenization_bert_japanese.py:whitespace_tokenize"
+    ],
+    "lines_code": 815,
+    "lines_code_level3": 815,
+    "test_name": "tokenization_bert_japanese",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/bert_japanese/test_tokenization_bert_japanese.py",
+    "top_imports": [
+        "transformers.models.bert_japanese.tokenization_bert_japanese.SudachiTokenizer",
+        "transformers.AutoTokenizer",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.WordpieceTokenizer",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.BertJapaneseTokenizer",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.MecabTokenizer",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.CharacterTokenizer",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.VOCAB_FILES_NAMES",
+        "transformers.models.bert_japanese.tokenization_bert_japanese.JumanppTokenizer",
+        "transformers.models.bert.tokenization_bert.BertTokenizer"
+    ]
+}

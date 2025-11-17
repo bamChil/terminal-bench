@@ -1,0 +1,59 @@
+{
+    "file_stats": {
+        "total_files": 40,
+        "patch_count": 6,
+        "left_count": 34,
+        "distribution": {
+            "left": 34,
+            "patch": 6
+        }
+    },
+    "obj_stats": {
+        "total_objects": 98,
+        "top_count": 2,
+        "specific_count": 15,
+        "others_count": 81,
+        "distribution": {
+            "others": 81,
+            "specific": 15,
+            "top": 2
+        }
+    },
+    "patch_files": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/utils.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/softmax.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/sparsemax.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/transformers/multi_token_attention.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/transformers/functional.py"
+    ],
+    "top_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/transformers/multi_token_attention.py:LigerMultiTokenAttention",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/transformers/functional.py:liger_multi_token_attention"
+    ],
+    "specific_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/utils.py:ensure_contiguous",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:LigerMultiTokenAttentionFunction",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_inf_forward",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/utils.py:calculate_settings",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/softmax.py:_softmax_forward",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_zero_forward",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/sparsemax.py:_sparsemax_forward",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/sparsemax.py:_sparsemax_forward_kernel",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/utils.py:is_hip",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/softmax.py:_softmax_single_block_forward_kernel",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/softmax.py:_softmax_multi_block_forward_kernel",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_fwd_kernel",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_bwd_kernel",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_inf_backward",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/ops/multi_token_attention.py:_mask_zero_backward"
+    ],
+    "lines_code": 258,
+    "lines_code_level3": 258,
+    "test_name": "multi_token_attention",
+    "test_file": "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/test/transformers/test_multi_token_attention.py",
+    "top_imports": [
+        "liger_kernel.transformers.functional.liger_multi_token_attention",
+        "liger_kernel.transformers.multi_token_attention.LigerMultiTokenAttention"
+    ]
+}

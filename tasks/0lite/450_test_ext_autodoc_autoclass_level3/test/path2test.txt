@@ -1,0 +1,6 @@
+sphinx/tests/test_extensions/test_ext_autodoc_autoclass.py
+sphinx/tests/test_transforms/test_transforms_post_transforms_images.py
+sphinx/tests/test_extensions/test_ext_extlinks.py
+sphinx/tests/test_transforms/test_transforms_reorder_nodes.py
+sphinx/tests/test_extensions/test_ext_intersphinx_cache.py
+sphinx/tests/test_markup/test_smartquotes.py

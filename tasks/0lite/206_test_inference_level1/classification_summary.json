@@ -1,0 +1,40 @@
+{
+    "file_stats": {
+        "total_files": 82,
+        "patch_count": 1,
+        "left_count": 81,
+        "distribution": {
+            "left": 81,
+            "patch": 1
+        }
+    },
+    "obj_stats": {
+        "total_objects": 217,
+        "top_count": 1,
+        "specific_count": 2,
+        "others_count": 214,
+        "distribution": {
+            "others": 214,
+            "top": 1,
+            "specific": 2
+        }
+    },
+    "patch_files": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/polars/py-polars/polars/io/database/_inference.py"
+    ],
+    "top_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/polars/py-polars/polars/io/database/_inference.py:dtype_from_database_typename"
+    ],
+    "specific_objects": [
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/polars/py-polars/polars/io/database/_inference.py:integer_dtype_from_nbits",
+        "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/polars/py-polars/polars/io/database/_inference.py:timeunit_from_precision"
+    ],
+    "lines_code": 222,
+    "lines_code_level3": 222,
+    "test_name": "inference",
+    "test_file": "/home/minghao.han/workspace/PB-DataPipeline/PB/real_world/test_driven/repositories/polars/py-polars/tests/unit/io/database/test_inference.py",
+    "top_imports": [
+        "polars.exceptions.ComputeError",
+        "polars.io.database._inference.dtype_from_database_typename"
+    ]
+}

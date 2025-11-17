@@ -1,0 +1,93 @@
+base_image: pb-python312_cu121_torch28-base_0953d328
+black_links:
+- https://github.com/pola-rs/polars/
+commit: null
+custom_instance_image_build: []
+docker_specs:
+  custom_docker_args:
+  - -e HTTP_PROXY=http://172.17.0.1:7893
+  - -e HTTPS_PROXY=http://172.17.0.1:7893
+  - -ee PATH=/root/.cargo/bin:${PATH}
+  run_args:
+    cap_add: []
+    cuda_visible_devices: 6,7
+install: pip install -e /testbed/py-polars[all]
+instance_image: pb-instance_5c5efe87
+library_name: polars
+pip_packages:
+- pytest
+- pytest-datadir
+pre_install:
+- export HTTP_PROXY=http://172.17.0.1:7893
+- export HTTPS_PROXY=http://172.17.0.1:7893
+- curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+- pip install maturin
+- pip install puccinialin
+- pip install -r /testbed/py-polars/requirements-ci.txt
+- pip install -r /testbed/py-polars/requirements-dev.txt
+- pip install -r /testbed/py-polars/requirements-lint.txt
+repo_name: polars
+repository: pola-rs/polars
+task_level: 1
+task_name: polars_inference
+task_statement: '**Task: Database Type Mapping**
+
+
+  Create a function that converts database-specific type names (strings) into corresponding
+  Polars data types. The system should:
+
+
+  1. **Core Functionality**: Parse and map various database type strings to appropriate
+  Polars data types
+
+  2. **Key Features**: Handle common SQL types (integers, strings, decimals, timestamps)
+  and extract parameters like precision/scale from type definitions
+
+  3. **Main Challenges**: Support diverse database type naming conventions, parse
+  parameterized types correctly, and return None for unrecognized types
+
+
+  The goal is to provide a reliable bridge between database schema information and
+  Polars'' type system for data ingestion workflows.'
+technical_docs: []
+test_cmd: pytest -rA --timeout=300
+test_code1: from polars.io.database._inference import dtype_from_database_typename
+test_code_example: from polars.io.database._inference import dtype_from_database_typename
+test_code_example_obj: dtype_from_database_typename
+test_code_example_path: /testbed/py/polars/polars/io/database/_inference.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 300
+timeout_dynamic: 3600
+timeout_run: 3600
+timeout_scanner: 3600
+interface_description1: 'Below is **Interface Description 1** for file: py-polars-polars-io-database-_inference.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def dtype_from_database_typename(value: str) -> PolarsDataType |\
+  \ None:\n    \"\"\"\n    \n        Attempt to infer Polars dtype from database cursor\
+  \ `type_code` string value.\n    \n        Examples\n        --------\n        >>>\
+  \ dtype_from_database_typename(\"INT2\")\n        Int16\n        >>> dtype_from_database_typename(\"\
+  NVARCHAR\")\n        String\n        >>> dtype_from_database_typename(\"NUMERIC(10,2)\"\
+  )\n        Decimal(precision=10, scale=2)\n        >>> dtype_from_database_typename(\"\
+  TIMESTAMP WITHOUT TZ\")\n        Datetime(time_unit='us', time_zone=None)\n    \
+  \    \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def dtype_from_database_typename(value: str) -> PolarsDataType\
+  \ | None:\n    \"\"\"\n    \n        Attempt to infer Polars dtype from database\
+  \ cursor `type_code` string value.\n    \n        Examples\n        --------\n \
+  \       >>> dtype_from_database_typename(\"INT2\")\n        Int16\n        >>> dtype_from_database_typename(\"\
+  NVARCHAR\")\n        String\n        >>> dtype_from_database_typename(\"NUMERIC(10,2)\"\
+  )\n        Decimal(precision=10, scale=2)\n        >>> dtype_from_database_typename(\"\
+  TIMESTAMP WITHOUT TZ\")\n        Datetime(time_unit='us', time_zone=None)\n    \
+  \    \n    \"\"\"\n    <your code>\n..."

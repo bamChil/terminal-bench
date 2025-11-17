@@ -1,0 +1,88 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sphinx-doc/sphinx/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e .&& python setup.py build_ext --inplace && pip install -U
+  sphinx
+instance_image: pb-instance_5fc75856
+library_name: sphinx
+pip_packages:
+- pytest>=8.0
+- pytest-xdist[psutil]>=3.4
+- pytest-timeout
+- Cython>=3.1.2
+- defusedxml>=0.7.1
+- setuptools>=70.0
+- typing_extensions>=4.9
+- threadpoolctl>=3.1.0
+- docutils>=0.18
+- Jinja2>=3.0
+- Pygments>=2.13
+- requests>=2.25.0
+- packaging>=21.0
+- babel>=2.9
+python: '3.11'
+repo_name: sphinx
+repository: sphinx-doc/sphinx
+task_level: 3
+task_name: sphinx_copyright
+task_statement: '**Task: Implement Copyright Date Management for Documentation Build
+  System**
+
+
+  **Core Functionality:**
+
+  Automatically manage and standardize copyright year information in documentation
+  during the build process.
+
+
+  **Main Features & Requirements:**
+
+  - Replace dynamic year placeholders with actual year values
+
+  - Ensure copyright years comply with reproducible build standards (SOURCE_DATE_EPOCH)
+
+  - Integrate seamlessly with Sphinx documentation framework
+
+  - Handle both placeholder substitution and year validation/correction
+
+
+  **Key Challenges:**
+
+  - Maintain build reproducibility by respecting environment-specified dates
+
+  - Balance between current date usage and deterministic build outputs
+
+  - Ensure consistent copyright information across documentation files'
+technical_docs: []
+test_cmd: python -m pytest --timeout=20
+test_code1: 'from agent_code.sphinx.config import correct_copyright_year
+
+  from agent_code.sphinx.config import evaluate_copyright_placeholders'
+test_code_example: from agent_code.sphinx.config import correct_copyright_year
+test_code_example_obj: correct_copyright_year
+test_code_example_path: /testbed/agent_code/sphinx/config.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: sphinx-config.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def evaluate_copyright_placeholders(_app: Sphinx, config: Config)\
+  \ -> None:\n    \"\"\"\n    Replace copyright year placeholders (%Y) with the current\
+  \ year.\n    \"\"\"\n    <your code>\n\ndef correct_copyright_year(_app: Sphinx,\
+  \ config: Config) -> None:\n    \"\"\"\n    Correct values of copyright year that\
+  \ are not coherent with\n        the SOURCE_DATE_EPOCH environment variable (if\
+  \ set)\n    \n        See https://reproducible-builds.org/specs/source-date-epoch/\n\
+  \        \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def correct_copyright_year(_app: Sphinx, config: Config)\
+  \ -> None:\n    \"\"\"\n    Correct values of copyright year that are not coherent\
+  \ with\n        the SOURCE_DATE_EPOCH environment variable (if set)\n    \n    \
+  \    See https://reproducible-builds.org/specs/source-date-epoch/\n        \n  \
+  \  \"\"\"\n    <your code>\n..."

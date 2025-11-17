@@ -1,0 +1,6 @@
+sphinx/tests/test_config/test_copyright.py
+sphinx/tests/test_pycode/test_pycode_ast.py
+sphinx/tests/test_util/test_util_inspect.py
+sphinx/tests/test_extensions/test_ext_napoleon.py
+sphinx/tests/test_events.py
+sphinx/tests/test_pycode/test_pycode.py

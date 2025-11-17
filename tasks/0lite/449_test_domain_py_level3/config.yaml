@@ -1,0 +1,404 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sphinx-doc/sphinx/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e .&& python setup.py build_ext --inplace && pip install -U
+  sphinx
+instance_image: pb-instance_5fc75856
+library_name: sphinx
+pip_packages:
+- pytest>=8.0
+- pytest-xdist[psutil]>=3.4
+- pytest-timeout
+- Cython>=3.1.2
+- defusedxml>=0.7.1
+- setuptools>=70.0
+- typing_extensions>=4.9
+- threadpoolctl>=3.1.0
+- docutils>=0.18
+- Jinja2>=3.0
+- Pygments>=2.13
+- requests>=2.25.0
+- packaging>=21.0
+- babel>=2.9
+python: '3.11'
+repo_name: sphinx
+repository: sphinx-doc/sphinx
+task_level: 3
+task_name: sphinx_domain_py
+task_statement: '**Task: Python Documentation Domain Parser and Cross-Reference System**
+
+
+  **Core Functionalities:**
+
+  Build a Python-specific documentation domain system that parses Python code signatures,
+  manages object registries, and resolves cross-references between Python modules,
+  classes, and functions.
+
+
+  **Main Features & Requirements:**
+
+  - Parse Python type annotations and function argument lists with optional parameter
+  support
+
+  - Maintain registries of Python objects (modules, classes, functions) with metadata
+  (location, type, deprecation status)
+
+  - Generate hierarchical module indices with automatic grouping and collapsing
+
+  - Resolve cross-references using fuzzy matching and fallback strategies
+
+  - Support parallel build environments with data merging capabilities
+
+  - Handle aliased objects and provide search prioritization
+
+
+  **Key Challenges:**
+
+  - Accurate parsing of complex Python signatures while handling edge cases (e.g.,
+  commas in string literals)
+
+  - Efficient object lookup across module/class hierarchies with multiple search modes
+
+  - Managing object lifecycle during document rebuilds and parallel processing
+
+  - Balancing search relevance between canonical and aliased object references
+
+  - Maintaining data consistency across distributed build processes'
+technical_docs: []
+test_cmd: python -m pytest --timeout=20
+test_code1: 'from agent_code.sphinx.domains.python import PythonDomain
+
+  from agent_code.sphinx.domains.python import PythonModuleIndex
+
+  from agent_code.sphinx.domains.python._annotations import _parse_annotation
+
+  from agent_code.sphinx.domains.python._annotations import _pseudo_parse_arglist'
+test_code_example: from agent_code.sphinx.domains.python import PythonDomain
+test_code_example_obj: PythonDomain
+test_code_example_path: /testbed/agent_code/sphinx/domains/python.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: sphinx-domains-python-_annotations.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def _parse_annotation(\n    annotation: str,\n    env: BuildEnvironment\n\
+  ) -> list[Node]:\n    \"\"\"\n    Parse type annotation.\n    \"\"\"\n    <your\
+  \ code>\n\ndef _pseudo_parse_arglist(\n    signode: desc_signature,\n    arglist:\
+  \ str\n) -> None:\n    \"\"\"\n    'Parse' a list of arguments separated by commas.\n\
+  \    \n        Arguments can have \"optional\" annotations given by enclosing them\
+  \ in\n        brackets.  Currently, this will split at any comma, even if it's inside\
+  \ a\n        string literal (e.g. default argument value).\n        \n    \"\"\"\
+  \n    <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: sphinx-domains-python-__init__.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class PythonModuleIndex(Index):\n    \"\"\"\n    Index subclass\
+  \ to provide the Python module index.\n    \"\"\"\n\n    name = \"modindex\"\n \
+  \   localname = \"_('Python Module Index')\"\n    shortname = \"_('modules')\"\n\
+  \    domain: PythonDomain\n\n    def generate(\n        self,\n        docnames:\
+  \ Iterable[str] | None = None\n    ) -> tuple[list[tuple[str, list[IndexEntry]]],\
+  \ bool]:\n        \"\"\"\n        Generate index entries for Python modules.\n\n\
+  \        This method creates a hierarchical index of Python modules, organizing\
+  \ them alphabetically\n        and applying collapsible grouping for submodules.\
+  \ The index includes module metadata\n        such as platform information, deprecation\
+  \ status, and synopsis.\n\n        Parameters\n        ----------\n        docnames\
+  \ : Iterable[str] | None, optional\n            An iterable of document names to\
+  \ filter the modules by. If provided, only\n            modules whose docname is\
+  \ in this collection will be included in the index.\n            If None (default),\
+  \ all modules in the domain will be included.\n\n        Returns\n        -------\n\
+  \        tuple[list[tuple[str, list[IndexEntry]]], bool]\n            A tuple containing:\n\
+  \            - A list of tuples where each tuple contains:\n                - A\
+  \ string representing the first letter (lowercase) of module names\n           \
+  \     - A list of IndexEntry objects for modules starting with that letter\n   \
+  \         - A boolean indicating whether the index should be collapsed by default\n\
+  \              (True if the number of submodules exceeds the number of top-level\
+  \ modules)\n\n        Notes\n        -----\n        - Module names are processed\
+  \ to remove common prefixes as specified in the\n          'modindex_common_prefix'\
+  \ configuration option\n        - Submodules are automatically grouped under their\
+  \ parent modules with\n          appropriate indentation levels (subtype 0 for top-level,\
+  \ 1 for parent\n          groups, 2 for submodules)\n        - Dummy entries are\
+  \ created for submodules that don't have their parent\n          module explicitly\
+  \ listed\n        - The collapse heuristic helps improve user experience by automatically\n\
+  \          collapsing large module hierarchies\n        - IndexEntry objects include\
+  \ module metadata like platform, deprecation\n          status, and synopsis information\n\
+  \        \"\"\"\n        <your code>\n\nclass PythonDomain(Domain):\n    \"\"\"\n\
+  \    Python language domain.\n    \"\"\"\n\n    name = \"py\"\n    label = \"Python\"\
+  \n    object_types = \"{'function': ObjType(_('function'), 'func', 'obj'), 'data':\
+  \ ObjType(_('data'), 'data', 'obj'), 'class': ObjType(_('class'), 'class', 'exc',\
+  \ 'obj'), 'exception': ObjType(_('exception'), 'exc', 'class', 'obj'), 'method':\
+  \ ObjType(_('method'), 'meth', 'obj'), 'classmethod': ObjType(_('class method'),\
+  \ 'meth', 'obj'), 'staticmethod': ObjType(_('static method'), 'meth', 'obj'), 'attribute':\
+  \ ObjType(_('attribute'), 'attr', 'obj'), 'property': ObjType(_('property'), 'attr',\
+  \ '_prop', 'obj'), 'type': ObjType(_('type alias'), 'type', 'obj'), 'module': ObjType(_('module'),\
+  \ 'mod', 'obj')}\"\n    directives = \"{'function': PyFunction, 'data': PyVariable,\
+  \ 'class': PyClasslike, 'exception': PyClasslike, 'method': PyMethod, 'classmethod':\
+  \ PyClassMethod, 'staticmethod': PyStaticMethod, 'attribute': PyAttribute, 'property':\
+  \ PyProperty, 'type': PyTypeAlias, 'module': PyModule, 'currentmodule': PyCurrentModule,\
+  \ 'decorator': PyDecoratorFunction, 'decoratormethod': PyDecoratorMethod}\"\n  \
+  \  roles = \"{'data': PyXRefRole(), 'exc': PyXRefRole(), 'func': PyXRefRole(fix_parens=True),\
+  \ 'deco': _PyDecoXRefRole(), 'class': PyXRefRole(), 'const': PyXRefRole(), 'attr':\
+  \ PyXRefRole(), 'type': PyXRefRole(), 'meth': PyXRefRole(fix_parens=True), 'mod':\
+  \ PyXRefRole(), 'obj': PyXRefRole()}\"\n    initial_data = {'objects': {}, 'modules':\
+  \ {}}\n    indices = \"[PythonModuleIndex]\"\n\n    @property\n    def objects(self)\
+  \ -> dict[str, ObjectEntry]:\n        \"\"\"\n        Property that provides access\
+  \ to the Python domain's object registry.\n\n        This property returns a dictionary\
+  \ mapping fully qualified object names to their\n        corresponding ObjectEntry\
+  \ instances, which contain metadata about documented\n        Python objects in\
+  \ the domain.\n\n        Returns:\n            dict[str, ObjectEntry]: A dictionary\
+  \ where keys are fully qualified object\n                names (e.g., 'module.Class.method')\
+  \ and values are ObjectEntry named\n                tuples containing:\n       \
+  \         - docname: The document name where the object is defined\n           \
+  \     - node_id: The unique identifier for the object's node\n                -\
+  \ objtype: The type of the object (e.g., 'function', 'class', 'method')\n      \
+  \          - aliased: Boolean indicating if this is an alias to another object\n\
+  \n        Notes:\n            - The returned dictionary is retrieved from the domain's\
+  \ data storage and\n              is automatically created if it doesn't exist\n\
+  \            - This registry is used internally by Sphinx for cross-reference resolution\n\
+  \              and object lookup operations\n            - The dictionary is shared\
+  \ across the entire documentation build process\n              and persists object\
+  \ information for generating indices and resolving\n              references\n \
+  \       \"\"\"\n        <your code>\n\n    def note_object(\n        self,\n   \
+  \     name: str,\n        objtype: str,\n        node_id: str,\n        aliased:\
+  \ bool = False,\n        location: Any = None\n    ) -> None:\n        \"\"\"\n\
+  \        Note a python object for cross reference.\n\n                .. versionadded::\
+  \ 2.1\n\n        \"\"\"\n        <your code>\n\n    @property\n    def modules(self)\
+  \ -> dict[str, ModuleEntry]:\n        \"\"\"\n        Property that provides access\
+  \ to the Python domain's module registry.\n\n        This property returns a dictionary\
+  \ containing all Python modules that have been\n        documented and registered\
+  \ within the current Sphinx documentation build. Each\n        module entry contains\
+  \ metadata about the module including its location,\n        synopsis, platform\
+  \ information, and deprecation status.\n\n        Returns:\n            dict[str,\
+  \ ModuleEntry]: A dictionary mapping module names to ModuleEntry\n             \
+  \   objects. Each ModuleEntry contains:\n                - docname: The document\
+  \ name where the module is defined\n                - node_id: The unique identifier\
+  \ for the module's target node\n                - synopsis: A brief description\
+  \ of the module's purpose\n                - platform: Platform-specific information\
+  \ for the module\n                - deprecated: Boolean indicating if the module\
+  \ is deprecated\n\n        Notes:\n            This property provides read-only\
+  \ access to the modules data structure.\n            The underlying data is automatically\
+  \ managed by the domain when modules\n            are processed during documentation\
+  \ building. Module entries are created\n            via the note_module() method\
+  \ when py:module directives are encountered.\n\n            The returned dictionary\
+  \ is used internally by Sphinx for cross-reference\n            resolution, index\
+  \ generation, and module listing functionality.\n        \"\"\"\n        <your code>\n\
+  \n    def note_module(\n        self,\n        name: str,\n        node_id: str,\n\
+  \        synopsis: str,\n        platform: str,\n        deprecated: bool\n    )\
+  \ -> None:\n        \"\"\"\n        Note a python module for cross reference.\n\n\
+  \                .. versionadded:: 2.1\n\n        \"\"\"\n        <your code>\n\n\
+  \    def clear_doc(self, docname: str) -> None:\n        \"\"\"\n        Clear all\
+  \ Python objects and modules associated with a specific document.\n\n        This\
+  \ method removes all Python domain entries (objects and modules) that belong\n \
+  \       to the specified document from the domain's internal data structures. It\
+  \ is\n        typically called when a document is being rebuilt or removed to ensure\
+  \ that\n        stale references are cleaned up.\n\n        Parameters\n       \
+  \ ----------\n        docname : str\n            The name of the document whose\
+  \ Python objects and modules should be\n            removed from the domain. This\
+  \ should match the docname used when the\n            objects were originally registered.\n\
+  \n        Returns\n        -------\n        None\n            This method does not\
+  \ return any value.\n\n        Notes\n        -----\n        This method performs\
+  \ a two-phase cleanup:\n\n        1. **Objects cleanup**: Iterates through all registered\
+  \ Python objects \n           (functions, classes, methods, attributes, etc.) and\
+  \ removes those that\n           belong to the specified document.\n\n        2.\
+  \ **Modules cleanup**: Iterates through all registered Python modules\n        \
+  \   and removes those that belong to the specified document.\n\n        The method\
+  \ uses list comprehension to identify objects to remove before\n        deletion\
+  \ to avoid modifying dictionaries during iteration, which could\n        cause runtime\
+  \ errors.\n\n        This is an internal method used by Sphinx's build system during\
+  \ document\n        processing and should not typically be called directly by user\
+  \ code.\n        \"\"\"\n        <your code>\n\n    def merge_domaindata(\n    \
+  \    self,\n        docnames: Set[str],\n        otherdata: dict[str, Any]\n   \
+  \ ) -> None:\n        \"\"\"\n        Merge domain data from another environment\
+  \ during parallel builds.\n\n        This method is called during parallel documentation\
+  \ builds to merge Python domain\n        data from worker processes back into the\
+  \ main environment. It integrates object\n        definitions and module information\
+  \ that were collected in separate processes.\n\n        Parameters:\n          \
+  \  docnames (Set[str]): A set of document names that are being merged from the\n\
+  \                other environment. Only objects and modules belonging to documents\
+  \ in\n                this set will be merged to avoid conflicts with data from\
+  \ other sources.\n            otherdata (dict[str, Any]): The domain data dictionary\
+  \ from another environment\n                containing 'objects' and 'modules' keys.\
+  \ The 'objects' key maps object\n                names to ObjectEntry instances,\
+  \ while 'modules' key maps module names to\n                ModuleEntry instances.\n\
+  \n        Returns:\n            None: This method modifies the current domain's\
+  \ data in-place and does not\n            return any value.\n\n        Important\
+  \ Notes:\n            - Only merges data for documents specified in the docnames\
+  \ parameter to ensure\n              data consistency across parallel builds\n \
+  \           - Does not perform duplicate checking (as noted by the XXX comment),\
+  \ so the\n              calling code should ensure data integrity\n            -\
+  \ Modifies the current domain's objects and modules dictionaries directly\n    \
+  \        - This method is essential for the proper functioning of Sphinx's parallel\n\
+  \              build feature for Python documentation\n        \"\"\"\n        <your\
+  \ code>\n\n    def find_obj(\n        self,\n        env: BuildEnvironment,\n  \
+  \      modname: str,\n        classname: str,\n        name: str,\n        type:\
+  \ str | None,\n        searchmode: int = 0\n    ) -> list[tuple[str, ObjectEntry]]:\n\
+  \        \"\"\"\n        Find a Python object for \"name\", perhaps using the given\
+  \ module\n                and/or classname.  Returns a list of (name, object entry)\
+  \ tuples.\n\n        \"\"\"\n        <your code>\n\n    def resolve_xref(\n    \
+  \    self,\n        env: BuildEnvironment,\n        fromdocname: str,\n        builder:\
+  \ Builder,\n        type: str,\n        target: str,\n        node: pending_xref,\n\
+  \        contnode: Element\n    ) -> nodes.reference | None:\n        \"\"\"\n \
+  \       Resolve cross-references for Python objects in the documentation.\n\n  \
+  \      This method is responsible for resolving cross-references (xrefs) to Python\
+  \ objects\n        such as classes, functions, methods, modules, etc. It searches\
+  \ for the target object\n        in the domain's registry and creates appropriate\
+  \ reference nodes if found.\n\n        Parameters:\n            env (BuildEnvironment):\
+  \ The Sphinx build environment containing the documentation state\n            fromdocname\
+  \ (str): The name of the document containing the cross-reference\n            builder\
+  \ (Builder): The Sphinx builder being used to generate the documentation\n     \
+  \       type (str): The type of reference being resolved (e.g., 'class', 'func',\
+  \ 'mod', 'attr')\n            target (str): The target object name to resolve (may\
+  \ include module/class qualifiers)\n            node (pending_xref): The pending\
+  \ cross-reference node that needs to be resolved\n            contnode (Element):\
+  \ The content node that will be used as the link text\n\n        Returns:\n    \
+  \        nodes.reference | None: A reference node linking to the target object if\
+  \ found,\n            or None if the target cannot be resolved. The reference includes\
+  \ the appropriate\n            document name, anchor, and display text.\n\n    \
+  \    Important notes:\n            - Uses different search modes: exact match (searchmode=0)\
+  \ or fuzzy search (searchmode=1)\n            - Implements fallback resolution for\
+  \ certain object types (e.g., 'class' falls back to 'data'/'attr' for type aliases)\n\
+  \            - Handles module context and class context from the cross-reference\
+  \ node\n            - Prioritizes canonical (non-aliased) matches when multiple\
+  \ targets are found\n            - Emits warnings when multiple non-aliased targets\
+  \ exist for the same reference\n            - Special handling for module references\
+  \ using _make_module_refnode method\n            - Supports conditional content\
+  \ resolution based on pending_xref_condition\n        \"\"\"\n        <your code>\n\
+  \n    def resolve_any_xref(\n        self,\n        env: BuildEnvironment,\n   \
+  \     fromdocname: str,\n        builder: Builder,\n        target: str,\n     \
+  \   node: pending_xref,\n        contnode: Element\n    ) -> list[tuple[str, nodes.reference]]:\n\
+  \        \"\"\"\n        Resolve cross-references for the :any: role in the Python\
+  \ domain.\n\n        This method handles cross-reference resolution when using the\
+  \ :any: role, which can\n        reference any type of Python object (modules, classes,\
+  \ functions, etc.) without\n        specifying the exact object type.\n\n      \
+  \  Parameters:\n            env (BuildEnvironment): The Sphinx build environment\
+  \ containing the documentation state\n            fromdocname (str): The name of\
+  \ the document containing the cross-reference\n            builder (Builder): The\
+  \ Sphinx builder being used for output generation\n            target (str): The\
+  \ target name to resolve (e.g., 'MyClass', 'my_function')\n            node (pending_xref):\
+  \ The pending cross-reference node to be resolved\n            contnode (Element):\
+  \ The content node that will be used as the link text\n\n        Returns:\n    \
+  \        list[tuple[str, nodes.reference]]: A list of tuples where each tuple contains:\n\
+  \                - str: The role name (e.g., 'py:class', 'py:func', 'py:mod')\n\
+  \                - nodes.reference: The resolved reference node that can be used\
+  \ as a link\n\n        Important notes:\n            - Always searches in \"refspecific\"\
+  \ mode (searchmode=1) when used with :any: role\n            - Skips aliased objects\
+  \ when multiple matches are found to avoid duplicates\n            - Handles modules\
+  \ specially by creating module reference nodes with additional metadata\n      \
+  \      - For non-module objects, uses pending cross-reference conditions to determine\
+  \ content\n            - Returns empty list if no matches are found\n          \
+  \  - The role name in returned tuples is prefixed with 'py:' followed by the appropriate\
+  \ object type\n        \"\"\"\n        <your code>\n\n    def _make_module_refnode(\n\
+  \        self,\n        builder: Builder,\n        fromdocname: str,\n        name:\
+  \ str,\n        contnode: Node\n    ) -> nodes.reference:\n        \"\"\"\n    \
+  \    Create a reference node for a Python module cross-reference.\n\n        This\
+  \ method generates a reference node specifically for Python modules, including\n\
+  \        additional metadata such as synopsis, deprecation status, and platform\
+  \ information\n        in the reference title.\n\n        Parameters:\n        \
+  \    builder (Builder): The Sphinx builder instance used for generating the documentation.\n\
+  \                Contains configuration and methods needed for creating cross-references.\n\
+  \            fromdocname (str): The name of the document from which the reference\
+  \ originates.\n                Used to calculate relative paths and handle cross-document\
+  \ linking.\n            name (str): The fully qualified name of the module being\
+  \ referenced.\n                Must exist as a key in the domain's modules dictionary.\n\
+  \            contnode (Node): The content node that will be wrapped by the reference.\n\
+  \                Typically contains the display text for the reference link.\n\n\
+  \        Returns:\n            nodes.reference: A docutils reference node that links\
+  \ to the specified module.\n                The node includes enhanced title information\
+  \ with module synopsis,\n                deprecation warnings, and platform details\
+  \ when available.\n\n        Important notes:\n            - The module specified\
+  \ by 'name' must exist in self.modules, otherwise a KeyError\n              will\
+  \ be raised when accessing module information.\n            - The reference title\
+  \ is constructed by combining the module name with optional\n              synopsis\
+  \ (prefixed with ': '), deprecation notice (' (deprecated)'), and\n            \
+  \  platform information (formatted as ' (platform_name)').\n            - This method\
+  \ is specifically designed for module references and should not be\n           \
+  \   used for other Python object types like classes, functions, or methods.\n  \
+  \      \"\"\"\n        <your code>\n\n    def get_objects(self) -> Iterator[tuple[str,\
+  \ str, str, str, str, int]]:\n        \"\"\"\n        Retrieve all documented Python\
+  \ objects from the domain for indexing and search purposes.\n\n        This method\
+  \ iterates through all modules and objects registered in the Python domain\n   \
+  \     and yields information about each one for use in Sphinx's object inventory\
+  \ system.\n        The yielded data is used for cross-referencing, search functionality,\
+  \ and generating\n        object inventories.\n\n        Returns:\n            Iterator[tuple[str,\
+  \ str, str, str, str, int]]: An iterator yielding tuples containing:\n         \
+  \       - name (str): The display name of the object\n                - dispname\
+  \ (str): The display name for presentation (same as name)\n                - type\
+  \ (str): The object type ('module', 'function', 'class', etc.)\n               \
+  \ - docname (str): The document name where the object is defined\n             \
+  \   - anchor (str): The HTML anchor/node ID for linking to the object\n        \
+  \        - priority (int): Search priority where:\n                    * 0: Standard\
+  \ priority for modules\n                    * 1: High priority for regular (non-aliased)\
+  \ objects\n                    * -1: Low priority for aliased objects (not full-text\
+  \ searchable)\n\n        Notes:\n            - Modules are processed first and always\
+  \ have priority 0\n            - Aliased objects receive priority -1 to exclude\
+  \ them from full-text search\n            - Regular objects receive priority 1 for\
+  \ normal search ranking\n            - Module objects are explicitly filtered out\
+  \ from the objects collection\n              since they are already handled separately\
+  \ from the modules collection\n        \"\"\"\n        <your code>\n\n    def get_full_qualified_name(self,\
+  \ node: Element) -> str | None:\n        \"\"\"\n        Retrieve the fully qualified\
+  \ name for a Python object reference node.\n\n        This method constructs a complete\
+  \ dotted name path for a Python object by combining\n        the module name, class\
+  \ name, and target reference from the given docutils Element node.\n\n        Parameters\n\
+  \        ----------\n        node : Element\n            A docutils Element node\
+  \ representing a Python object reference. The node is\n            expected to contain\
+  \ attributes for 'py:module', 'py:class', and 'reftarget'\n            that are\
+  \ used to construct the qualified name.\n\n        Returns\n        -------\n  \
+  \      str | None\n            The fully qualified name as a dotted string (e.g.,\
+  \ 'module.class.target'),\n            or None if the node does not contain a 'reftarget'\
+  \ attribute. Empty or None\n            components are automatically filtered out\
+  \ from the final name.\n\n        Notes\n        -----\n        - The method extracts\
+  \ three key attributes from the node:\n          - 'py:module': The module name\
+  \ containing the object\n          - 'py:class': The class name containing the object\
+  \ (if applicable)  \n          - 'reftarget': The target object name being referenced\n\
+  \        - Components are joined with dots only if they are not None or empty strings\n\
+  \        - If 'reftarget' is None, the method returns None immediately since no\
+  \ valid\n          reference target exists\n        - This is commonly used in Sphinx\
+  \ documentation processing to resolve cross-references\n          and generate proper\
+  \ linking between Python objects\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class PythonDomain(Domain):\n    \"\"\"\n    Python language\
+  \ domain.\n    \"\"\"\n\n    name = \"py\"\n    label = \"Python\"\n    object_types\
+  \ = \"{'function': ObjType(_('function'), 'func', 'obj'), 'data': ObjType(_('data'),\
+  \ 'data', 'obj'), 'class': ObjType(_('class'), 'class', 'exc', 'obj'), 'exception':\
+  \ ObjType(_('exception'), 'exc', 'class', 'obj'), 'method': ObjType(_('method'),\
+  \ 'meth', 'obj'), 'classmethod': ObjType(_('class method'), 'meth', 'obj'), 'staticmethod':\
+  \ ObjType(_('static method'), 'meth', 'obj'), 'attribute': ObjType(_('attribute'),\
+  \ 'attr', 'obj'), 'property': ObjType(_('property'), 'attr', '_prop', 'obj'), 'type':\
+  \ ObjType(_('type alias'), 'type', 'obj'), 'module': ObjType(_('module'), 'mod',\
+  \ 'obj')}\"\n    directives = \"{'function': PyFunction, 'data': PyVariable, 'class':\
+  \ PyClasslike, 'exception': PyClasslike, 'method': PyMethod, 'classmethod': PyClassMethod,\
+  \ 'staticmethod': PyStaticMethod, 'attribute': PyAttribute, 'property': PyProperty,\
+  \ 'type': PyTypeAlias, 'module': PyModule, 'currentmodule': PyCurrentModule, 'decorator':\
+  \ PyDecoratorFunction, 'decoratormethod': PyDecoratorMethod}\"\n    roles = \"{'data':\
+  \ PyXRefRole(), 'exc': PyXRefRole(), 'func': PyXRefRole(fix_parens=True), 'deco':\
+  \ _PyDecoXRefRole(), 'class': PyXRefRole(), 'const': PyXRefRole(), 'attr': PyXRefRole(),\
+  \ 'type': PyXRefRole(), 'meth': PyXRefRole(fix_parens=True), 'mod': PyXRefRole(),\
+  \ 'obj': PyXRefRole()}\"\n    initial_data = {'objects': {}, 'modules': {}}\n  \
+  \  indices = \"[PythonModuleIndex]\"\n\n    @property\n    def objects(self) ->\
+  \ dict[str, ObjectEntry]:\n        \"\"\"\n        Property that provides access\
+  \ to the Python domain's object registry.\n\n        This property returns a dictionary\
+  \ mapping fully qualified object names to their\n        corresponding ObjectEntry\
+  \ instances, which contain metadata about documented\n        Python objects in\
+  \ the domain.\n\n        Returns:\n            dict[str, ObjectEntry]: A dictionary\
+  \ where keys are fully qualified object\n                names (e.g., 'module.Class.method')\
+  \ and values are ObjectEntry named\n                tuples containing:\n       \
+  \         - docname: The document name where the object is defined\n           \
+  \     - node_id: The unique identifier for the object's node\n                -\
+  \ objtype: The type of the object (e.g., 'function', 'class', 'method')\n      \
+  \          - aliased: Boolean indicating if this is an alias to another object\n\
+  \n        Notes:\n            - The returned dictionary is retrieved from the domain's\
+  \ data storage and\n              is automatically created if it doesn't exist\n\
+  \            - This registry is used internally by Sphinx for cross-reference resolution\n\
+  \              and object lookup operations\n            - The dictionary is shared\
+  \ across the entire documentation build process\n              and persists object\
+  \ information for generating indices and resolving\n              references\n \
+  \       \"\"\"\n        <your code>\n..."

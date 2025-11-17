@@ -1,0 +1,52 @@
+{
+    "file_stats": {
+        "total_files": 122,
+        "patch_count": 5,
+        "left_count": 117,
+        "distribution": {
+            "left": 117,
+            "patch": 5
+        }
+    },
+    "obj_stats": {
+        "total_objects": 775,
+        "top_count": 2,
+        "specific_count": 9,
+        "others_count": 764,
+        "distribution": {
+            "others": 764,
+            "top": 2,
+            "specific": 9
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/osutil.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/linkcheck.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/manpage.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/texinfo.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:correct_copyright_year",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:evaluate_copyright_placeholders"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:_substitute_copyright_year",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:_read_conf_py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:eval_config_file",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/config.py:_validate_valid_types",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/linkcheck.py:_SENTINEL_LAR",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/osutil.py:make_filename",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/osutil.py:make_filename_from_project",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/manpage.py:default_man_pages",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/builders/texinfo.py:default_texinfo_documents"
+    ],
+    "lines_code": 168,
+    "lines_code_level3": 168,
+    "test_name": "copyright",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/tests/test_config/test_copyright.py",
+    "top_imports": [
+        "sphinx.config.evaluate_copyright_placeholders",
+        "sphinx.config.correct_copyright_year"
+    ]
+}

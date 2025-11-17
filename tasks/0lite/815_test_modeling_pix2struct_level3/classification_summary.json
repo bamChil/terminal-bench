@@ -1,0 +1,66 @@
+{
+    "file_stats": {
+        "total_files": 509,
+        "patch_count": 3,
+        "left_count": 506,
+        "distribution": {
+            "left": 506,
+            "patch": 3
+        }
+    },
+    "obj_stats": {
+        "total_objects": 3768,
+        "top_count": 7,
+        "specific_count": 15,
+        "others_count": 3746,
+        "distribution": {
+            "others": 3746,
+            "top": 7,
+            "specific": 15
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/configuration_pix2struct.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/processing_pix2struct.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/configuration_pix2struct.py:Pix2StructTextConfig",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/configuration_pix2struct.py:Pix2StructVisionConfig",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/configuration_pix2struct.py:Pix2StructConfig",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionModel",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextModel",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructForConditionalGeneration",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/processing_pix2struct.py:Pix2StructProcessor"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructLayerNorm",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionEmbeddings",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionAttention",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionMlp",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionLayer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructVisionEncoder",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructPreTrainedModel",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextDenseGatedActDense",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextLayerFF",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextAttention",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextLayerSelfAttention",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextLayerCrossAttention",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/modeling_pix2struct.py:Pix2StructTextBlock",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/processing_pix2struct.py:Pix2StructImagesKwargs",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/pix2struct/processing_pix2struct.py:Pix2StructProcessorKwargs"
+    ],
+    "lines_code": 1869,
+    "lines_code_level3": 1869,
+    "test_name": "modeling_pix2struct",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/pix2struct/test_modeling_pix2struct.py",
+    "top_imports": [
+        "transformers.Pix2StructTextConfig",
+        "transformers.Pix2StructVisionModel",
+        "transformers.Pix2StructConfig",
+        "transformers.Pix2StructForConditionalGeneration",
+        "transformers.Pix2StructProcessor",
+        "transformers.Pix2StructVisionConfig",
+        "transformers.Pix2StructTextModel"
+    ]
+}

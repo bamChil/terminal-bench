@@ -1,0 +1,6 @@
+transformers/tests/models/bamba/test_modeling_bamba.py
+transformers/tests/models/speech_to_text/test_tokenization_speech_to_text.py
+transformers/tests/models/clvp/test_processing_clvp.py
+transformers/tests/models/llava_onevision/test_modeling_llava_onevision.py
+transformers/tests/models/gemma3n/test_feature_extraction_gemma3n.py
+transformers/tests/utils/test_versions_utils.py

@@ -1,0 +1,6 @@
+transformers/tests/models/pix2struct/test_modeling_pix2struct.py
+transformers/tests/models/blip/test_image_processing_blip.py
+transformers/tests/test_executorch.py
+transformers/tests/repo_utils/test_check_copies.py
+transformers/tests/models/granite_speech/test_modeling_granite_speech.py
+transformers/tests/models/idefics/test_processing_idefics.py

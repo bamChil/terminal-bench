@@ -1,0 +1,99 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sympy/sympy
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e .
+instance_image: pb-instance_f0fa76e1
+library_name: sympy
+pip_packages:
+- mpmath
+- pytest
+- pytest-xdist
+- pytest-timeout
+- pytest-split
+- pytest-doctestplus
+- hypothesis
+- flake8
+- flake8-comprehensions
+repo_name: sympy
+repository: sympy/sympy
+task_level: 1
+task_name: sympy_runtests_pytest
+task_statement: '**Task: Test Path Management and Resolution System**
+
+
+  **Core Functionality:**
+
+  Build a system that manages and resolves file paths for test execution, handling
+  both absolute and partial path inputs.
+
+
+  **Main Features & Requirements:**
+
+  - Locate and return the root project directory
+
+  - Process various path input formats (empty, full paths, partial paths)
+
+  - Convert partial paths to absolute paths for reliable execution
+
+  - Validate and prepare path arguments for test framework integration
+
+
+  **Key Challenges:**
+
+  - Handle multiple path input scenarios robustly
+
+  - Ensure path resolution works across different directory structures
+
+  - Maintain compatibility with testing framework requirements
+
+  - Avoid errors from invalid or nonexistent paths'
+technical_docs: []
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from sympy.testing.runtests_pytest import make_absolute_path
+
+  from sympy.testing.runtests_pytest import sympy_dir
+
+  from sympy.testing.runtests_pytest import update_args_with_paths'
+test_code_example: from sympy.testing.runtests_pytest import make_absolute_path
+test_code_example_obj: make_absolute_path
+test_code_example_path: /testbed/sympy/testing/runtests_pytest.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: sympy-testing-runtests_pytest.py
+
+
+  This file contains 3 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "@functools.lru_cache\ndef sympy_dir() -> pathlib.Path:\n    \"\"\
+  \"\n    Returns the root SymPy directory.\n    \"\"\"\n    <your code>\n\ndef update_args_with_paths(\n\
+  \    paths: List[str],\n    keywords: Optional[Tuple[str]],\n    args: List[str]\n\
+  ) -> List[str]:\n    \"\"\"\n    Appends valid paths and flags to the args `list`\
+  \ passed to `pytest.main`.\n    \n        The are three different types of \"path\"\
+  \ that a user may pass to the `paths`\n        positional arguments, all of which\
+  \ need to be handled slightly differently:\n    \n        1. Nothing is passed\n\
+  \            The paths to the `testpaths` defined in `pytest.ini` need to be appended\n\
+  \            to the arguments list.\n        2. Full, valid paths are passed\n \
+  \           These paths need to be validated but can then be directly appended to\n\
+  \            the arguments list.\n        3. Partial paths are passed.\n       \
+  \     The `testpaths` defined in `pytest.ini` need to be recursed and any\n    \
+  \        matches be appended to the arguments list.\n    \n        \n    \"\"\"\n\
+  \    <your code>\n\ndef make_absolute_path(partial_path: str) -> str:\n    \"\"\"\
+  \n    Convert a partial path to an absolute path.\n    \n        A path such a `sympy/core`\
+  \ might be needed. However, absolute paths should\n        be used in the arguments\
+  \ to pytest in all cases as it avoids errors that\n        arise from nonexistent\
+  \ paths.\n    \n        This function assumes that partial_paths will be passed\
+  \ in such that they\n        begin with the explicit `sympy` directory, i.e. `sympy/...`.\n\
+  \    \n        \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def make_absolute_path(partial_path: str) -> str:\n    \"\
+  \"\"\n    Convert a partial path to an absolute path.\n    \n        A path such\
+  \ a `sympy/core` might be needed. However, absolute paths should\n        be used\
+  \ in the arguments to pytest in all cases as it avoids errors that\n        arise\
+  \ from nonexistent paths.\n    \n        This function assumes that partial_paths\
+  \ will be passed in such that they\n        begin with the explicit `sympy` directory,\
+  \ i.e. `sympy/...`.\n    \n        \n    \"\"\"\n    <your code>\n..."

@@ -1,0 +1,462 @@
+base_image: pb-python310_nvidia-base_a48d8454
+black_links:
+- https://github.com/huggingface/transformers/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+    environment:
+      PYTHONPATH: /testbed
+install: python -m pip install --upgrade pip setuptools wheel && pip install -e '.[testing]'
+  && echo 'Transformers环境设置完成'
+instance_image: pb-instance_4702c5d8
+library_name: transformers
+pip_packages:
+- numpy>=1.17
+- packaging>=20.0
+- pyyaml>=5.1
+- regex!=2019.12.17
+- requests
+- tokenizers>=0.19,<0.20
+- safetensors>=0.4.1
+- huggingface-hub>=0.23.2,<1.0
+- filelock
+- tqdm>=4.27
+- pytest>=7.2.0
+- pytest-timeout
+- pytest-xdist
+- parameterized
+- psutil
+- Pillow<=15.0
+- optuna
+- ray[tune]
+- sigopt
+- timm
+- datasets!=2.5.0
+- accelerate>=0.21.0
+- peft>=0.3.0
+- bitsandbytes>0.37.0
+python: '3.10'
+repo_name: transformers
+repository: huggingface/transformers
+task_level: 3
+task_name: transformers_processing_evolla
+task_statement: '## Task: Multi-Modal Processor Implementation for Protein-Text Models
+
+
+  **Core Functionality:**
+
+  Implement a dual-tokenizer processor system that handles both protein sequences
+  (amino acids + structural data) and natural language text within a unified interface,
+  supporting automatic model loading and registration.
+
+
+  **Main Features & Requirements:**
+
+  - Factory pattern for automatic processor instantiation based on model configuration
+
+  - Combined processing of protein data (amino acid sequences with foldseek structural
+  information) and conversational text
+
+  - Bidirectional encoding/decoding capabilities for both modalities
+
+  - Standardized save/load functionality with proper directory structure management
+
+  - Registration system for custom processor-model mappings
+
+
+  **Key Challenges:**
+
+  - Seamless integration of heterogeneous tokenizers (protein vs. text) with different
+  vocabularies and sequence formats
+
+  - Proper handling of variable-length sequences across modalities with appropriate
+  padding/truncation
+
+  - Maintaining chat template formatting while preserving protein structure-aware
+  (SA) sequence encoding
+
+  - Ensuring consistent batch processing and tensor shape management across different
+  input types'
+technical_docs: []
+test_cmd: pytest --no-header -rA --tb=short -p no:cacheprovider --timeout=50
+test_code1: 'from agent_code.transformers import AutoProcessor
+
+  from agent_code.transformers import EvollaProcessor'
+test_code_example: from agent_code.transformers import AutoProcessor
+test_code_example_obj: AutoProcessor
+test_code_example_path: /testbed/agent_code/transformers.py
+test_description1: Below is **Test Description 1**
+timeout: 50
+interface_description1: 'Below is **Interface Description 1** for file: src-transformers-models-auto-processing_auto.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class AutoProcessor:\n    \"\"\"\n    \n        This is a generic\
+  \ processor class that will be instantiated as one of the processor classes of the\
+  \ library when\n        created with the [`AutoProcessor.from_pretrained`] class\
+  \ method.\n    \n        This class cannot be instantiated directly using `__init__()`\
+  \ (throws an error).\n        \n    \"\"\"\n\n    def __init__(self):\n        \"\
+  \"\"\n        Initialize the AutoProcessor class.\n\n        This constructor is\
+  \ intentionally disabled and will raise an OSError when called directly.\n     \
+  \   The AutoProcessor class is designed to be a factory class that automatically\
+  \ selects and\n        instantiates the appropriate processor class based on the\
+  \ model configuration.\n\n        Parameters:\n            None\n\n        Returns:\n\
+  \            None: This method does not return anything as it raises an exception.\n\
+  \n        Raises:\n            OSError: Always raised when this constructor is called\
+  \ directly. The error message\n                indicates that AutoProcessor should\
+  \ be instantiated using the class method\n                `AutoProcessor.from_pretrained(pretrained_model_name_or_path)`\
+  \ instead.\n\n        Notes:\n            - This class cannot be instantiated directly\
+  \ using `__init__()`\n            - Use `AutoProcessor.from_pretrained()` class\
+  \ method to create processor instances\n            - The actual processor class\
+  \ instantiated depends on the model type and configuration\n            - This design\
+  \ pattern ensures that the correct processor class is automatically\n          \
+  \    selected based on the pretrained model being loaded\n        \"\"\"\n     \
+  \   <your code>\n\n    @classmethod\n    @replace_list_option_in_docstrings(PROCESSOR_MAPPING_NAMES)\n\
+  \    def from_pretrained(\n        cls,\n        pretrained_model_name_or_path,\n\
+  \        **kwargs\n    ):\n        \"\"\"\n\n                Instantiate one of\
+  \ the processor classes of the library from a pretrained model vocabulary.\n\n \
+  \               The processor class to instantiate is selected based on the `model_type`\
+  \ property of the config object (either\n                passed as an argument or\
+  \ loaded from `pretrained_model_name_or_path` if possible):\n\n                List\
+  \ options\n\n                Params:\n                    pretrained_model_name_or_path\
+  \ (`str` or `os.PathLike`):\n                        This can be either:\n\n   \
+  \                     - a string, the *model id* of a pretrained feature_extractor\
+  \ hosted inside a model repo on\n                          huggingface.co.\n   \
+  \                     - a path to a *directory* containing a processor files saved\
+  \ using the `save_pretrained()` method,\n                          e.g., `./my_model_directory/`.\n\
+  \                    cache_dir (`str` or `os.PathLike`, *optional*):\n         \
+  \               Path to a directory in which a downloaded pretrained model feature\
+  \ extractor should be cached if the\n                        standard cache should\
+  \ not be used.\n                    force_download (`bool`, *optional*, defaults\
+  \ to `False`):\n                        Whether or not to force to (re-)download\
+  \ the feature extractor files and override the cached versions\n               \
+  \         if they exist.\n                    resume_download:\n               \
+  \         Deprecated and ignored. All downloads are now resumed by default when\
+  \ possible.\n                        Will be removed in v5 of Transformers.\n  \
+  \                  proxies (`dict[str, str]`, *optional*):\n                   \
+  \     A dictionary of proxy servers to use by protocol or endpoint, e.g., `{'http':\
+  \ 'foo.bar:3128',\n                        'http://hostname': 'foo.bar:4012'}.`\
+  \ The proxies are used on each request.\n                    token (`str` or *bool*,\
+  \ *optional*):\n                        The token to use as HTTP bearer authorization\
+  \ for remote files. If `True`, will use the token generated\n                  \
+  \      when running `hf auth login` (stored in `~/.huggingface`).\n            \
+  \        revision (`str`, *optional*, defaults to `\"main\"`):\n               \
+  \         The specific model version to use. It can be a branch name, a tag name,\
+  \ or a commit id, since we use a\n                        git-based system for storing\
+  \ models and other artifacts on huggingface.co, so `revision` can be any\n     \
+  \                   identifier allowed by git.\n                    return_unused_kwargs\
+  \ (`bool`, *optional*, defaults to `False`):\n                        If `False`,\
+  \ then this function returns just the final feature extractor object. If `True`,\
+  \ then this\n                        functions returns a `Tuple(feature_extractor,\
+  \ unused_kwargs)` where *unused_kwargs* is a dictionary\n                      \
+  \  consisting of the key/value pairs whose keys are not feature extractor attributes:\
+  \ i.e., the part of\n                        `kwargs` which has not been used to\
+  \ update `feature_extractor` and is otherwise ignored.\n                    trust_remote_code\
+  \ (`bool`, *optional*, defaults to `False`):\n                        Whether or\
+  \ not to allow for custom models defined on the Hub in their own modeling files.\
+  \ This option\n                        should only be set to `True` for repositories\
+  \ you trust and in which you have read the code, as it will\n                  \
+  \      execute code present on the Hub on your local machine.\n                \
+  \    kwargs (`dict[str, Any]`, *optional*):\n                        The values\
+  \ in kwargs of any keys which are feature extractor attributes will be used to override\
+  \ the\n                        loaded values. Behavior concerning key/value pairs\
+  \ whose keys are *not* feature extractor attributes is\n                       \
+  \ controlled by the `return_unused_kwargs` keyword parameter.\n\n              \
+  \  <Tip>\n\n                Passing `token=True` is required when you want to use\
+  \ a private model.\n\n                </Tip>\n\n                Examples:\n\n  \
+  \              ```python\n                >>> from transformers import AutoProcessor\n\
+  \n                >>> # Download processor from huggingface.co and cache.\n    \
+  \            >>> processor = AutoProcessor.from_pretrained(\"facebook/wav2vec2-base-960h\"\
+  )\n\n                >>> # If processor files are in a directory (e.g. processor\
+  \ was saved using *save_pretrained('./test/saved_model/')*)\n                >>>\
+  \ # processor = AutoProcessor.from_pretrained(\"./test/saved_model/\")\n       \
+  \         ```\n        \"\"\"\n        <your code>\n\n    @staticmethod\n    def\
+  \ register(config_class, processor_class, exist_ok = False):\n        \"\"\"\n\n\
+  \                Register a new processor for this class.\n\n                Args:\n\
+  \                    config_class ([`PretrainedConfig`]):\n                    \
+  \    The configuration corresponding to the model to register.\n               \
+  \     processor_class ([`ProcessorMixin`]): The processor to register.\n\n     \
+  \   \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: src-transformers-models-evolla-processing_evolla.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class EvollaProcessor(ProcessorMixin):\n    \"\"\"\n    \n     \
+  \   Constructs a EVOLLA processor which wraps a LLama tokenizer and SaProt tokenizer\
+  \ (EsmTokenizer) into a single processor.\n    \n        [`EvollaProcessor`] offers\
+  \ all the functionalities of [`EsmTokenizer`] and [`LlamaTokenizerFast`]. See the\n\
+  \        docstring of [`~EvollaProcessor.__call__`] and [`~EvollaProcessor.decode`]\
+  \ for more information.\n    \n        Args:\n            protein_tokenizer (`EsmTokenizer`):\n\
+  \                An instance of [`EsmTokenizer`]. The protein tokenizer is a required\
+  \ input.\n            tokenizer (`LlamaTokenizerFast`, *optional*):\n          \
+  \      An instance of [`LlamaTokenizerFast`]. The tokenizer is a required input.\n\
+  \            protein_max_length (`int`, *optional*, defaults to 1024):\n       \
+  \         The maximum length of the sequence to be generated.\n            text_max_length\
+  \ (`int`, *optional*, defaults to 512):\n                The maximum length of the\
+  \ text to be generated.\n        \n    \"\"\"\n\n    attributes = ['protein_tokenizer',\
+  \ 'tokenizer']\n    valid_kwargs = ['sequence_max_length']\n    protein_tokenizer_class\
+  \ = \"AutoTokenizer\"\n    tokenizer_class = \"AutoTokenizer\"\n    protein_tokenizer_dir_name\
+  \ = \"protein_tokenizer\"\n\n    def __init__(\n        self,\n        protein_tokenizer,\n\
+  \        tokenizer = None,\n        protein_max_length = 1024,\n        text_max_length\
+  \ = 512,\n        **kwargs\n    ):\n        \"\"\"\n        Initialize an EvollaProcessor\
+  \ instance that combines protein and text tokenizers.\n\n        This constructor\
+  \ sets up a processor that wraps both a protein tokenizer (for handling amino acid\
+  \ sequences and structural information) and a text tokenizer (for handling natural\
+  \ language) into a unified interface for the EVOLLA model.\n\n        Parameters:\n\
+  \            protein_tokenizer: An instance of a protein tokenizer (typically EsmTokenizer\
+  \ or AutoTokenizer) used to tokenize protein sequences. This parameter is required\
+  \ and cannot be None.\n            tokenizer (optional): An instance of a text tokenizer\
+  \ (typically LlamaTokenizerFast or AutoTokenizer) used to tokenize natural language\
+  \ text. Defaults to None but is required - will raise ValueError if not provided.\n\
+  \            protein_max_length (int, optional): Maximum sequence length for protein\
+  \ tokenization. Sequences longer than this will be truncated. Defaults to 1024.\n\
+  \            text_max_length (int, optional): Maximum sequence length for text tokenization.\
+  \ Text longer than this will be truncated. Defaults to 512.\n            **kwargs:\
+  \ Additional keyword arguments passed to the parent ProcessorMixin class.\n\n  \
+  \      Returns:\n            None: This is a constructor method that initializes\
+  \ the instance.\n\n        Raises:\n            ValueError: If protein_tokenizer\
+  \ is None - a protein tokenizer must be provided.\n            ValueError: If tokenizer\
+  \ is None - a text tokenizer must be provided.\n\n        Notes:\n            -\
+  \ The text tokenizer's pad_token is automatically set to \"<|reserved_special_token_0|>\"\
+  \ during initialization.\n            - The processor inherits from ProcessorMixin\
+  \ and maintains references to both tokenizers as instance attributes.\n        \
+  \    - The protein_max_length and text_max_length parameters set default values\
+  \ that can be overridden in individual method calls.\n        \"\"\"\n        <your\
+  \ code>\n\n    def process_proteins(\n        self,\n        proteins,\n       \
+  \ protein_max_length = 1024\n    ):\n        \"\"\"\n        Process a list of protein\
+  \ dictionaries into tokenized format suitable for the model.\n\n        This method\
+  \ takes protein data containing amino acid sequences and foldseek structural information,\n\
+  \        combines them into SA (Structure-Aware) sequences, and tokenizes them using\
+  \ the protein tokenizer.\n        Each protein's amino acid sequence and foldseek\
+  \ string are merged by alternating uppercase amino\n        acids with lowercase\
+  \ foldseek characters.\n\n        Args:\n            proteins (list[dict]): A list\
+  \ of dictionaries where each dictionary represents a protein\n                and\
+  \ contains the following keys:\n                - \"aa_seq\" (str): The amino acid\
+  \ sequence of the protein\n                - \"foldseek\" (str): The foldseek structural\
+  \ string corresponding to the amino acid sequence\n            protein_max_length\
+  \ (int, optional): Maximum length for protein sequence tokenization.\n         \
+  \       Sequences longer than this will be truncated. Defaults to 1024.\n\n    \
+  \    Returns:\n            dict: A dictionary containing tokenized protein data\
+  \ with the following keys:\n                - \"input_ids\": Tensor of shape (batch_size,\
+  \ sequence_length) containing token IDs\n                - \"attention_mask\": Tensor\
+  \ of shape (batch_size, sequence_length) containing attention masks\n          \
+  \      - Additional keys may be present depending on the protein tokenizer configuration\n\
+  \n        Notes:\n            - The amino acid sequence and foldseek string must\
+  \ have the same length for proper pairing\n            - The resulting SA sequence\
+  \ alternates between uppercase amino acids and lowercase foldseek characters\n \
+  \           - Sequences are automatically padded to the same length within the batch\n\
+  \            - Truncation is applied if sequences exceed protein_max_length\n  \
+  \      \"\"\"\n        <your code>\n\n    def process_text(\n        self,\n   \
+  \     texts,\n        text_max_length: int = 512\n    ):\n        \"\"\"\n     \
+  \   Process text messages by applying chat templates and tokenizing them for model\
+  \ input.\n\n        This method takes a list of conversation messages, applies the\
+  \ appropriate chat template\n        to format them as prompts, and then tokenizes\
+  \ the resulting text for use with the model.\n        The text is processed with\
+  \ padding, truncation, and proper formatting to ensure\n        consistent input\
+  \ dimensions.\n\n        Args:\n            texts (Union[List[List[dict]], List[dict]]):\
+  \ A list of message conversations where each\n                conversation is a\
+  \ list of dictionaries containing message data. Each message\n                dictionary\
+  \ should have 'role' and 'content' keys. Can also be a single conversation\n   \
+  \             (list of message dictionaries).\n            text_max_length (int,\
+  \ optional): Maximum length for the tokenized text sequences.\n                Sequences\
+  \ longer than this will be truncated. Defaults to 512.\n\n        Returns:\n   \
+  \         transformers.tokenization_utils_base.BatchEncoding: A batch encoding object\
+  \ containing\n                the tokenized text data with the following keys:\n\
+  \                - 'input_ids': Token IDs for the processed text sequences\n   \
+  \             - 'attention_mask': Attention masks indicating which tokens should\
+  \ be attended to\n                - Additional tokenizer-specific keys as returned\
+  \ by the underlying tokenizer\n\n        Notes:\n            - The method applies\
+  \ chat templates using the tokenizer's apply_chat_template method\n            \
+  \  with add_generation_prompt=True to format conversations appropriately\n     \
+  \       - Text sequences are padded to the longest sequence in the batch for consistent\
+  \ dimensions\n            - Special tokens are not automatically added (add_special_tokens=False)\
+  \ as they are\n              handled by the chat template\n            - The method\
+  \ assumes the tokenizer has an apply_chat_template method available\n        \"\"\
+  \"\n        <your code>\n\n    def __call__(\n        self,\n        proteins: Optional[Union[list[dict],\
+  \ dict]] = None,\n        messages_list: Optional[Union[list[list[dict]], list[dict]]]\
+  \ = None,\n        protein_max_length: Optional[int] = None,\n        text_max_length:\
+  \ Optional[int] = None,\n        **kwargs\n    ):\n        \"\"\"\n        This\
+  \ method takes batched or non-batched proteins and messages_list and converts them\
+  \ into format that can be used by\n                the model.\n\n              \
+  \  Args:\n                    proteins (`Union[List[dict], dict]`):\n          \
+  \              A list of dictionaries or a single dictionary containing the following\
+  \ keys:\n                            - `\"aa_seq\"` (`str`) -- The amino acid sequence\
+  \ of the protein.\n                            - `\"foldseek\"` (`str`) -- The foldseek\
+  \ string of the protein.\n                    messages_list (`Union[List[List[dict]],\
+  \ List[dict]]`):\n                        A list of lists of dictionaries or a list\
+  \ of dictionaries containing the following keys:\n                            -\
+  \ `\"role\"` (`str`) -- The role of the message.\n                            -\
+  \ `\"content\"` (`str`) -- The content of the message.\n                    protein_max_length\
+  \ (`int`, *optional*, defaults to 1024):\n                        The maximum length\
+  \ of the sequence to be generated.\n                    text_max_length (`int`,\
+  \ *optional*, defaults to 512):\n                        The maximum length of the\
+  \ text.\n\n                Return:\n                    a dict with following keys:\n\
+  \                        - `protein_input_ids` (`torch.Tensor` of shape `(batch_size,\
+  \ sequence_length)`) -- The input IDs for the protein sequence.\n              \
+  \          - `protein_attention_mask` (`torch.Tensor` of shape `(batch_size, sequence_length)`)\
+  \ -- The attention mask for the protein sequence.\n                        - `text_input_ids`\
+  \ (`torch.Tensor` of shape `(batch_size, sequence_length)`) -- The input IDs for\
+  \ the text sequence.\n                        - `text_attention_mask` (`torch.Tensor`\
+  \ of shape `(batch_size, sequence_length)`) -- The attention mask for the text sequence.\n\
+  \n        \"\"\"\n        <your code>\n\n    def batch_decode(self, *args, **kwargs):\n\
+  \        \"\"\"\n        Decodes a batch of token sequences back to text strings\
+  \ using the text tokenizer.\n\n        This method is a wrapper around the underlying\
+  \ text tokenizer's batch_decode method,\n        providing convenient access to\
+  \ batch decoding functionality for text sequences processed\n        by the EVOLLA\
+  \ processor.\n\n        Args:\n            *args: Variable length argument list\
+  \ passed directly to the underlying tokenizer's\n                batch_decode method.\
+  \ Typically includes:\n                - token_ids (torch.Tensor or List[List[int]]):\
+  \ Batch of token sequences to decode\n                - skip_special_tokens (bool,\
+  \ optional): Whether to remove special tokens from output\n                - clean_up_tokenization_spaces\
+  \ (bool, optional): Whether to clean up tokenization spaces\n            **kwargs:\
+  \ Arbitrary keyword arguments passed directly to the underlying tokenizer's\n  \
+  \              batch_decode method. Common options include decoding parameters and\
+  \ formatting options.\n\n        Returns:\n            List[str]: A list of decoded\
+  \ text strings corresponding to the input token sequences.\n                Each\
+  \ string represents the decoded text from the corresponding token sequence in the\
+  \ batch.\n\n        Note:\n            This method specifically uses the text tokenizer\
+  \ (LlamaTokenizerFast) for decoding.\n            For decoding protein sequences,\
+  \ use the protein_batch_decode method instead.\n            The exact behavior and\
+  \ available parameters depend on the underlying text tokenizer's\n            batch_decode\
+  \ implementation.\n        \"\"\"\n        <your code>\n\n    def decode(self, *args,\
+  \ **kwargs):\n        \"\"\"\n        Decodes token IDs back to human-readable text\
+  \ using the text tokenizer.\n\n        This method is a wrapper around the underlying\
+  \ text tokenizer's decode method, providing\n        a convenient way to convert\
+  \ token IDs generated by the model back into readable text strings.\n        It\
+  \ delegates all arguments to the text tokenizer's decode functionality.\n\n    \
+  \    Args:\n            *args: Variable length argument list passed directly to\
+  \ the text tokenizer's decode method.\n                   Typically includes:\n\
+  \                   - token_ids: The token IDs to decode (torch.Tensor, list, or\
+  \ numpy array)\n                   - skip_special_tokens (bool, optional): Whether\
+  \ to remove special tokens from the output\n                   - clean_up_tokenization_spaces\
+  \ (bool, optional): Whether to clean up tokenization artifacts\n            **kwargs:\
+  \ Arbitrary keyword arguments passed directly to the text tokenizer's decode method.\n\
+  \                      Common options include additional decoding parameters specific\
+  \ to the tokenizer type.\n\n        Returns:\n            str: The decoded text\
+  \ string corresponding to the input token IDs.\n\n        Note:\n            This\
+  \ method specifically uses the text tokenizer (LlamaTokenizerFast) for decoding.\n\
+  \            For protein sequence decoding, use the `protein_decode` method instead.\n\
+  \            The exact behavior and supported parameters depend on the underlying\
+  \ text tokenizer\n            implementation.\n        \"\"\"\n        <your code>\n\
+  \n    def protein_batch_decode(self, *args, **kwargs):\n        \"\"\"\n       \
+  \ Decodes a batch of protein token sequences back to their string representations.\n\
+  \n        This method serves as a wrapper around the protein tokenizer's batch_decode\
+  \ functionality,\n        allowing for the conversion of tokenized protein sequences\
+  \ (such as those containing\n        amino acid and foldseek structure information)\
+  \ back to their original string format.\n\n        Args:\n            *args: Variable\
+  \ length argument list passed directly to the underlying protein \n            \
+  \    tokenizer's batch_decode method. Typically includes:\n                - token_ids:\
+  \ A batch of token ID sequences to decode\n                - skip_special_tokens\
+  \ (bool, optional): Whether to remove special tokens from output\n             \
+  \   - clean_up_tokenization_spaces (bool, optional): Whether to clean up tokenization\
+  \ spaces\n            **kwargs: Arbitrary keyword arguments passed directly to the\
+  \ underlying protein\n                tokenizer's batch_decode method. Common options\
+  \ include decoding parameters\n                specific to the protein tokenizer\
+  \ implementation.\n\n        Returns:\n            List[str]: A list of decoded\
+  \ protein sequence strings. Each string represents\n                the decoded\
+  \ form of the corresponding input token sequence, typically containing\n       \
+  \         mixed-case amino acid sequences where uppercase letters represent amino\
+  \ acids\n                and lowercase letters represent foldseek structural information.\n\
+  \n        Notes:\n            - This method delegates all processing to the underlying\
+  \ protein_tokenizer's \n              batch_decode method\n            - The exact\
+  \ behavior and supported parameters depend on the specific protein\n           \
+  \   tokenizer implementation (EsmTokenizer by default)\n            - For single\
+  \ sequence decoding, use the protein_decode method instead\n            - The decoded\
+  \ sequences maintain the SA (Structure-Aware) format used by EVOLLA,\n         \
+  \     combining amino acid sequences with structural information\n        \"\"\"\
+  \n        <your code>\n\n    def protein_decode(self, *args, **kwargs):\n      \
+  \  \"\"\"\n        Decodes protein token IDs back to their original protein sequence\
+  \ representation.\n\n        This method is a wrapper around the protein tokenizer's\
+  \ decode functionality, allowing for the conversion of tokenized protein sequences\
+  \ (generated by the protein tokenizer) back into their string representation. It\
+  \ supports all the same arguments and options as the underlying protein tokenizer's\
+  \ decode method.\n\n        Args:\n            *args: Variable length argument list\
+  \ passed directly to the protein tokenizer's decode method.\n                Typically\
+  \ includes:\n                - token_ids: The token IDs to decode (usually a list\
+  \ or tensor of integers)\n            **kwargs: Arbitrary keyword arguments passed\
+  \ directly to the protein tokenizer's decode method.\n                Common options\
+  \ include:\n                - skip_special_tokens (bool): Whether to remove special\
+  \ tokens from the decoded string\n                - clean_up_tokenization_spaces\
+  \ (bool): Whether to clean up extra spaces in the decoded string\n\n        Returns:\n\
+  \            str: The decoded protein sequence string. For EVOLLA proteins, this\
+  \ will be in the SA (Structure-Aware) format where amino acid sequences are represented\
+  \ with uppercase letters followed by corresponding foldseek structure tokens in\
+  \ lowercase.\n\n        Notes:\n            - This method specifically decodes protein\
+  \ sequences that were tokenized using the protein_tokenizer (EsmTokenizer)\n   \
+  \         - The decoded output will be in SA format: amino acids (uppercase) + foldseek\
+  \ tokens (lowercase)\n            - For batch decoding of multiple sequences, use\
+  \ protein_batch_decode instead\n            - All arguments are passed through to\
+  \ the underlying protein tokenizer's decode method without modification\n      \
+  \  \"\"\"\n        <your code>\n\n    def save_pretrained(self, save_directory,\
+  \ **kwargs):\n        \"\"\"\n        Save the processor's tokenizers to the specified\
+  \ directory.\n\n        This method saves the EVOLLA processor by storing the protein\
+  \ tokenizer in a separate\n        subdirectory and the text tokenizer in the main\
+  \ directory. The protein tokenizer is\n        saved in a subfolder named 'protein_tokenizer'\
+  \ to maintain proper organization and\n        enable correct loading later.\n\n\
+  \        Args:\n            save_directory (str): The directory path where the processor\
+  \ should be saved.\n                Both the main text tokenizer and the protein\
+  \ tokenizer (in a subdirectory)\n                will be saved to this location.\n\
+  \            **kwargs: Additional keyword arguments passed to the parent class's\
+  \ save_pretrained\n                method. These may include parameters like push_to_hub,\
+  \ commit_message, etc.\n\n        Returns:\n            The return value from the\
+  \ parent class's save_pretrained method, typically\n            containing information\
+  \ about the saved files and their locations.\n\n        Important Notes:\n     \
+  \       - The protein tokenizer is saved in a subdirectory named 'protein_tokenizer'\n\
+  \              within the specified save_directory\n            - The text tokenizer\
+  \ is saved in the main save_directory\n            - The method temporarily modifies\
+  \ the processor's attributes list to ensure\n              only the text tokenizer\
+  \ is saved in the main directory, then restores the\n              original attributes\
+  \ list\n            - The directory structure created by this method is required\
+  \ for proper loading\n              using the from_pretrained class method\n\n \
+  \       Raises:\n            OSError: If the save_directory cannot be created or\
+  \ written to\n            ValueError: If save_directory is not a valid path string\n\
+  \        \"\"\"\n        <your code>\n\n    @classmethod\n    def from_pretrained(\n\
+  \        cls,\n        pretrained_model_name_or_path,\n        **kwargs\n    ):\n\
+  \        \"\"\"\n        Load a pretrained EVOLLA processor from a model repository\
+  \ or local directory.\n\n        This class method creates an instance of EvollaProcessor\
+  \ by loading both the main tokenizer and protein tokenizer from a pretrained model.\
+  \ The protein tokenizer is loaded from a subdirectory specified by `protein_tokenizer_dir_name`.\n\
+  \n        Args:\n            pretrained_model_name_or_path (str): \n           \
+  \     The model repository name on Hugging Face Hub or path to a local directory\
+  \ containing the pretrained processor files. The directory should contain the main\
+  \ tokenizer files and a subdirectory with the protein tokenizer.\n            **kwargs:\
+  \ \n                Additional keyword arguments passed to the parent class's `from_pretrained`\
+  \ method. These may include parameters like `cache_dir`, `force_download`, `local_files_only`,\
+  \ etc.\n\n        Returns:\n            EvollaProcessor: An instance of the EvollaProcessor\
+  \ class with both the main tokenizer and protein tokenizer loaded and configured.\n\
+  \n        Raises:\n            OSError: If the pretrained model path does not exist\
+  \ or required tokenizer files are missing.\n            ValueError: If the tokenizer\
+  \ configuration is invalid or incompatible.\n\n        Notes:\n            - The\
+  \ protein tokenizer is expected to be located in a subdirectory named according\
+  \ to `protein_tokenizer_dir_name` (default: \"protein_tokenizer\").\n          \
+  \  - This method automatically handles the loading of both tokenizers and properly\
+  \ initializes the processor with default parameters.\n            - The returned\
+  \ processor will have the pad token set to \"<|reserved_special_token_0|>\" for\
+  \ the main tokenizer.\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class AutoProcessor:\n    \"\"\"\n    \n        This is a\
+  \ generic processor class that will be instantiated as one of the processor classes\
+  \ of the library when\n        created with the [`AutoProcessor.from_pretrained`]\
+  \ class method.\n    \n        This class cannot be instantiated directly using\
+  \ `__init__()` (throws an error).\n        \n    \"\"\"\n\n    def __init__(self):\n\
+  \        \"\"\"\n        Initialize the AutoProcessor class.\n\n        This constructor\
+  \ is intentionally disabled and will raise an OSError when called directly.\n  \
+  \      The AutoProcessor class is designed to be a factory class that automatically\
+  \ selects and\n        instantiates the appropriate processor class based on the\
+  \ model configuration.\n\n        Parameters:\n            None\n\n        Returns:\n\
+  \            None: This method does not return anything as it raises an exception.\n\
+  \n        Raises:\n            OSError: Always raised when this constructor is called\
+  \ directly. The error message\n                indicates that AutoProcessor should\
+  \ be instantiated using the class method\n                `AutoProcessor.from_pretrained(pretrained_model_name_or_path)`\
+  \ instead.\n\n        Notes:\n            - This class cannot be instantiated directly\
+  \ using `__init__()`\n            - Use `AutoProcessor.from_pretrained()` class\
+  \ method to create processor instances\n            - The actual processor class\
+  \ instantiated depends on the model type and configuration\n            - This design\
+  \ pattern ensures that the correct processor class is automatically\n          \
+  \    selected based on the pretrained model being loaded\n        \"\"\"\n     \
+  \   <your code>\n..."

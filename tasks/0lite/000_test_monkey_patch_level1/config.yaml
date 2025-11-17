@@ -1,0 +1,1095 @@
+base_image: pb-python310_cu121_torch251-base_08bcbe5c
+black_links:
+- https://github.com/linkedin/Liger-Kernel/
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e ".[dev]"
+instance_image: pb-instance_ffbb2d38
+library_name: liger-kernel
+pip_packages: []
+pre_install: []
+repo_name: Liger-Kernel
+repository: linkedin/Liger-Kernel
+task_level: 1
+task_name: Liger_Kernel_monkey_patch
+task_statement: '## Task: Implement Optimized Neural Network Components for Large
+  Language Models
+
+
+  **Core Functionalities:**
+
+  - Develop high-performance neural network modules (MLP layers, normalization layers)
+  with optimized kernel operations
+
+  - Create model-agnostic kernel application system that automatically patches existing
+  transformer architectures
+
+  - Provide drop-in replacements for standard PyTorch components with improved memory
+  efficiency and speed
+
+
+  **Main Features & Requirements:**
+
+  - Support multiple activation functions (GEGLU, SwiGLU) and normalization techniques
+  (RMSNorm, LayerNorm)
+
+  - Implement model-specific optimizations for popular architectures (Llama, Gemma,
+  Qwen, Mistral, etc.)
+
+  - Maintain API compatibility with HuggingFace transformers while providing performance
+  improvements
+
+  - Handle various configuration options (fused operations, cross-entropy variants,
+  in-place computations)
+
+
+  **Key Challenges:**
+
+  - Ensure numerical stability and correctness across different model architectures
+  and data types
+
+  - Balance memory efficiency with computational performance through kernel fusion
+  and in-place operations
+
+  - Maintain backward compatibility while providing seamless integration with existing
+  model loading workflows
+
+  - Handle architecture-specific requirements and default configurations for different
+  model families'
+technical_docs:
+- description: latex source of the paper liger_kernel which implemented many llm operators
+    using triton
+  path: liger-kernel-tex-source
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from liger_kernel.transformers import LigerBlockSparseTop2MLP
+
+  from liger_kernel.transformers import LigerGEGLUMLP
+
+  from liger_kernel.transformers import LigerPhi3SwiGLUMLP
+
+  from liger_kernel.transformers import LigerQwen3MoeSwiGLUMLP
+
+  from liger_kernel.transformers import LigerRMSNorm
+
+  from liger_kernel.transformers import LigerSwiGLUMLP
+
+  from liger_kernel.transformers.layer_norm import LigerLayerNorm
+
+  from liger_kernel.transformers.monkey_patch import _apply_liger_kernel
+
+  from liger_kernel.transformers.monkey_patch import _apply_liger_kernel_to_instance
+
+  from liger_kernel.transformers import AutoLigerKernelForCausalLM
+
+  from liger_kernel.transformers import apply_liger_kernel_to_gemma
+
+  from liger_kernel.transformers import apply_liger_kernel_to_gemma2
+
+  from liger_kernel.transformers import apply_liger_kernel_to_gemma3
+
+  from liger_kernel.transformers import apply_liger_kernel_to_gemma3_text
+
+  from liger_kernel.transformers import apply_liger_kernel_to_glm4
+
+  from liger_kernel.transformers import apply_liger_kernel_to_glm4v
+
+  from liger_kernel.transformers import apply_liger_kernel_to_glm4v_moe
+
+  from liger_kernel.transformers import apply_liger_kernel_to_llama
+
+  from liger_kernel.transformers import apply_liger_kernel_to_mistral
+
+  from liger_kernel.transformers import apply_liger_kernel_to_mixtral
+
+  from liger_kernel.transformers import apply_liger_kernel_to_mllama
+
+  from liger_kernel.transformers import apply_liger_kernel_to_phi3
+
+  from liger_kernel.transformers import apply_liger_kernel_to_qwen2
+
+  from liger_kernel.transformers import apply_liger_kernel_to_qwen2_5_vl
+
+  from liger_kernel.transformers import apply_liger_kernel_to_qwen2_vl
+
+  from liger_kernel.transformers import apply_liger_kernel_to_qwen3
+
+  from liger_kernel.transformers import apply_liger_kernel_to_qwen3_moe
+
+  from liger_kernel.transformers import apply_liger_kernel_to_smollm3
+
+  from liger_kernel.transformers.rms_norm import LigerRMSNormForGlm4'
+test_code_example: from liger_kernel.transformers import LigerBlockSparseTop2MLP
+test_code_example_obj: LigerBlockSparseTop2MLP
+test_code_example_path: /testbed/src/liger_kernel/transformers/swiglu.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: src-liger_kernel-transformers-geglu.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LigerGEGLUMLP(nn.Module):\n    \"\"\"\n    A PyTorch neural\
+  \ network module implementing a GEGLU (Gated GELU) Multi-Layer Perceptron.\n   \
+  \ \n    This class implements a gated feedforward network architecture commonly\
+  \ used in transformer models,\n    particularly in Gemma models. It combines gating\
+  \ mechanisms with GELU activation for improved\n    performance. The module uses\
+  \ three linear transformations: gate projection, up projection, and\n    down projection,\
+  \ with a custom GELU multiplication function for efficient computation.\n    \n\
+  \    Attributes:\n        config: Configuration object containing model hyperparameters\n\
+  \        hidden_size (int): Dimension of the input and output hidden states\n  \
+  \      intermediate_size (int): Dimension of the intermediate layer (typically larger\
+  \ than hidden_size)\n        gate_proj (nn.Linear): Linear layer for gate projection\
+  \ without bias\n        up_proj (nn.Linear): Linear layer for up projection without\
+  \ bias  \n        down_proj (nn.Linear): Linear layer for down projection without\
+  \ bias\n    \n    Methods:\n        __init__(config): Initializes the GEGLU MLP\
+  \ with the given configuration\n        forward(x): Performs forward pass through\
+  \ the gated MLP\n    \n    The forward pass computes: down_proj(GELU(gate_proj(x))\
+  \ * up_proj(x))\n    where GELU uses tanh approximation as implemented in LigerGELUMulFunction.\n\
+  \    \n    Example:\n        >>> import torch\n        >>> from types import SimpleNamespace\n\
+  \        >>> config = SimpleNamespace(hidden_size=768, intermediate_size=3072)\n\
+  \        >>> mlp = LigerGEGLUMLP(config)\n        >>> x = torch.randn(32, 128, 768)\
+  \  # (batch_size, seq_len, hidden_size)\n        >>> output = mlp(x)  # Returns\
+  \ tensor of shape (32, 128, 768)\n    \n    Note:\n        Currently uses tanh approximation\
+  \ for GELU activation as per Gemma model implementations.\n        All linear layers\
+  \ are configured without bias terms for efficiency.\n    \"\"\"\n\n    def __init__(self,\
+  \ config):\n        \"\"\"\n        Initialize a GEGLU (Gated Exponential Gaussian\
+  \ Linear Unit) MLP layer.\n\n        This constructor sets up a three-layer MLP\
+  \ architecture with GEGLU activation,\n        commonly used in transformer models\
+  \ like Gemma. The GEGLU activation combines\n        a gating mechanism with GELU\
+  \ activation for improved performance.\n\n        Parameters:\n            config:\
+  \ Configuration object containing model hyperparameters.\n                Must have\
+  \ the following attributes:\n                - hidden_size (int): Dimension of the\
+  \ input and output hidden states\n                - intermediate_size (int): Dimension\
+  \ of the intermediate layer,\n                  typically larger than hidden_size\
+  \ (e.g., 4x hidden_size)\n\n        Attributes Created:\n            config: Stores\
+  \ the provided configuration object\n            hidden_size (int): Input/output\
+  \ dimension size\n            intermediate_size (int): Intermediate layer dimension\
+  \ size\n            gate_proj (nn.Linear): Linear projection for gating mechanism\
+  \ (no bias)\n            up_proj (nn.Linear): Linear projection for value computation\
+  \ (no bias)\n            down_proj (nn.Linear): Final output projection (no bias)\n\
+  \n        Notes:\n            - All linear layers are created without bias terms\n\
+  \            - Currently uses GELU with tanh approximation, following Gemma model\
+  \ implementations\n            - The GEGLU operation is computed as: down_proj(GELU(gate_proj(x))\
+  \ * up_proj(x))\n            - This implementation is optimized for Gemma 1, 1.1,\
+  \ and 2 model architectures\n\n        Raises:\n            AttributeError: If config\
+  \ object is missing required attributes (hidden_size, intermediate_size)\n     \
+  \   \"\"\"\n        <your code>\n\n    def forward(self, x):\n        \"\"\"\n \
+  \       Performs the forward pass of the GEGLU (Gated GELU) MLP layer.\n\n     \
+  \   This method implements a gated multi-layer perceptron using the GEGLU activation\
+  \ function.\n        The computation follows the pattern: down_proj(GELU(gate_proj(x))\
+  \ * up_proj(x)), where\n        the input is projected through two separate linear\
+  \ transformations (gate and up projections),\n        the gate projection is passed\
+  \ through a GELU activation function, then element-wise\n        multiplied with\
+  \ the up projection, and finally projected back to the original hidden size\n  \
+  \      through the down projection.\n\n        Parameters:\n            x (torch.Tensor):\
+  \ Input tensor of shape (..., hidden_size) where the last dimension\n          \
+  \                   must match the model's hidden_size configuration parameter.\n\
+  \n        Returns:\n            torch.Tensor: Output tensor of the same shape as\
+  \ input (..., hidden_size) after\n                         applying the GEGLU MLP\
+  \ transformation.\n\n        Notes:\n            - Uses GELU with tanh approximation\
+  \ as implemented in LigerGELUMulFunction\n            - All linear projections are\
+  \ bias-free\n            - The intermediate size is determined by the model configuration\
+  \ and may differ\n              from the hidden size\n            - This implementation\
+  \ is optimized for Gemma model variants (1, 1.1, and 2)\n              which use\
+  \ gelu_pytorch_tanh activation\n        \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: src-liger_kernel-transformers-auto_model.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class AutoLigerKernelForCausalLM(AutoModelForCausalLM):\n    \"\"\
+  \"\n    \n        This class is a drop-in replacement for AutoModelForCausalLM that\
+  \ applies the Liger Kernel to the model\n        if applicable.\n        \n    \"\
+  \"\"\n\n    @classmethod\n    def from_pretrained(\n        cls,\n        pretrained_model_name_or_path,\n\
+  \        *model_args,\n        **kwargs\n    ):\n        \"\"\"\n        Load a\
+  \ pretrained causal language model with Liger Kernel optimizations automatically\
+  \ applied.\n\n        This method is a drop-in replacement for AutoModelForCausalLM.from_pretrained()\
+  \ that \n        automatically detects the model type and applies appropriate Liger\
+  \ Kernel optimizations\n        if available for that model architecture. The Liger\
+  \ Kernel provides optimized implementations\n        of common transformer operations\
+  \ to improve training and inference performance.\n\n        Args:\n            pretrained_model_name_or_path\
+  \ (str or os.PathLike): \n                Can be either:\n                - A string,\
+  \ the model id of a pretrained model hosted inside a model repo on \n          \
+  \        huggingface.co. Valid model ids can be located at the root-level, like\
+  \ \n                  `bert-base-uncased`, or namespaced under a user or organization\
+  \ name, \n                  like `dbmdz/bert-base-german-cased`.\n             \
+  \   - A path to a directory containing model weights saved using \n            \
+  \      `save_pretrained()`, e.g., `./my_model_directory/`.\n                - A\
+  \ path or url to a tensorflow index checkpoint file (e.g, \n                  `./tf_model/model.ckpt.index`).\
+  \ In this case, `from_tf` should be set to \n                  `True` and a configuration\
+  \ object should be provided as `config` argument.\n            *model_args: \n \
+  \               Additional positional arguments passed along to the underlying model's\
+  \ \n                `__init__` method.\n            **kwargs: \n               \
+  \ Additional keyword arguments passed to both the Liger Kernel application \n  \
+  \              function and the model initialization. Common arguments include:\n\
+  \                - config: Model configuration object\n                - torch_dtype:\
+  \ Override the default torch.dtype and load the model under \n                 \
+  \ this dtype\n                - device_map: A map that specifies where each submodule\
+  \ should go\n                - trust_remote_code: Whether to allow custom code from\
+  \ the model repo\n                - Other model-specific initialization parameters\n\
+  \n        Returns:\n            PreTrainedModel: A causal language model instance\
+  \ with Liger Kernel optimizations \n            applied where applicable. The exact\
+  \ model class depends on the model type \n            (e.g., LlamaForCausalLM, GPT2LMHeadModel,\
+  \ etc.).\n\n        Notes:\n            - The method automatically detects the model\
+  \ type from the configuration and \n              applies the appropriate Liger\
+  \ Kernel optimizations if supported\n            - If no Liger Kernel optimization\
+  \ is available for the detected model type, \n              the model is loaded\
+  \ normally without modifications\n            - Keyword arguments specific to Liger\
+  \ Kernel application are automatically \n              filtered out before model\
+  \ initialization to prevent conflicts\n            - The behavior is identical to\
+  \ AutoModelForCausalLM.from_pretrained() when \n              Liger Kernel optimizations\
+  \ are not applicable\n\n        Raises:\n            EnvironmentError: If the model\
+  \ cannot be loaded (e.g., network issues, \n                invalid model path)\n\
+  \            ValueError: If the provided arguments are invalid or incompatible\n\
+  \            OSError: If there are file system related issues when loading local\
+  \ models\n        \"\"\"\n        <your code>\n"
+interface_description3: 'Below is **Interface Description 3** for file: src-liger_kernel-transformers-monkey_patch.py
+
+
+  This file contains 21 top-level interface(s) that need to be implemented.
+
+  '
+interface_code3: "def apply_liger_kernel_to_granite(\n    rope: bool = True,\n   \
+  \ cross_entropy: bool = True,\n    fused_linear_cross_entropy: bool = False,\n \
+  \   rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace Granite 3 models\n    \n        Args:\n        \
+  \    rope (bool): Whether to apply Liger's rotary position embedding. Default is\
+  \ True.\n            cross_entropy (bool): Whether to apply Liger's cross entropy\
+  \ loss. Default is True.\n            fused_linear_cross_entropy (bool):\n     \
+  \           Whether to apply Liger's fused linear cross entropy loss. Default is\
+  \ False.\n                `cross_entropy` and `fused_linear_cross_entropy` cannot\
+  \ both be True.\n                If `fused_linear_cross_entropy` is True, the logits\
+  \ will not be materialized but more memory efficient.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            swiglu (bool):\
+  \ Whether to apply Liger's SwiGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n    \n    \n    \n        Debugging notes:\n\
+  \            If LigerSwiGLUMLP is OK for Llama, it should be fine for Granite, but\
+  \ it's not.\n        \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_llama(\n\
+  \    rope: bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace Llama models (2 and 3)\n   \
+  \ \n        Args:\n            rope (bool): Whether to apply Liger's rotary position\
+  \ embedding. Default is True.\n            cross_entropy (bool): Whether to apply\
+  \ Liger's cross entropy loss. Default is False.\n            fused_linear_cross_entropy\
+  \ (bool):\n                Whether to apply Liger's fused linear cross entropy loss.\
+  \ Default is True.\n                `cross_entropy` and `fused_linear_cross_entropy`\
+  \ cannot both be True.\n                If `fused_linear_cross_entropy` is True,\
+  \ the logits will not be materialized but more memory efficient.\n            rms_norm\
+  \ (bool): Whether to apply Liger's RMSNorm. Default is True.\n            swiglu\
+  \ (bool): Whether to apply Liger's SwiGLU MLP. Default is True.\n            model\
+  \ (PreTrainedModel): The model instance to apply Liger kernels to, if the model\
+  \ has already been\n            loaded. Default is None.\n        \n    \"\"\"\n\
+  \    <your code>\n\ndef apply_liger_kernel_to_smollm3(\n    rope: bool = True,\n\
+  \    cross_entropy: bool = False,\n    fused_linear_cross_entropy: bool = True,\n\
+  \    rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace SmolLM3 model\n    \n        Args:\n           \
+  \ rope (bool): Whether to apply Liger's rotary position embedding. Default is True.\n\
+  \            cross_entropy (bool): Whether to apply Liger's cross entropy loss.\
+  \ Default is False.\n            fused_linear_cross_entropy (bool):\n          \
+  \      Whether to apply Liger's fused linear cross entropy loss. Default is True.\n\
+  \                `cross_entropy` and `fused_linear_cross_entropy` cannot both be\
+  \ True.\n                If `fused_linear_cross_entropy` is True, the logits will\
+  \ not be materialized but more memory efficient.\n            rms_norm (bool): Whether\
+  \ to apply Liger's RMSNorm. Default is True.\n            swiglu (bool): Whether\
+  \ to apply Liger's SwiGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_mllama(\n    rope: bool = True,\n    cross_entropy: bool\
+  \ = False,\n    fused_linear_cross_entropy: bool = True,\n    layer_norm: bool =\
+  \ True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace MLlama models.\n        NOTE: MLlama is not available\
+  \ in transformers<4.45.0\n    \n        Args:\n            rope (bool): Whether\
+  \ to apply Liger's rotary position embedding. Default is True.\n            cross_entropy\
+  \ (bool): Whether to apply Liger's cross entropy loss. Default is False.\n     \
+  \       fused_linear_cross_entropy (bool):\n                Whether to apply Liger's\
+  \ fused linear cross entropy loss. Default is True.\n                `cross_entropy`\
+  \ and `fused_linear_cross_entropy` cannot both be True.\n                If `fused_linear_cross_entropy`\
+  \ is True, the logits will not be materialized but more memory efficient.\n    \
+  \        rms_norm (bool): Whether to apply Liger's RMSNorm. Default is True.\n \
+  \           swiglu (bool): Whether to apply Liger's SwiGLU MLP. Default is True.\n\
+  \            model (PreTrainedModel): The model instance to apply Liger kernels\
+  \ to, if the model has already been\n            loaded. Default is None.\n    \
+  \    \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_mistral(\n    rope:\
+  \ bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace Mistral models\n    \n     \
+  \   Args:\n            rope (bool): Whether to apply Liger's rotary position embedding.\
+  \ Default is False.\n            cross_entropy (bool): Whether to apply Liger's\
+  \ cross entropy loss. Default is True.\n            fused_linear_cross_entropy (bool):\n\
+  \                Whether to apply Liger's fused linear cross entropy loss. Default\
+  \ is True.\n                `cross_entropy` and `fused_linear_cross_entropy` cannot\
+  \ both be True.\n                If `fused_linear_cross_entropy` is True, the logits\
+  \ will not be materialized but more memory efficient.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            swiglu (bool):\
+  \ Whether to apply Liger's SwiGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_mixtral(\n    rope: bool = True,\n    cross_entropy: bool\
+  \ = False,\n    fused_linear_cross_entropy: bool = True,\n    rms_norm: bool = True,\n\
+  \    swiglu: bool = True,\n    model: PreTrainedModel = None\n) -> None:\n    \"\
+  \"\"\n    \n        Apply Liger kernels to replace original implementation in HuggingFace\
+  \ Mixtral models\n    \n        Args:\n            rope (bool): Whether to apply\
+  \ Liger's rotary position embedding. Default is True.\n            cross_entropy\
+  \ (bool): Whether to apply Liger's cross entropy loss. Default is False.\n     \
+  \       fused_linear_cross_entropy (bool):\n                Whether to apply Liger's\
+  \ fused linear cross entropy loss. Default is True.\n                `cross_entropy`\
+  \ and `fused_linear_cross_entropy` cannot both be True.\n                If `fused_linear_cross_entropy`\
+  \ is True, the logits will not be materialized but more memory efficient.\n    \
+  \        rms_norm (bool): Whether to apply Liger's RMSNorm. Default is True.\n \
+  \           swiglu (bool): Whether to apply Liger's SwiGLU MLP. Default is True.\n\
+  \            model (PreTrainedModel): The model instance to apply Liger kernels\
+  \ to, if the model has already been\n            loaded. Default is None.\n    \
+  \    \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_gemma(\n    rope:\
+  \ bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    geglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace Gemma\n        (Gemma 1 and\
+  \ 1.1 supported, for Gemma2 please use `apply_liger_kernel_to_gemma2` ) to make\
+  \ GPU go burrr.\n    \n        Args:\n            rope (bool): Whether to apply\
+  \ Liger's rotary position embedding. Default is True.\n            cross_entropy\
+  \ (bool): Whether to apply Liger's cross entropy loss. Default is False.\n     \
+  \       fused_linear_cross_entropy (bool):\n                Whether to apply Liger's\
+  \ fused linear cross entropy loss. Default is True.\n                `cross_entropy`\
+  \ and `fused_linear_cross_entropy` cannot both be True.\n                If `fused_linear_cross_entropy`\
+  \ is True, the logits will not be materialized but more memory efficient.\n    \
+  \        rms_norm (bool): Whether to apply Liger's RMSNorm. Default is True.\n \
+  \           geglu (bool): Whether to apply Liger's GeGLU MLP. Default is True.\n\
+  \            model (PreTrainedModel): The model instance to apply Liger kernels\
+  \ to, if the model has already been\n            loaded. Default is None.\n    \
+  \    \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_gemma2(\n    rope:\
+  \ bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    geglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace Gemma2\n        (for Gemma1\
+  \ please use `apply_liger_kernel_to_gemma`) to make GPU go burrr.\n    \n      \
+  \  Args:\n            rope (bool): Whether to apply Liger's rotary position embedding.\
+  \ Default is True.\n            cross_entropy (bool): Whether to apply Liger's cross\
+  \ entropy loss. Default is False.\n            fused_linear_cross_entropy (bool):\n\
+  \                Whether to apply Liger's fused linear cross entropy loss. Default\
+  \ is True.\n                `cross_entropy` and `fused_linear_cross_entropy` cannot\
+  \ both be True.\n                If `fused_linear_cross_entropy` is True, the logits\
+  \ will not be materialized but more memory efficient.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            geglu (bool):\
+  \ Whether to apply Liger's GeGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_gemma3_text(\n    rope: bool = True,\n    cross_entropy:\
+  \ bool = False,\n    fused_linear_cross_entropy: bool = True,\n    rms_norm: bool\
+  \ = True,\n    geglu: bool = True,\n    model: PreTrainedModel = None\n) -> None:\n\
+  \    \"\"\"\n    \n        Apply Liger kernels to replace original implementation\
+  \ in HuggingFace Gemma3\n    \n        Args:\n            rope (bool): Whether to\
+  \ apply Liger's rotary position embedding. Default is True.\n            cross_entropy\
+  \ (bool): Whether to apply Liger's cross entropy loss. Default is False.\n     \
+  \       fused_linear_cross_entropy (bool):\n                Whether to apply Liger's\
+  \ fused linear cross entropy loss. Default is True.\n                `cross_entropy`\
+  \ and `fused_linear_cross_entropy` cannot both be True.\n                If `fused_linear_cross_entropy`\
+  \ is True, the logits will not be materialized but more memory efficient.\n    \
+  \        rms_norm (bool): Whether to apply Liger's RMSNorm. Default is True.\n \
+  \           geglu (bool): Whether to apply Liger's GeGLU MLP. Default is True.\n\
+  \            model (PreTrainedModel): The model instance to apply Liger kernels\
+  \ to, if the model has already been\n            loaded. Default is None.\n    \
+  \    \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_gemma3(\n    rope:\
+  \ bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    layer_norm: bool = True,\n    rms_norm: bool = True,\n    geglu:\
+  \ bool = True,\n    model: PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n\
+  \        Apply Liger kernels to replace original implementation in HuggingFace Gemma3\n\
+  \    \n        Args:\n            rope (bool): Whether to apply Liger's rotary position\
+  \ embedding. Default is True.\n            cross_entropy (bool): Whether to apply\
+  \ Liger's cross entropy loss. Default is False.\n            fused_linear_cross_entropy\
+  \ (bool):\n                Whether to apply Liger's fused linear cross entropy loss.\
+  \ Default is True.\n                `cross_entropy` and `fused_linear_cross_entropy`\
+  \ cannot both be True.\n                If `fused_linear_cross_entropy` is True,\
+  \ the logits will not be materialized but more memory efficient.\n            layer_norm\
+  \ (bool): Whether to apply Liger's LayerNorm. Default is True.\n            rms_norm\
+  \ (bool): Whether to apply Liger's RMSNorm. Default is True.\n            geglu\
+  \ (bool): Whether to apply Liger's GeGLU MLP. Default is True.\n            model\
+  \ (PreTrainedModel): The model instance to apply Liger kernels to, if the model\
+  \ has already been\n            loaded. Default is None.\n        \n    \"\"\"\n\
+  \    <your code>\n\ndef apply_liger_kernel_to_qwen2(\n    rope: bool = True,\n \
+  \   cross_entropy: bool = False,\n    fused_linear_cross_entropy: bool = True,\n\
+  \    rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace Qwen2 models\n    \n        Args:\n            rope\
+  \ (bool): Whether to apply Liger's rotary position embedding. Default is True.\n\
+  \            cross_entropy (bool): Whether to apply Liger's cross entropy loss.\
+  \ Default is False.\n            fused_linear_cross_entropy (bool):\n          \
+  \      Whether to apply Liger's fused linear cross entropy loss. Default is True.\n\
+  \                `cross_entropy` and `fused_linear_cross_entropy` cannot both be\
+  \ True.\n                If `fused_linear_cross_entropy` is True, the logits will\
+  \ not be materialized but more memory efficient.\n            rms_norm (bool): Whether\
+  \ to apply Liger's RMSNorm. Default is True.\n            swiglu (bool): Whether\
+  \ to apply Liger's SwiGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_qwen3(\n    rope: bool = True,\n    cross_entropy: bool\
+  \ = False,\n    fused_linear_cross_entropy: bool = True,\n    rms_norm: bool = True,\n\
+  \    swiglu: bool = True,\n    model: PreTrainedModel = None\n) -> None:\n    \"\
+  \"\"\n    \n        Apply Liger kernels to replace original implementation in HuggingFace\
+  \ Qwen3 models.\n        \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_qwen3_moe(\n\
+  \    rope: bool = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace Qwen3 models.\n        \n  \
+  \  \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_qwen2_vl(\n    rope: bool\
+  \ = True,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy: bool\
+  \ = True,\n    rms_norm: bool = True,\n    layer_norm: bool = True,\n    swiglu:\
+  \ bool = True,\n    model: PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n\
+  \        Apply Liger kernels to replace original implementation in HuggingFace Qwen2-VL\
+  \ models.\n        NOTE: Qwen2-VL is not supported in transformers<4.52.4\n    \n\
+  \        Args:\n            cross_entropy (bool): Whether to apply Liger's cross\
+  \ entropy loss. Default is False.\n            fused_linear_cross_entropy (bool):\n\
+  \                Whether to apply Liger's fused linear cross entropy loss. Default\
+  \ is True.\n                `cross_entropy` and `fused_linear_cross_entropy` cannot\
+  \ both be True.\n                If `fused_linear_cross_entropy` is True, the logits\
+  \ will not be materialized but more memory efficient.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            layer_norm (bool):\
+  \ Whether to apply Liger's LayerNorm. Default is True.\n            swiglu (bool):\
+  \ Whether to apply Liger's SwiGLU MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_qwen2_5_vl(\n    rope: bool = True,\n    cross_entropy:\
+  \ bool = False,\n    fused_linear_cross_entropy: bool = True,\n    rms_norm: bool\
+  \ = True,\n    swiglu: bool = True,\n    model: PreTrainedModel = None\n) -> None:\n\
+  \    \"\"\"\n    \n        Apply Liger kernels to replace original implementation\
+  \ in HuggingFace Qwen2.5-VL models.\n        NOTE: Qwen2.5-VL is not available in\
+  \ transformers<4.48.2\n    \n        Args:\n            cross_entropy (bool): Whether\
+  \ to apply Liger's cross entropy loss. Default is False.\n            fused_linear_cross_entropy\
+  \ (bool):\n                Whether to apply Liger's fused linear cross entropy loss.\
+  \ Default is True.\n                `cross_entropy` and `fused_linear_cross_entropy`\
+  \ cannot both be True.\n                If `fused_linear_cross_entropy` is True,\
+  \ the logits will not be materialized but more memory efficient.\n            rms_norm\
+  \ (bool): Whether to apply Liger's RMSNorm. Default is True.\n            swiglu\
+  \ (bool): Whether to apply Liger's SwiGLU MLP. Default is True.\n            model\
+  \ (PreTrainedModel): The model instance to apply Liger kernels to, if the model\
+  \ has already been\n            loaded. Default is None.\n        \n    \"\"\"\n\
+  \    <your code>\n\ndef apply_liger_kernel_to_phi3(\n    rope: bool = True,\n  \
+  \  cross_entropy: bool = False,\n    fused_linear_cross_entropy: bool = True,\n\
+  \    rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace Phi3 models.\n    \n        Args:\n            rope\
+  \ (bool): Whether to apply Liger's rotary position embedding. Default is True.\n\
+  \            cross_entropy (bool): Whether to apply Liger's cross entropy loss.\
+  \ Default is False.\n            fused_linear_cross_entropy (bool):\n          \
+  \      Whether to apply Liger's fused linear cross entropy loss. Default is True.\n\
+  \                `cross_entropy` and `fused_linear_cross_entropy` cannot both be\
+  \ True.\n                If `fused_linear_cross_entropy` is True, the logits will\
+  \ not be materialized but more memory efficient.\n            rms_norm (bool): Whether\
+  \ to apply Liger's RMSNorm. Default is True.\n            swiglu (bool): Whether\
+  \ to apply Liger's SwiGLU Phi3MLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def apply_liger_kernel_to_glm4(\n    rope: bool = False,\n    cross_entropy: bool\
+  \ = False,\n    fused_linear_cross_entropy: bool = True,\n    rms_norm: bool = True,\n\
+  \    swiglu: bool = True,\n    model: PreTrainedModel = None\n) -> None:\n    \"\
+  \"\"\n    \n        Apply Liger kernels to replace original implementation in HuggingFace\
+  \ GLM-4 models.\n    \n        Args:\n            rope (bool): Whether to apply\
+  \ Liger's rotary position embedding. Default is False.\n            cross_entropy\
+  \ (bool): Whether to apply Liger's cross entropy loss. Default is False.\n     \
+  \       fused_linear_cross_entropy (bool):\n                Whether to apply Liger's\
+  \ fused linear cross entropy loss. Default is True.\n                `cross_entropy`\
+  \ and `fused_linear_cross_entropy` cannot both be True.\n                If `fused_linear_cross_entropy`\
+  \ is True, the logits will not be materialized but more memory efficient.\n    \
+  \        rms_norm (bool): Whether to apply Liger's RMSNorm. Default is True.\n \
+  \           swiglu (bool): Whether to apply Liger's SwiGLU Glm4MLP. Default is True.\n\
+  \            model (PreTrainedModel): The model instance to apply Liger kernels\
+  \ to, if the model has already been\n            loaded. Default is None.\n    \
+  \    \n    \"\"\"\n    <your code>\n\ndef apply_liger_kernel_to_glm4v(\n    rope:\
+  \ bool = False,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy:\
+  \ bool = True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model:\
+  \ PreTrainedModel = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels\
+  \ to replace original implementation in HuggingFace GLM-4v models.\n    \n     \
+  \   Args:\n            rope (bool): Whether to apply Liger's rotary position embedding.\
+  \ Default is False.\n            cross_entropy (bool): Whether to apply Liger's\
+  \ cross entropy loss. Default is False.\n            fused_linear_cross_entropy\
+  \ (bool):\n                Whether to apply Liger's fused linear cross entropy loss.\
+  \ Default is True.\n                `cross_entropy` and `fused_linear_cross_entropy`\
+  \ cannot both be True.\n                If `fused_linear_cross_entropy` is True,\
+  \ the logits will not be materialized but more memory efficient.\n            rms_norm\
+  \ (bool): Whether to apply Liger's RMSNorm. Default is True.\n            swiglu\
+  \ (bool): Whether to apply Liger's SwiGLU Glm4MLP. Default is True.\n          \
+  \  model (PreTrainedModel): The model instance to apply Liger kernels to, if the\
+  \ model has already been\n            loaded. Default is None.\n        \n    \"\
+  \"\"\n    <your code>\n\ndef apply_liger_kernel_to_glm4v_moe(\n    rope: bool =\
+  \ False,\n    cross_entropy: bool = False,\n    fused_linear_cross_entropy: bool\
+  \ = True,\n    rms_norm: bool = True,\n    swiglu: bool = True,\n    model: PreTrainedModel\
+  \ = None\n) -> None:\n    \"\"\"\n    \n        Apply Liger kernels to replace original\
+  \ implementation in HuggingFace GLM4v_moe models.\n    \n        Args:\n       \
+  \     rope (bool): Whether to apply Liger's rotary position embedding. Default is\
+  \ False.\n            cross_entropy (bool): Whether to apply Liger's cross entropy\
+  \ loss. Default is False.\n            fused_linear_cross_entropy (bool):\n    \
+  \            Whether to apply Liger's fused linear cross entropy loss. Default is\
+  \ True.\n                `cross_entropy` and `fused_linear_cross_entropy` cannot\
+  \ both be True.\n                If `fused_linear_cross_entropy` is True, the logits\
+  \ will not be materialized but more memory efficient.\n            rms_norm (bool):\
+  \ Whether to apply Liger's RMSNorm. Default is True.\n            swiglu (bool):\
+  \ Whether to apply Liger's SwiGLUMLP. Default is True.\n            model (PreTrainedModel):\
+  \ The model instance to apply Liger kernels to, if the model has already been\n\
+  \            loaded. Default is None.\n        \n    \"\"\"\n    <your code>\n\n\
+  def _apply_liger_kernel(model_type: str, **kwargs) -> None:\n    \"\"\"\n    \n\
+  \        Applies Liger kernels based on the specified model type. The custom\n \
+  \       kernels for the specified model type will be applied with the provided\n\
+  \        keyword arguments, otherwise the default configuration will be used.\n\
+  \    \n        ** Note: Calling _apply_liger_kernel() after model initialization\n\
+  \        will not be able to fully patch models. This must be called before model\
+  \ initialization.\n        If the model has already been instantiated\n    \n  \
+  \      Args:\n            - model_type: the model types as defined in transformers/models/auto/modeling_auto.py\n\
+  \              and specified in the model's config.json\n            - kwargs: keyword\
+  \ arguments that are passed to the corresponding apply_liger_kernel_to_* function.\n\
+  \        \n    \"\"\"\n    <your code>\n\ndef _apply_liger_kernel_to_instance(\n\
+  \    model: PreTrainedModel,\n    **kwargs\n) -> None:\n    \"\"\"\n    \n     \
+  \   Applies Liger kernels to the provided model instance.\n    \n        Args:\n\
+  \            - model: the model instance to apply Liger kernels to\n           \
+  \ - kwargs: keyword arguments that are passed to the corresponding apply_liger_kernel_to_*\
+  \ function.\n        \n    \"\"\"\n    <your code>\n"
+interface_description4: 'Below is **Interface Description 4** for file: src-liger_kernel-transformers-rms_norm.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code4: "class LigerRMSNorm(nn.Module):\n    \"\"\"\n    A high-performance\
+  \ implementation of Root Mean Square Layer Normalization (RMSNorm) optimized for\
+  \ large language models.\n    \n    LigerRMSNorm provides an efficient alternative\
+  \ to standard layer normalization by computing normalization\n    based on the root\
+  \ mean square of the input activations rather than mean and variance. This implementation\n\
+  \    leverages custom CUDA kernels through LigerRMSNormFunction for improved performance\
+  \ and memory efficiency.\n    \n    Attributes:\n        weight (nn.Parameter):\
+  \ Learnable scaling parameter of shape (hidden_size,). Can be initialized \n   \
+  \         with ones or zeros based on the init_fn parameter.\n        variance_epsilon\
+  \ (float): Small constant added to denominator for numerical stability.\n      \
+  \  offset (float): Additive offset applied during normalization computation.\n \
+  \       casting_mode (str): Determines the computation mode, typically 'llama' or\
+  \ 'gemma' for \n            different model architectures.\n        in_place (bool):\
+  \ Whether to perform in-place operations for memory efficiency.\n        row_mode\
+  \ (str or None): Optional row-wise processing mode for specific optimization patterns.\n\
+  \    \n    Methods:\n        __init__(hidden_size, eps=1e-6, offset=0.0, casting_mode='llama',\
+  \ init_fn='ones', \n                 in_place=True, row_mode=None):\n          \
+  \  Initializes the RMSNorm layer with specified configuration parameters.\n    \
+  \        \n        forward(hidden_states):\n            Applies RMS normalization\
+  \ to input hidden states using the optimized kernel function.\n            Returns\
+  \ normalized tensor with the same shape as input.\n            \n        extra_repr():\n\
+  \            Returns a string representation of the layer's key parameters for debugging\
+  \ and logging.\n    \n    Args:\n        hidden_size (int): The size of the hidden\
+  \ dimension to normalize.\n        eps (float, optional): Epsilon value for numerical\
+  \ stability. Defaults to 1e-6.\n        offset (float, optional): Offset value added\
+  \ during computation. Defaults to 0.0.\n        casting_mode (str, optional): Computation\
+  \ mode ('llama' or 'gemma'). Defaults to 'llama'.\n        init_fn (str, optional):\
+  \ Weight initialization method ('ones' or 'zeros'). Defaults to 'ones'.\n      \
+  \  in_place (bool, optional): Enable in-place operations. Defaults to True.\n  \
+  \      row_mode (str or None, optional): Row processing mode. Defaults to None.\n\
+  \    \n    Example:\n        >>> import torch\n        >>> # Create RMSNorm layer\
+  \ for hidden size 768\n        >>> rms_norm = LigerRMSNorm(hidden_size=768, eps=1e-6)\n\
+  \        >>> \n        >>> # Apply normalization to input tensor\n        >>> hidden_states\
+  \ = torch.randn(32, 128, 768)  # (batch, seq_len, hidden_size)\n        >>> normalized\
+  \ = rms_norm(hidden_states)\n        >>> print(normalized.shape)  # torch.Size([32,\
+  \ 128, 768])\n        >>>\n        >>> # For Gemma-style models with different defaults\n\
+  \        >>> gemma_norm = LigerRMSNorm(hidden_size=768, offset=1.0, casting_mode='gemma',\
+  \ init_fn='zeros')\n    \"\"\"\n\n    def __init__(\n        self,\n        hidden_size,\n\
+  \        eps = 1e-06,\n        offset = 0.0,\n        casting_mode = 'llama',\n\
+  \        init_fn = 'ones',\n        in_place = True,\n        row_mode = None\n\
+  \    ):\n        \"\"\"\n        Initialize a Liger RMS Normalization layer.\n\n\
+  \        RMS (Root Mean Square) Normalization is a normalization technique that\
+  \ normalizes\n        the input by dividing by the root mean square of the input\
+  \ elements. This implementation\n        provides an optimized version with configurable\
+  \ parameters for different model architectures.\n\n        Parameters:\n       \
+  \     hidden_size (int): The size of the hidden dimension to be normalized. This\
+  \ determines\n                the size of the learnable weight parameter.\n    \
+  \        eps (float, optional): A small value added to the denominator for numerical\
+  \ stability\n                to avoid division by zero. Defaults to 1e-6.\n    \
+  \        offset (float, optional): An offset value added during normalization computation.\n\
+  \                Different models use different offset values (e.g., 0.0 for LLaMA,\
+  \ 1.0 for Gemma).\n                Defaults to 0.0.\n            casting_mode (str,\
+  \ optional): Specifies the casting behavior for different model\n              \
+  \  architectures. Supported modes include 'llama' and 'gemma'. Defaults to 'llama'.\n\
+  \            init_fn (str, optional): Initialization function for the weight parameter.\
+  \ Must be\n                either 'ones' or 'zeros'. When 'ones', weights are initialized\
+  \ to 1.0; when\n                'zeros', weights are initialized to 0.0. Defaults\
+  \ to 'ones'.\n            in_place (bool, optional): Whether to perform the normalization\
+  \ operation in-place\n                to save memory. When True, the input tensor\
+  \ may be modified directly.\n                Defaults to True.\n            row_mode\
+  \ (optional): Specifies the row processing mode for the normalization operation.\n\
+  \                The exact behavior depends on the underlying kernel implementation.\
+  \ Defaults to None.\n\n        Raises:\n            AssertionError: If init_fn is\
+  \ not 'ones' or 'zeros'.\n\n        Notes:\n            - The weight parameter is\
+  \ created as a learnable parameter with shape (hidden_size,)\n            - Different\
+  \ model architectures may require different parameter configurations\n         \
+  \   - The actual normalization computation is performed by LigerRMSNormFunction\
+  \ in the forward pass\n            - In-place operations can reduce memory usage\
+  \ but may affect gradient computation in some cases\n        \"\"\"\n        <your\
+  \ code>\n\n    def forward(self, hidden_states):\n        \"\"\"\n        Applies\
+  \ RMS (Root Mean Square) normalization to the input hidden states.\n\n        This\
+  \ method performs the forward pass of the LigerRMSNorm layer, which implements\n\
+  \        RMS normalization using an optimized kernel function. RMS normalization\
+  \ normalizes\n        the input by the root mean square of the elements, providing\
+  \ a computationally\n        efficient alternative to layer normalization.\n\n \
+  \       Parameters:\n            hidden_states (torch.Tensor): Input tensor to be\
+  \ normalized. Can be of any shape,\n                but the last dimension should\
+  \ match the hidden_size specified during\n                initialization. The tensor\
+  \ will be normalized along the last dimension.\n\n        Returns:\n           \
+  \ torch.Tensor: Normalized tensor with the same shape as the input hidden_states.\n\
+  \                The output is computed as: hidden_states * weight / sqrt(mean(hidden_states^2)\
+  \ + eps) + offset,\n                where the exact computation depends on the casting_mode\
+  \ and other configuration\n                parameters set during initialization.\n\
+  \n        Notes:\n            - The normalization is applied using the LigerRMSNormFunction\
+  \ which provides\n              optimized CUDA kernels for better performance\n\
+  \            - The behavior is influenced by instance attributes set during initialization:\n\
+  \              variance_epsilon (numerical stability), offset (additive term), casting_mode\n\
+  \              (computation precision), in_place (memory optimization), and row_mode\
+  \ (processing mode)\n            - If in_place is True, the operation may modify\
+  \ the input tensor directly to save memory\n            - The weight parameter learned\
+  \ during training scales the normalized output\n        \"\"\"\n        <your code>\n\
+  \n    def extra_repr(self):\n        \"\"\"\n        Provides a string representation\
+  \ of the module's key parameters for debugging and inspection purposes.\n\n    \
+  \    This method returns a formatted string containing the essential configuration\
+  \ parameters\n        of the LigerRMSNorm module. It's automatically called by PyTorch\
+  \ when printing the\n        module or converting it to a string representation,\
+  \ making it easier to inspect the\n        module's configuration during debugging\
+  \ or logging.\n\n        Parameters:\n            self: The LigerRMSNorm instance.\n\
+  \n        Returns:\n            str: A formatted string containing the weight tensor\
+  \ shape, epsilon value, offset value,\n                 in_place flag, and row_mode\
+  \ setting. The format is:\n                 \"(weight_shape), eps=variance_epsilon,\
+  \ offset=offset, in_place=in_place, row_mode=row_mode\"\n                 where\
+  \ weight_shape is displayed as a tuple of dimensions.\n\n        Important notes:\n\
+  \            - This method is part of PyTorch's nn.Module interface and is called\
+  \ automatically\n              when the module is printed or converted to string\n\
+  \            - The returned string provides a concise summary of the module's key\
+  \ hyperparameters\n            - The weight shape is converted to a tuple format\
+  \ for cleaner display\n            - All boolean and numeric parameters are displayed\
+  \ with their current values\n        \"\"\"\n        <your code>\n\nclass LigerRMSNormForGlm4(LigerRMSNorm):\n\
+  \    \"\"\"\n    A specialized RMS normalization layer optimized for GLM-4 (General\
+  \ Language Model 4) architecture.\n    \n    This class extends LigerRMSNorm with\
+  \ GLM-4-specific default parameters, providing an efficient\n    implementation\
+  \ of Root Mean Square Layer Normalization tailored for GLM-4 models. It uses\n \
+  \   optimized kernel operations for improved performance during training and inference.\n\
+  \    \n    Attributes:\n        weight (nn.Parameter): Learnable scaling parameter\
+  \ of shape (hidden_size,), initialized to ones\n        variance_epsilon (float):\
+  \ Small constant added to variance for numerical stability (default: 1e-6)\n   \
+  \     offset (float): Offset value applied during normalization (default: 0.0)\n\
+  \        casting_mode (str): Computation mode, set to \"llama\" for GLM-4 compatibility\n\
+  \        in_place (bool): Whether to perform in-place operations, set to False for\
+  \ GLM-4\n        row_mode (None or str): Row processing mode for the normalization\
+  \ operation\n    \n    Methods:\n        __init__(hidden_size, eps=1e-6, offset=0.0,\
+  \ casting_mode=\"llama\", init_fn=\"ones\", \n                 in_place=False, row_mode=None):\n\
+  \            Initializes the GLM-4 RMS normalization layer with model-specific defaults.\n\
+  \            \n        forward(hidden_states):\n            Applies RMS normalization\
+  \ to input hidden states using optimized kernel operations.\n            Inherited\
+  \ from parent LigerRMSNorm class.\n            \n        extra_repr():\n       \
+  \     Returns string representation of layer parameters for debugging and inspection.\n\
+  \            Inherited from parent LigerRMSNorm class.\n    \n    Usage Examples:\n\
+  \        # Basic usage for GLM-4 model\n        rms_norm = LigerRMSNormForGlm4(hidden_size=4096)\n\
+  \        \n        # Custom epsilon for numerical stability\n        rms_norm =\
+  \ LigerRMSNormForGlm4(hidden_size=2048, eps=1e-8)\n        \n        # Forward pass\n\
+  \        import torch\n        hidden_states = torch.randn(32, 128, 4096)  # (batch,\
+  \ seq_len, hidden_size)\n        normalized_output = rms_norm(hidden_states)\n \
+  \   \"\"\"\n\n    def __init__(\n        self,\n        hidden_size,\n        eps\
+  \ = 1e-06,\n        offset = 0.0,\n        casting_mode = 'llama',\n        init_fn\
+  \ = 'ones',\n        in_place = False,\n        row_mode = None\n    ):\n      \
+  \  \"\"\"\n        Initialize a Liger RMS Normalization layer.\n\n        RMS (Root\
+  \ Mean Square) Normalization is a normalization technique that normalizes\n    \
+  \    the input by dividing by the root mean square of the input elements. This implementation\n\
+  \        provides an optimized version with configurable parameters for different\
+  \ model architectures.\n\n        Parameters:\n            hidden_size (int): The\
+  \ size of the hidden dimension to be normalized. This determines\n             \
+  \   the size of the learnable weight parameter.\n            eps (float, optional):\
+  \ A small value added to the denominator for numerical stability\n             \
+  \   to avoid division by zero. Defaults to 1e-6.\n            offset (float, optional):\
+  \ An offset value added during normalization. Different models\n               \
+  \ use different offset values (e.g., 0.0 for LLaMA, 1.0 for Gemma). Defaults to\
+  \ 0.0.\n            casting_mode (str, optional): Specifies the casting behavior\
+  \ for different model types.\n                Supported modes include 'llama' and\
+  \ 'gemma'. Defaults to 'llama'.\n            init_fn (str, optional): Initialization\
+  \ function for the weight parameter. Must be\n                either 'ones' or 'zeros'.\
+  \ Defaults to 'ones'.\n            in_place (bool, optional): Whether to perform\
+  \ the operation in-place to save memory.\n                When True, the input tensor\
+  \ may be modified directly. Defaults to False.\n            row_mode (optional):\
+  \ Specifies the row processing mode for the normalization operation.\n         \
+  \       The exact behavior depends on the underlying implementation. Defaults to\
+  \ None.\n\n        Raises:\n            AssertionError: If init_fn is not 'ones'\
+  \ or 'zeros'.\n\n        Notes:\n            - The weight parameter is initialized\
+  \ as a 1D tensor of size hidden_size\n            - When init_fn is 'ones', weights\
+  \ are initialized to 1.0; when 'zeros', to 0.0\n            - Different model architectures\
+  \ may require different parameter combinations\n            - The in_place operation\
+  \ can reduce memory usage but may affect gradient computation\n        \"\"\"\n\
+  \        <your code>\n"
+interface_description5: 'Below is **Interface Description 5** for file: src-liger_kernel-transformers-layer_norm.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code5: "class LigerLayerNorm(nn.Module):\n    \"\"\"\n    A custom implementation\
+  \ of Layer Normalization using Liger kernel operations for improved performance.\n\
+  \    \n    This class provides a PyTorch module that performs layer normalization\
+  \ on input tensors,\n    utilizing the optimized LigerLayerNormFunction for efficient\
+  \ computation. Layer normalization\n    normalizes inputs across the feature dimension,\
+  \ helping to stabilize training and improve\n    convergence in neural networks.\n\
+  \    \n    Args:\n        hidden_size (int): The size of the hidden dimension to\
+  \ be normalized.\n        eps (float, optional): A small value added to the denominator\
+  \ for numerical stability.\n            Defaults to 1e-6.\n        bias (bool, optional):\
+  \ Whether to include a learnable bias parameter. If True, bias is\n            initialized\
+  \ with random values; if False, bias is set to zeros. Defaults to False.\n     \
+  \   init_fn (str, optional): Initialization function for the weight parameter. Must\
+  \ be either\n            'ones' (default) or 'zeros'. Defaults to 'ones'.\n    \n\
+  \    Attributes:\n        hidden_size (int): The size of the hidden dimension.\n\
+  \        eps (float): The epsilon value for numerical stability.\n        weight\
+  \ (nn.Parameter): Learnable scaling parameter of shape (hidden_size,).\n       \
+  \ bias (nn.Parameter): Learnable bias parameter of shape (hidden_size,).\n     \
+  \   variance_epsilon (float): Alias for eps, used in the forward computation.\n\
+  \    \n    Methods:\n        forward(hidden_states): Applies layer normalization\
+  \ to the input tensor using the\n            optimized Liger kernel function.\n\
+  \        extra_repr(): Returns a string representation of the module's key parameters\
+  \ for\n            debugging and logging purposes.\n    \n    Example:\n       \
+  \ >>> import torch\n        >>> layer_norm = LigerLayerNorm(hidden_size=768, eps=1e-5,\
+  \ bias=True)\n        >>> input_tensor = torch.randn(32, 128, 768)  # (batch, seq_len,\
+  \ hidden_size)\n        >>> normalized_output = layer_norm(input_tensor)\n     \
+  \   >>> print(normalized_output.shape)  # torch.Size([32, 128, 768])\n    \n   \
+  \ Note:\n        This implementation leverages the LigerLayerNormFunction for potentially\
+  \ better\n        performance compared to standard PyTorch layer normalization implementations.\n\
+  \    \"\"\"\n\n    def __init__(\n        self,\n        hidden_size,\n        eps\
+  \ = 1e-06,\n        bias = False,\n        init_fn = 'ones'\n    ):\n        \"\"\
+  \"\n        Initialize a Liger Layer Normalization module.\n\n        This constructor\
+  \ creates a custom layer normalization module that uses the LigerLayerNormFunction\n\
+  \        for efficient computation. Layer normalization normalizes inputs across\
+  \ the feature dimension,\n        helping to stabilize training and improve convergence\
+  \ in neural networks.\n\n        Parameters:\n            hidden_size (int): The\
+  \ number of features in the input tensor. This determines the size\n           \
+  \     of the learnable weight and bias parameters.\n            eps (float, optional):\
+  \ A small value added to the denominator for numerical stability\n             \
+  \   when computing the variance. Prevents division by zero. Defaults to 1e-6.\n\
+  \            bias (bool, optional): Whether to include a learnable bias parameter.\
+  \ If True, the bias\n                is initialized with random normal values. If\
+  \ False, bias is set to zeros and not\n                trainable. Defaults to False.\n\
+  \            init_fn (str, optional): Initialization function for the weight parameter.\
+  \ Must be either\n                'ones' or 'zeros'. When 'ones', weights are initialized\
+  \ to 1.0. When 'zeros', weights\n                are initialized to 0.0. Defaults\
+  \ to 'ones'.\n\n        Raises:\n            AssertionError: If init_fn is not 'ones'\
+  \ or 'zeros'.\n\n        Notes:\n            - The weight parameter is always trainable\
+  \ regardless of the init_fn value\n            - When bias=False, a bias parameter\
+  \ is still created but filled with zeros\n            - The variance_epsilon attribute\
+  \ is set to the same value as eps for use in the forward pass\n            - This\
+  \ implementation is optimized for performance using the Liger kernel operations\n\
+  \        \"\"\"\n        <your code>\n\n    def forward(self, hidden_states):\n\
+  \        \"\"\"\n        Performs forward pass of the Liger Layer Normalization.\n\
+  \n        This method applies layer normalization to the input hidden states using\
+  \ the Liger kernel\n        implementation for optimized performance. Layer normalization\
+  \ normalizes the input across\n        the feature dimension, applying learned weight\
+  \ and bias parameters.\n\n        Args:\n            hidden_states (torch.Tensor):\
+  \ Input tensor to be normalized. Expected to have shape\n                (..., hidden_size)\
+  \ where the last dimension matches the hidden_size specified\n                during\
+  \ initialization. The tensor can have any number of leading dimensions\n       \
+  \         (batch size, sequence length, etc.).\n\n        Returns:\n           \
+  \ torch.Tensor: Layer normalized tensor with the same shape as the input hidden_states.\n\
+  \                The output is computed as: weight * (hidden_states - mean) / sqrt(variance\
+  \ + eps) + bias,\n                where normalization statistics are computed across\
+  \ the last dimension.\n\n        Note:\n            This implementation uses the\
+  \ LigerLayerNormFunction which provides memory and\n            computation optimizations\
+  \ compared to standard PyTorch layer normalization.\n            The variance_epsilon\
+  \ parameter helps prevent division by zero during normalization.\n        \"\"\"\
+  \n        <your code>\n\n    def extra_repr(self):\n        \"\"\"\n        Return\
+  \ a string containing extra representation information for this layer.\n\n     \
+  \   This method provides a concise string representation of the layer's key parameters\n\
+  \        that will be displayed when the module is printed. It shows the hidden\
+  \ size and\n        epsilon value used for numerical stability in layer normalization.\n\
+  \n        Parameters:\n            self: The LigerLayerNorm instance\n\n       \
+  \ Returns:\n            str: A formatted string containing the hidden_size and eps\
+  \ parameters in the\n                 format \"{hidden_size}, eps={eps_value}\"\n\
+  \n        Notes:\n            This method is automatically called by PyTorch's module\
+  \ printing mechanism\n            and follows the standard nn.Module.extra_repr()\
+  \ convention for providing\n            additional module information beyond the\
+  \ class name.\n        \"\"\"\n        <your code>\n"
+interface_description6: 'Below is **Interface Description 6** for file: src-liger_kernel-transformers-swiglu.py
+
+
+  This file contains 4 top-level interface(s) that need to be implemented.
+
+  '
+interface_code6: "class LigerSwiGLUMLP(nn.Module):\n    \"\"\"\n    A PyTorch neural\
+  \ network module implementing a SwiGLU (Swish-Gated Linear Unit) Multi-Layer Perceptron\
+  \ using optimized Liger kernel operations.\n    \n    This class provides an efficient\
+  \ implementation of the SwiGLU activation function commonly used in transformer\
+  \ architectures. SwiGLU combines a gating mechanism with the SiLU (Swish) activation\
+  \ function to improve model performance while maintaining computational efficiency\
+  \ through the use of Liger's optimized kernel operations.\n    \n    Attributes:\n\
+  \        config: Configuration object containing model hyperparameters\n       \
+  \ hidden_size (int): Dimension of the input and output hidden states\n        intermediate_size\
+  \ (int): Dimension of the intermediate projection layer\n        gate_proj (nn.Linear):\
+  \ Linear projection for the gating mechanism (no bias)\n        up_proj (nn.Linear):\
+  \ Linear projection for the up-scaling transformation (no bias)\n        down_proj\
+  \ (nn.Linear): Linear projection for down-scaling back to hidden size (no bias)\n\
+  \    \n    Methods:\n        __init__(config): Initializes the MLP layers and validates\
+  \ the activation function.\n            Requires config.hidden_act to be either\
+  \ \"silu\" or \"swish\".\n        \n        forward(x): Performs the forward pass\
+  \ through the SwiGLU MLP.\n            Applies gate and up projections, then uses\
+  \ LigerSiLUMulFunction for efficient\n            SiLU activation and element-wise\
+  \ multiplication, followed by down projection.\n    \n    Usage Example:\n     \
+  \   ```python\n        import torch\n        from types import SimpleNamespace\n\
+  \        \n        # Create configuration\n        config = SimpleNamespace(\n \
+  \           hidden_size=768,\n            intermediate_size=3072,\n            hidden_act=\"\
+  silu\"\n        )\n        \n        # Initialize the MLP\n        mlp = LigerSwiGLUMLP(config)\n\
+  \        \n        # Forward pass\n        batch_size, seq_len = 32, 128\n     \
+  \   x = torch.randn(batch_size, seq_len, config.hidden_size)\n        output = mlp(x)\
+  \  # Shape: (32, 128, 768)\n        ```\n    \n    Note:\n        This implementation\
+  \ requires the input activation function to be either \"silu\" or \"swish\".\n \
+  \       Other activation functions will raise a ValueError during initialization.\n\
+  \    \"\"\"\n\n    def __init__(self, config):\n        \"\"\"\n        Initialize\
+  \ a LigerSwiGLUMLP module with SwiGLU activation using optimized Liger kernel operations.\n\
+  \n        This constructor sets up a Multi-Layer Perceptron (MLP) that implements\
+  \ the SwiGLU activation function,\n        which combines Swish/SiLU activation\
+  \ with Gated Linear Units (GLU). The implementation uses the optimized\n       \
+  \ LigerSiLUMulFunction for efficient computation of the SiLU activation and element-wise\
+  \ multiplication.\n\n        The MLP consists of three linear transformations:\n\
+  \        - gate_proj: Projects input from hidden_size to intermediate_size (gating\
+  \ mechanism)\n        - up_proj: Projects input from hidden_size to intermediate_size\
+  \ (value transformation)  \n        - down_proj: Projects from intermediate_size\
+  \ back to hidden_size (output projection)\n\n        Parameters:\n            config:\
+  \ Configuration object containing model hyperparameters. Must have the following\
+  \ attributes:\n                - hidden_size (int): The size of the hidden layer\
+  \ and input/output dimensions\n                - intermediate_size (int): The size\
+  \ of the intermediate layer (typically larger than hidden_size)\n              \
+  \  - hidden_act (str): The activation function name, must be either \"silu\" or\
+  \ \"swish\"\n\n        Raises:\n            ValueError: If config.hidden_act is\
+  \ not \"silu\" or \"swish\", as these are the only supported\n                 \
+  \      activation functions for this SwiGLU implementation.\n\n        Notes:\n\
+  \            - All linear layers are created without bias terms (bias=False)\n \
+  \           - The SwiGLU computation is performed using LigerSiLUMulFunction.apply()\
+  \ for optimized performance\n            - This implementation is designed to be\
+  \ a drop-in replacement for standard MLP layers in transformer models\n        \"\
+  \"\"\n        <your code>\n\n    def forward(self, x):\n        \"\"\"\n       \
+  \ Performs the forward pass of the MLP module using SwiGLU activation.\n\n     \
+  \   This method implements the forward computation for various MLP architectures\
+  \ that utilize\n        the SwiGLU (Swish-Gated Linear Unit) activation function.\
+  \ The exact computation depends\n        on which MLP class this method belongs\
+  \ to:\n\n        - LigerSwiGLUMLP: Applies gate and up projections separately, then\
+  \ combines with SiLU\n        - LigerBlockSparseTop2MLP: Similar to SwiGLU but with\
+  \ different weight naming (w1, w2, w3)\n        - LigerPhi3SwiGLUMLP: Uses a combined\
+  \ gate_up projection that is chunked into gate and up states\n        - LigerQwen3MoeSwiGLUMLP:\
+  \ Similar to LigerSwiGLUMLP with optional intermediate size configuration\n\n  \
+  \      The general pattern is: output = down_proj(SiLU(gate_proj(x)) * up_proj(x))\n\
+  \n        Parameters:\n            x (torch.Tensor): Input tensor of shape (...,\
+  \ hidden_size) where the last dimension\n                             must match\
+  \ the model's hidden_size configuration.\n\n        Returns:\n            torch.Tensor:\
+  \ Output tensor of shape (..., hidden_size) after applying the MLP\n           \
+  \              transformation with SwiGLU activation.\n\n        Notes:\n      \
+  \      - Uses LigerSiLUMulFunction.apply() for efficient computation of SiLU activation\n\
+  \              combined with element-wise multiplication\n            - All linear\
+  \ layers are configured without bias terms\n            - The activation function\
+  \ must be either \"silu\" or \"swish\" as validated during\n              module\
+  \ initialization\n            - For Phi3 variant, the gate_up_proj output is split\
+  \ along the last dimension\n            - Input tensor shape is preserved except\
+  \ for the last dimension which is transformed\n              from hidden_size to\
+  \ hidden_size through the intermediate_size bottleneck\n        \"\"\"\n       \
+  \ <your code>\n\nclass LigerBlockSparseTop2MLP(nn.Module):\n    \"\"\"\n    A PyTorch\
+  \ neural network module implementing a block-sparse top-2 Multi-Layer Perceptron\
+  \ (MLP) with SwiGLU activation.\n    \n    This class provides an optimized implementation\
+  \ of a feed-forward network layer commonly used in transformer architectures. It\
+  \ uses the Liger kernel's SiLU multiplication function for efficient computation\
+  \ of the SwiGLU (Swish-Gated Linear Unit) activation pattern.\n    \n    Attributes:\n\
+  \        ffn_dim (int): The dimension of the feed-forward network intermediate layer,\
+  \ derived from config.intermediate_size\n        hidden_dim (int): The dimension\
+  \ of the hidden layer, derived from config.hidden_size\n        w1 (nn.Linear):\
+  \ Linear transformation from hidden_dim to ffn_dim without bias, acts as the gate\
+  \ projection\n        w2 (nn.Linear): Linear transformation from ffn_dim back to\
+  \ hidden_dim without bias, acts as the down projection\n        w3 (nn.Linear):\
+  \ Linear transformation from hidden_dim to ffn_dim without bias, acts as the up\
+  \ projection\n    \n    Methods:\n        __init__(config): Initializes the MLP\
+  \ layers and validates the activation function configuration.\n            Requires\
+  \ config.hidden_act to be either \"silu\" or \"swish\".\n        \n        forward(x):\
+  \ Performs the forward pass through the MLP using the SwiGLU pattern.\n        \
+  \    Computes w2(SiLU(w1(x)) * w3(x)) where SiLU is the Swish activation function.\n\
+  \    \n    Usage Example:\n        ```python\n        import torch\n        from\
+  \ types import SimpleNamespace\n        \n        # Create configuration\n     \
+  \   config = SimpleNamespace(\n            hidden_size=768,\n            intermediate_size=3072,\n\
+  \            hidden_act=\"silu\"\n        )\n        \n        # Initialize the\
+  \ MLP\n        mlp = LigerBlockSparseTop2MLP(config)\n        \n        # Forward\
+  \ pass\n        batch_size, seq_len = 2, 512\n        x = torch.randn(batch_size,\
+  \ seq_len, config.hidden_size)\n        output = mlp(x)  # Shape: (2, 512, 768)\n\
+  \        ```\n    \n    Note:\n        This implementation is optimized for block-sparse\
+  \ attention patterns and uses the LigerSiLUMulFunction\n        for efficient computation.\
+  \ The \"top-2\" in the name likely refers to its use in mixture-of-experts\n   \
+  \     architectures where only the top-2 experts are activated.\n    \"\"\"\n\n\
+  \    def __init__(self, config):\n        \"\"\"\n        Initialize a LigerSwiGLUMLP\
+  \ module with the given configuration.\n\n        This constructor sets up a SwiGLU\
+  \ (Swish-Gated Linear Unit) MLP layer optimized with\n        Liger kernel operations.\
+  \ The module consists of three linear projections: gate_proj and\n        up_proj\
+  \ for the gated mechanism, and down_proj for the output transformation.\n\n    \
+  \    Parameters:\n            config: A configuration object that must contain the\
+  \ following attributes:\n                - hidden_size (int): The size of the input\
+  \ hidden dimension\n                - intermediate_size (int): The size of the intermediate/feed-forward\
+  \ dimension\n                - hidden_act (str): The activation function name, must\
+  \ be either \"silu\" or \"swish\"\n\n        Raises:\n            ValueError: If\
+  \ config.hidden_act is not \"silu\" or \"swish\"\n\n        Notes:\n           \
+  \ - All linear layers are created without bias terms (bias=False)\n            -\
+  \ The gate_proj and up_proj layers transform from hidden_size to intermediate_size\n\
+  \            - The down_proj layer transforms from intermediate_size back to hidden_size\n\
+  \            - This implementation is optimized for memory efficiency using LigerSiLUMulFunction\n\
+  \            - The module follows the SwiGLU architecture pattern commonly used\
+  \ in transformer models\n        \"\"\"\n        <your code>\n\n    def forward(self,\
+  \ x):\n        \"\"\"\n        Performs the forward pass of the SwiGLU MLP layer.\n\
+  \n        This method implements the SwiGLU (Swish-Gated Linear Unit) activation\
+  \ function pattern,\n        which applies gated linear transformations followed\
+  \ by SiLU activation and element-wise\n        multiplication. The computation flow\
+  \ varies depending on the specific MLP class:\n\n        - LigerSwiGLUMLP: gate_proj(x)\
+  \ and up_proj(x) are computed separately, then passed to\n          LigerSiLUMulFunction,\
+  \ followed by down_proj\n        - LigerBlockSparseTop2MLP: Similar to LigerSwiGLUMLP\
+  \ but uses w1, w2, w3 naming convention\n        - LigerPhi3SwiGLUMLP: Uses a combined\
+  \ gate_up_proj that outputs 2*intermediate_size,\n          which is then chunked\
+  \ into gate and up_states\n        - LigerQwen3MoeSwiGLUMLP: Similar to LigerSwiGLUMLP\
+  \ with support for custom intermediate_size\n\n        Parameters:\n           \
+  \ x (torch.Tensor): Input tensor of shape (..., hidden_size) where ... represents\n\
+  \                             any number of leading dimensions (typically batch_size,\
+  \ sequence_length)\n\n        Returns:\n            torch.Tensor: Output tensor\
+  \ of shape (..., hidden_size) after applying the SwiGLU\n                      \
+  \   transformation and down projection\n\n        Notes:\n            - The LigerSiLUMulFunction.apply()\
+  \ performs an optimized fused operation that computes\n              SiLU(gate)\
+  \ * up_states more efficiently than separate operations\n            - All linear\
+  \ layers use bias=False as per the SwiGLU specification\n            - The activation\
+  \ function must be \"silu\" or \"swish\" (validated during initialization)\n   \
+  \         - This implementation provides memory and computational efficiency improvements\
+  \ over\n              standard PyTorch implementations of the same operations\n\
+  \        \"\"\"\n        <your code>\n\nclass LigerPhi3SwiGLUMLP(nn.Module):\n \
+  \   \"\"\"\n    \n        Patch Phi3MLP to use LigerSiLUMulFunction\n        https://github.com/huggingface/transformers/blob/v4.41.0/src/transformers/models/phi3/modeling_phi3.py#L241\n\
+  \        \n    \"\"\"\n\n    def __init__(self, config):\n        \"\"\"\n     \
+  \   Initialize a LigerSwiGLUMLP module with the given configuration.\n\n       \
+  \ This constructor sets up a Swish-Gated Linear Unit (SwiGLU) Multi-Layer Perceptron\n\
+  \        that uses the optimized LigerSiLUMulFunction for efficient computation.\
+  \ The module\n        consists of three linear transformations: gate projection,\
+  \ up projection, and down\n        projection layers, implementing the SwiGLU architecture\
+  \ commonly used in modern\n        transformer models.\n\n        Parameters:\n\
+  \            config: A configuration object that must contain the following attributes:\n\
+  \                - hidden_size (int): The dimensionality of the input and output\
+  \ features\n                - intermediate_size (int): The dimensionality of the\
+  \ intermediate layer\n                - hidden_act (str): The activation function\
+  \ name, must be either \"silu\" or \"swish\"\n\n        Raises:\n            ValueError:\
+  \ If config.hidden_act is not \"silu\" or \"swish\"\n\n        Notes:\n        \
+  \    - All linear layers are initialized without bias terms (bias=False)\n     \
+  \       - The gate_proj and up_proj layers transform from hidden_size to intermediate_size\n\
+  \            - The down_proj layer transforms from intermediate_size back to hidden_size\n\
+  \            - This implementation is optimized for memory efficiency and computational\
+  \ speed\n              through the use of LigerSiLUMulFunction\n        \"\"\"\n\
+  \        <your code>\n\n    def forward(self, x):\n        \"\"\"\n        Performs\
+  \ the forward pass of the SwiGLU MLP layer.\n\n        This method implements the\
+  \ SwiGLU (Swish-Gated Linear Unit) activation function pattern,\n        which applies\
+  \ separate gate and up projections to the input, combines them using the\n     \
+  \   LigerSiLUMulFunction (SiLU activation with element-wise multiplication), and\
+  \ then\n        applies a down projection to produce the final output.\n\n     \
+  \   The forward pass follows this computation flow:\n        1. Apply gate projection\
+  \ to input x\n        2. Apply up projection to input x  \n        3. Combine the\
+  \ projections using LigerSiLUMulFunction.apply(gate_output, up_output)\n       \
+  \ 4. Apply down projection to the combined result\n\n        Parameters:\n     \
+  \       x (torch.Tensor): Input tensor of shape (..., hidden_size) where the last\n\
+  \                             dimension must match the model's hidden_size configuration.\n\
+  \n        Returns:\n            torch.Tensor: Output tensor of shape (..., hidden_size)\
+  \ after applying the\n                         SwiGLU transformation. The output\
+  \ maintains the same shape as\n                         the input except potentially\
+  \ different batch dimensions.\n\n        Notes:\n            - This implementation\
+  \ uses LigerSiLUMulFunction for optimized SiLU activation\n              and element-wise\
+  \ multiplication\n            - The gate_proj and up_proj layers transform from\
+  \ hidden_size to intermediate_size\n            - The down_proj layer transforms\
+  \ back from intermediate_size to hidden_size\n            - All linear layers are\
+  \ configured without bias terms\n            - The model configuration must specify\
+  \ hidden_act as either \"silu\" or \"swish\"\n        \"\"\"\n        <your code>\n\
+  \nclass LigerQwen3MoeSwiGLUMLP(nn.Module):\n    \"\"\"\n    \n        Patch Qwen3MoeMLP\
+  \ to use LigerSiLUMulFunction.\n        https://github.com/huggingface/transformers/blob/v4.51.3/src/transformers/models/qwen3_moe/modular_qwen3_moe.py#L57\n\
+  \        \n    \"\"\"\n\n    def __init__(\n        self,\n        config,\n   \
+  \     intermediate_size = None\n    ):\n        \"\"\"\n        Initialize a Qwen3\
+  \ Mixture of Experts (MoE) SwiGLU MLP layer with Liger kernel optimization.\n\n\
+  \        This constructor sets up a three-layer MLP architecture (gate projection,\
+  \ up projection, and down projection)\n        that uses the LigerSiLUMulFunction\
+  \ for efficient SwiGLU activation computation. This is a patched version\n     \
+  \   of the Qwen3MoeMLP that leverages optimized kernel operations for better performance.\n\
+  \n        Parameters:\n            config: Configuration object containing model\
+  \ hyperparameters. Must have the following attributes:\n                - hidden_size\
+  \ (int): The size of the hidden layer\n                - intermediate_size (int):\
+  \ The size of the intermediate/feed-forward layer\n                - hidden_act\
+  \ (str): The activation function name, must be \"silu\" or \"swish\"\n         \
+  \   intermediate_size (int, optional): Override for the intermediate layer size.\
+  \ If provided,\n                this value will be used instead of config.intermediate_size.\
+  \ Defaults to None.\n\n        Raises:\n            ValueError: If config.hidden_act\
+  \ is not \"silu\" or \"swish\", as these are the only\n                supported\
+  \ activation functions for the SwiGLU implementation.\n\n        Notes:\n      \
+  \      - All linear layers are created without bias terms (bias=False)\n       \
+  \     - The gate_proj and up_proj layers both map from hidden_size to intermediate_size\n\
+  \            - The down_proj layer maps from intermediate_size back to hidden_size\n\
+  \            - This implementation is specifically designed to work with the Liger\
+  \ kernel's\n              optimized SiLU multiplication function\n            -\
+  \ Based on the Hugging Face Transformers Qwen3MoeMLP implementation\n        \"\"\
+  \"\n        <your code>\n\n    def forward(self, x):\n        \"\"\"\n        Performs\
+  \ the forward pass of the SwiGLU MLP layer.\n\n        This method implements the\
+  \ SwiGLU (Swish-Gated Linear Unit) activation function pattern,\n        which applies\
+  \ linear transformations followed by element-wise multiplication with SiLU activation.\n\
+  \        The specific implementation varies depending on the MLP class:\n\n    \
+  \    - LigerSwiGLUMLP: Applies gate_proj and up_proj transformations, then SiLU\
+  \ multiplication, \n          followed by down_proj transformation\n        - LigerBlockSparseTop2MLP:\
+  \ Similar pattern using w1, w3, and w2 linear layers\n        - LigerPhi3SwiGLUMLP:\
+  \ Uses a combined gate_up_proj layer that is chunked into gate and \n          up_states\
+  \ before SiLU multiplication\n        - LigerQwen3MoeSwiGLUMLP: Same pattern as\
+  \ LigerSwiGLUMLP with gate_proj, up_proj, and down_proj\n\n        Parameters:\n\
+  \            x (torch.Tensor): Input tensor of shape (..., hidden_size) where hidden_size\
+  \ matches\n                             the configured input dimension of the MLP\
+  \ layer.\n\n        Returns:\n            torch.Tensor: Output tensor of shape (...,\
+  \ hidden_size) after applying the SwiGLU\n                         transformation.\
+  \ The output maintains the same batch dimensions as the input\n                \
+  \         but is projected back to the original hidden dimension.\n\n        Notes:\n\
+  \            - This method uses LigerSiLUMulFunction.apply() for efficient computation\
+  \ of the\n              SiLU activation combined with element-wise multiplication\n\
+  \            - All linear layers are configured without bias terms\n           \
+  \ - The activation function must be either \"silu\" or \"swish\" as validated during\
+  \ initialization\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class LigerBlockSparseTop2MLP(nn.Module):\n    \"\"\"\n \
+  \   A PyTorch neural network module implementing a block-sparse top-2 Multi-Layer\
+  \ Perceptron (MLP) with SwiGLU activation.\n    \n    This class provides an optimized\
+  \ implementation of a feed-forward network layer commonly used in transformer architectures.\
+  \ It uses the Liger kernel's SiLU multiplication function for efficient computation\
+  \ of the SwiGLU (Swish-Gated Linear Unit) activation pattern.\n    \n    Attributes:\n\
+  \        ffn_dim (int): The dimension of the feed-forward network intermediate layer,\
+  \ derived from config.intermediate_size\n        hidden_dim (int): The dimension\
+  \ of the hidden layer, derived from config.hidden_size\n        w1 (nn.Linear):\
+  \ Linear transformation from hidden_dim to ffn_dim without bias, acts as the gate\
+  \ projection\n        w2 (nn.Linear): Linear transformation from ffn_dim back to\
+  \ hidden_dim without bias, acts as the down projection\n        w3 (nn.Linear):\
+  \ Linear transformation from hidden_dim to ffn_dim without bias, acts as the up\
+  \ projection\n    \n    Methods:\n        __init__(config): Initializes the MLP\
+  \ layers and validates the activation function configuration.\n            Requires\
+  \ config.hidden_act to be either \"silu\" or \"swish\".\n        \n        forward(x):\
+  \ Performs the forward pass through the MLP using the SwiGLU pattern.\n        \
+  \    Computes w2(SiLU(w1(x)) * w3(x)) where SiLU is the Swish activation function.\n\
+  \    \n    Usage Example:\n        ```python\n        import torch\n        from\
+  \ types import SimpleNamespace\n        \n        # Create configuration\n     \
+  \   config = SimpleNamespace(\n            hidden_size=768,\n            intermediate_size=3072,\n\
+  \            hidden_act=\"silu\"\n        )\n        \n        # Initialize the\
+  \ MLP\n        mlp = LigerBlockSparseTop2MLP(config)\n        \n        # Forward\
+  \ pass\n        batch_size, seq_len = 2, 512\n        x = torch.randn(batch_size,\
+  \ seq_len, config.hidden_size)\n        output = mlp(x)  # Shape: (2, 512, 768)\n\
+  \        ```\n    \n    Note:\n        This implementation is optimized for block-sparse\
+  \ attention patterns and uses the LigerSiLUMulFunction\n        for efficient computation.\
+  \ The \"top-2\" in the name likely refers to its use in mixture-of-experts\n   \
+  \     architectures where only the top-2 experts are activated.\n    \"\"\"\n\n\
+  \    def __init__(self, config):\n        \"\"\"\n        Initialize a LigerSwiGLUMLP\
+  \ module with the given configuration.\n\n        This constructor sets up a SwiGLU\
+  \ (Swish-Gated Linear Unit) MLP layer optimized with\n        Liger kernel operations.\
+  \ The module consists of three linear projections: gate_proj and\n        up_proj\
+  \ for the gated mechanism, and down_proj for the output transformation.\n\n    \
+  \    Parameters:\n            config: A configuration object that must contain the\
+  \ following attributes:\n                - hidden_size (int): The size of the input\
+  \ hidden dimension\n                - intermediate_size (int): The size of the intermediate/feed-forward\
+  \ dimension\n                - hidden_act (str): The activation function name, must\
+  \ be either \"silu\" or \"swish\"\n\n        Raises:\n            ValueError: If\
+  \ config.hidden_act is not \"silu\" or \"swish\"\n\n        Notes:\n           \
+  \ - All linear layers are created without bias terms (bias=False)\n            -\
+  \ The gate_proj and up_proj layers transform from hidden_size to intermediate_size\n\
+  \            - The down_proj layer transforms from intermediate_size back to hidden_size\n\
+  \            - This implementation is optimized for memory efficiency using LigerSiLUMulFunction\n\
+  \            - The module follows the SwiGLU architecture pattern commonly used\
+  \ in transformer models\n        \"\"\"\n        <your code>\n..."

@@ -1,0 +1,174 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/pydata/xarray
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e .
+instance_image: pb-instance_6a3f6414
+library_name: xarray
+pip_packages:
+- hypothesis
+- jinja2
+- mypy
+- pre-commit
+- pytest
+- pytest-cov
+- pytest-env
+- pytest-mypy-plugins
+- pytest-timeout
+- pytest-xdist
+- pytest-asyncio
+- ruff>=0.8.0
+- sphinx
+- sphinx_autosummary_accessors
+- xarray[complete,types]
+repo_name: xarray
+repository: pydata/xarray
+task_level: 1
+task_name: xarray_backends_chunks
+task_statement: '**Task: Multi-dimensional Array Chunk Alignment and Grid-based Chunking**
+
+
+  **Core Functionality:**
+
+  Optimize chunking strategies for multi-dimensional arrays by aligning variable chunks
+  with backend storage patterns and generating grid-aligned chunk sizes.
+
+
+  **Main Features & Requirements:**
+
+  - Align n-dimensional chunk specifications between variables and backend storage
+  systems
+
+  - Generate uniform grid-based chunks for single dimensions with region support
+
+  - Preserve original chunking when possible while ensuring backend compatibility
+
+  - Handle edge cases like border chunks and non-aligned regions
+
+  - Maintain dimensional consistency and element count integrity
+
+
+  **Key Challenges:**
+
+  - Balancing memory efficiency with storage alignment constraints
+
+  - Managing irregular border chunks and region offsets
+
+  - Ensuring uniform chunk sizes while accommodating partial chunks
+
+  - Optimizing chunk boundaries for parallel processing and storage performance'
+technical_docs: []
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from xarray.backends.chunks import align_nd_chunks
+
+  from xarray.backends.chunks import build_grid_chunks'
+test_code_example: from xarray.backends.chunks import align_nd_chunks
+test_code_example_obj: align_nd_chunks
+test_code_example_path: /testbed/xarray/backends/chunks.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: xarray-backends-chunks.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def align_nd_chunks(\n    nd_v_chunks: tuple[tuple[int, ...], ...],\n\
+  \    nd_backend_chunks: tuple[tuple[int, ...], ...]\n) -> tuple[tuple[int, ...],\
+  \ ...]:\n    \"\"\"\n    Align n-dimensional chunks between variable chunks and\
+  \ backend chunks to optimize memory usage and performance.\n    \n    This function\
+  \ takes two sets of n-dimensional chunk specifications and produces an aligned chunking\
+  \ scheme that balances memory efficiency with backend storage alignment. The algorithm\
+  \ attempts to preserve the original variable chunks when possible while ensuring\
+  \ compatibility with the backend chunk structure.\n    \n    Parameters\n    ----------\n\
+  \    nd_v_chunks : tuple[tuple[int, ...], ...]\n        N-dimensional tuple representing\
+  \ the chunk sizes for each dimension of the variable.\n        Each inner tuple\
+  \ contains the chunk sizes along one dimension.\n    nd_backend_chunks : tuple[tuple[int,\
+  \ ...], ...]\n        N-dimensional tuple representing the chunk sizes for each\
+  \ dimension of the backend storage.\n        Each inner tuple contains the chunk\
+  \ sizes along one dimension. The backend chunks\n        must have uniform size\
+  \ excluding border chunks.\n    \n    Returns\n    -------\n    tuple[tuple[int,\
+  \ ...], ...]\n        N-dimensional tuple of aligned chunk sizes that optimize the\
+  \ relationship between\n        variable chunks and backend chunks. The returned\
+  \ chunks aim to minimize memory\n        usage while maintaining alignment with\
+  \ the backend storage pattern.\n    \n    Raises\n    ------\n    ValueError\n \
+  \       If the number of dimensions between nd_backend_chunks and nd_v_chunks don't\
+  \ match.\n    ValueError\n        If the total number of elements in backend chunks\
+  \ doesn't match the total number\n        of elements in variable chunks for any\
+  \ dimension.\n    ValueError\n        If backend chunks are not of uniform size\
+  \ (excluding border chunks). This indicates\n        an internal misuse of the function\
+  \ that should be reported.\n    \n    Notes\n    -----\n    - The algorithm assumes\
+  \ backend chunks have uniform sizes except for border chunks\n    - When either\
+  \ backend or variable chunks contain only one chunk per dimension, \n      the original\
+  \ chunking is preserved\n    - The function adds artificial padding to borders during\
+  \ processing to simplify\n      alignment calculations, which is removed before\
+  \ returning results\n    - Memory efficiency is prioritized by using the maximum\
+  \ of backend chunk size\n      and variable chunk sizes as the target chunk size\n\
+  \    - Border chunks may be merged if doing so improves efficiency without exceeding\n\
+  \      the maximum chunk size limit\n    \"\"\"\n    <your code>\n\ndef build_grid_chunks(\n\
+  \    size: int,\n    chunk_size: int,\n    region: slice | None = None\n) -> tuple[int,\
+  \ ...]:\n    \"\"\"\n    Build a tuple of chunk sizes that align with a grid-based\
+  \ chunking scheme.\n    \n    This function generates chunk sizes for a single dimension\
+  \ that are aligned with a \n    regular grid pattern, taking into account a potential\
+  \ region offset. The chunking \n    strategy ensures that chunks align with backend\
+  \ storage boundaries (like Zarr chunks)\n    while respecting the specified chunk\
+  \ size and region constraints.\n    \n    Parameters\n    ----------\n    size :\
+  \ int\n        The total size of the dimension to be chunked.\n    chunk_size :\
+  \ int\n        The target size for each chunk. This typically corresponds to the\
+  \ backend\n        storage chunk size (e.g., Zarr chunk size).\n    region : slice\
+  \ or None, optional\n        A slice object defining the region within the dimension\
+  \ to chunk. If None,\n        the entire dimension from 0 to size is used. Default\
+  \ is None.\n    \n    Returns\n    -------\n    tuple[int, ...]\n        A tuple\
+  \ of integers representing the size of each chunk. The first chunk\n        may\
+  \ be smaller than chunk_size if the region doesn't start at a chunk\n        boundary.\
+  \ The last chunk may also be smaller if the total size doesn't\n        evenly divide\
+  \ by chunk_size.\n    \n    Notes\n    -----\n    - When the region start is not\
+  \ aligned with chunk boundaries, the first chunk\n      will be sized to align subsequent\
+  \ chunks with the grid pattern.\n    - If the calculated first chunk size would\
+  \ be greater than or equal to the\n      total size, a single chunk containing the\
+  \ entire size is returned.\n    - The function ensures that all intermediate chunks\
+  \ (except potentially the\n      first and last) are exactly chunk_size in length.\n\
+  \    - This function is typically used in conjunction with chunked array libraries\n\
+  \      like Dask to ensure efficient parallel processing and storage alignment.\n\
+  \    \n    Examples\n    --------\n    For a dimension of size 13 with chunk_size\
+  \ 5 and no region offset:\n    Returns (5, 5, 3) - two full chunks and one partial\
+  \ chunk\n    \n    For a dimension of size 10 with chunk_size 5 starting at offset\
+  \ 2:\n    Returns (3, 5, 2) - first chunk aligns to grid, then full chunk, then\
+  \ remainder\n    \"\"\"\n    <your code>\n"
+interface_code_example: "def align_nd_chunks(\n    nd_v_chunks: tuple[tuple[int, ...],\
+  \ ...],\n    nd_backend_chunks: tuple[tuple[int, ...], ...]\n) -> tuple[tuple[int,\
+  \ ...], ...]:\n    \"\"\"\n    Align n-dimensional chunks between variable chunks\
+  \ and backend chunks to optimize memory usage and performance.\n    \n    This function\
+  \ takes two sets of n-dimensional chunk specifications and produces an aligned chunking\
+  \ scheme that balances memory efficiency with backend storage alignment. The algorithm\
+  \ attempts to preserve the original variable chunks when possible while ensuring\
+  \ compatibility with the backend chunk structure.\n    \n    Parameters\n    ----------\n\
+  \    nd_v_chunks : tuple[tuple[int, ...], ...]\n        N-dimensional tuple representing\
+  \ the chunk sizes for each dimension of the variable.\n        Each inner tuple\
+  \ contains the chunk sizes along one dimension.\n    nd_backend_chunks : tuple[tuple[int,\
+  \ ...], ...]\n        N-dimensional tuple representing the chunk sizes for each\
+  \ dimension of the backend storage.\n        Each inner tuple contains the chunk\
+  \ sizes along one dimension. The backend chunks\n        must have uniform size\
+  \ excluding border chunks.\n    \n    Returns\n    -------\n    tuple[tuple[int,\
+  \ ...], ...]\n        N-dimensional tuple of aligned chunk sizes that optimize the\
+  \ relationship between\n        variable chunks and backend chunks. The returned\
+  \ chunks aim to minimize memory\n        usage while maintaining alignment with\
+  \ the backend storage pattern.\n    \n    Raises\n    ------\n    ValueError\n \
+  \       If the number of dimensions between nd_backend_chunks and nd_v_chunks don't\
+  \ match.\n    ValueError\n        If the total number of elements in backend chunks\
+  \ doesn't match the total number\n        of elements in variable chunks for any\
+  \ dimension.\n    ValueError\n        If backend chunks are not of uniform size\
+  \ (excluding border chunks). This indicates\n        an internal misuse of the function\
+  \ that should be reported.\n    \n    Notes\n    -----\n    - The algorithm assumes\
+  \ backend chunks have uniform sizes except for border chunks\n    - When either\
+  \ backend or variable chunks contain only one chunk per dimension, \n      the original\
+  \ chunking is preserved\n    - The function adds artificial padding to borders during\
+  \ processing to simplify\n      alignment calculations, which is removed before\
+  \ returning results\n    - Memory efficiency is prioritized by using the maximum\
+  \ of backend chunk size\n      and variable chunk sizes as the target chunk size\n\
+  \    - Border chunks may be merged if doing so improves efficiency without exceeding\n\
+  \      the maximum chunk size limit\n    \"\"\"\n    <your code>\n..."

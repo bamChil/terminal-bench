@@ -1,0 +1,90 @@
+{
+    "file_stats": {
+        "total_files": 93,
+        "patch_count": 9,
+        "left_count": 84,
+        "distribution": {
+            "left": 84,
+            "patch": 9
+        }
+    },
+    "obj_stats": {
+        "total_objects": 891,
+        "top_count": 2,
+        "specific_count": 44,
+        "others_count": 845,
+        "distribution": {
+            "others": 845,
+            "specific": 44,
+            "top": 2
+        }
+    },
+    "patch_files": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/cbook.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/colors.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_fontconfig_pattern.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/offsetbox.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/axes/_base.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/legend.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_tight_layout.py"
+    ],
+    "top_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:PdfPages",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:PdfPages"
+    ],
+    "specific_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:Reference",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:Name",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:Verbatim",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:Op",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:Stream",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:PdfFile",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:RendererPdf",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:GraphicsContextPdf",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:LatexError",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:LatexManager",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:RendererPgf",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:FigureCanvasPgf",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:make_pdf_to_png_converter",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_create_pdf_info_dict",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_metadata_to_str",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_datetime_to_pdf",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_get_preamble",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_writeln",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_escape_and_apply_props",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_tex_escape",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/axes/_base.py:_process_plot_format",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/colors.py:get_named_colors_mapping",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/cbook.py:contiguous_regions",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/cbook.py:_reshape_2D",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/cbook.py:_get_nonzero_slices",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pgf.py:_get_image_inclusion_command",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_tight_layout.py:get_subplotspec_list",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_tight_layout.py:get_tight_layout_figure",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_tight_layout.py:_auto_adjust_subplotpars",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/_fontconfig_pattern.py:generate_fontconfig_pattern",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/legend.py:_parse_legend_args",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/legend.py:_get_legend_handles_labels",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/legend.py:_get_legend_handles",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/offsetbox.py:_get_aligned_offsets",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/offsetbox.py:_get_packed_offsets",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/offsetbox.py:_get_anchored_bbox",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/offsetbox.py:_bbox_artist",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_fill",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_calculate_quad_point_coordinates",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_get_coordinates_of_block",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_get_link_annotation",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:pdfRepr",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_font_supports_glyph",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/backends/backend_pdf.py:_get_pdf_charprocs"
+    ],
+    "lines_code": 1869,
+    "lines_code_level3": 1869,
+    "test_name": "backend_pgf",
+    "test_file": "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/matplotlib/lib/matplotlib/tests/test_backend_pgf.py",
+    "top_imports": [
+        "matplotlib.backends.backend_pgf.PdfPages"
+    ]
+}

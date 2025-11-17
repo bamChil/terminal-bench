@@ -1,0 +1,53 @@
+{
+    "file_stats": {
+        "total_files": 130,
+        "patch_count": 3,
+        "left_count": 127,
+        "distribution": {
+            "left": 127,
+            "patch": 3
+        }
+    },
+    "obj_stats": {
+        "total_objects": 562,
+        "top_count": 3,
+        "specific_count": 6,
+        "others_count": 553,
+        "distribution": {
+            "others": 553,
+            "specific": 6,
+            "top": 3
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/externals/array_api_compat/common/_aliases.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/grower.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/grower.py:TreeGrower",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:HistGradientBoostingRegressor",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:HistGradientBoostingClassifier"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/grower.py:TreeNode",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:BaseHistGradientBoosting",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/grower.py:_fill_predictor_arrays",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/externals/array_api_compat/common/_aliases.py:unique_inverse",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:_update_leaves_values",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py:_patch_raw_predict"
+    ],
+    "lines_code": 2906,
+    "lines_code_level3": 5515,
+    "test_name": "monotonic_constraints",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/scikit-learn/sklearn/ensemble/_hist_gradient_boosting/tests/test_monotonic_constraints.py",
+    "top_imports": [
+        "sklearn.ensemble.HistGradientBoostingClassifier",
+        "sklearn.ensemble.HistGradientBoostingRegressor",
+        "sklearn.ensemble._hist_gradient_boosting.grower.TreeGrower",
+        "sklearn.ensemble._hist_gradient_boosting.histogram.HistogramBuilder",
+        "sklearn.ensemble._hist_gradient_boosting.common.MonotonicConstraint",
+        "sklearn.ensemble._hist_gradient_boosting.splitting.Splitter",
+        "sklearn.ensemble._hist_gradient_boosting.splitting.compute_node_value"
+    ]
+}

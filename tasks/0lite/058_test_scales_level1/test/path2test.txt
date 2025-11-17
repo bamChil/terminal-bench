@@ -1,0 +1,6 @@
+seaborn/tests/_core/test_scales.py
+seaborn/tests/_core/test_moves.py
+seaborn/tests/test_docstrings.py
+seaborn/tests/test_statistics.py
+seaborn/tests/_stats/test_regression.py
+seaborn/tests/test_algorithms.py

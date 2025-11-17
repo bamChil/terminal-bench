@@ -1,0 +1,6 @@
+trl/tests/test_grpo_trainer.py
+trl/tests/test_rewards.py
+trl/tests/test_callbacks.py
+trl/tests/test_modeling_geometric_mixture_wrapper.py
+trl/tests/test_judges.py
+trl/tests/test_xpo_trainer.py

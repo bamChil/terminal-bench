@@ -1,0 +1,6 @@
+transformers/tests/models/bert_japanese/test_tokenization_bert_japanese.py
+transformers/tests/models/modernbert_decoder/test_modeling_modernbert_decoder.py
+transformers/tests/models/roc_bert/test_modeling_roc_bert.py
+transformers/tests/models/cohere2_vision/test_modeling_cohere2_vision.py
+transformers/tests/models/jetmoe/test_modeling_jetmoe.py
+transformers/tests/models/aimv2/test_modeling_aimv2.py

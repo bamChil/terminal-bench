@@ -1,0 +1,44 @@
+{
+    "file_stats": {
+        "total_files": 115,
+        "patch_count": 2,
+        "left_count": 113,
+        "distribution": {
+            "left": 113,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 756,
+        "top_count": 2,
+        "specific_count": 2,
+        "others_count": 752,
+        "distribution": {
+            "others": 752,
+            "top": 2,
+            "specific": 2
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer_fast.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer.py:LongformerTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer_fast.py:LongformerTokenizerFast"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer.py:bytes_to_unicode",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/longformer/tokenization_longformer.py:get_pairs"
+    ],
+    "lines_code": 586,
+    "lines_code_level3": 586,
+    "test_name": "tokenization_longformer",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/longformer/test_tokenization_longformer.py",
+    "top_imports": [
+        "transformers.LongformerTokenizerFast",
+        "transformers.models.longformer.tokenization_longformer.VOCAB_FILES_NAMES",
+        "transformers.LongformerTokenizer",
+        "transformers.AddedToken"
+    ]
+}

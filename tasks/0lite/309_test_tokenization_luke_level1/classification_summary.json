@@ -1,0 +1,49 @@
+{
+    "file_stats": {
+        "total_files": 113,
+        "patch_count": 2,
+        "left_count": 111,
+        "distribution": {
+            "left": 111,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 724,
+        "top_count": 1,
+        "specific_count": 10,
+        "others_count": 713,
+        "distribution": {
+            "others": 713,
+            "top": 1,
+            "specific": 10
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/luke/tokenization_luke.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/luke/tokenization_luke.py:LukeTokenizer"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/luke/tokenization_luke.py:bytes_to_unicode",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/luke/tokenization_luke.py:get_pairs",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:render_jinja_template",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:_compile_jinja_template",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:_get_json_schema_type",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:_parse_type_hint",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:_convert_type_hints_to_json_schema",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:parse_google_format_docstring",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:get_json_schema",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/utils/chat_template_utils.py:_render_with_assistant_indices"
+    ],
+    "lines_code": 1750,
+    "lines_code_level3": 1750,
+    "test_name": "tokenization_luke",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/luke/test_tokenization_luke.py",
+    "top_imports": [
+        "transformers.LukeTokenizer",
+        "transformers.AddedToken"
+    ]
+}

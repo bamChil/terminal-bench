@@ -1,0 +1,50 @@
+{
+    "file_stats": {
+        "total_files": 26,
+        "patch_count": 2,
+        "left_count": 24,
+        "distribution": {
+            "left": 24,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 82,
+        "top_count": 6,
+        "specific_count": 2,
+        "others_count": 74,
+        "distribution": {
+            "others": 74,
+            "specific": 2,
+            "top": 6
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/rules.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Jitter",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Dodge",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Stack",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Shift",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Norm",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/rules.py:categorical_order"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/moves.py:Move",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/seaborn/_core/rules.py:variable_type"
+    ],
+    "lines_code": 361,
+    "lines_code_level3": 361,
+    "test_name": "moves",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/seaborn/tests/_core/test_moves.py",
+    "top_imports": [
+        "seaborn._core.moves.Stack",
+        "seaborn._core.moves.Dodge",
+        "seaborn._core.moves.Jitter",
+        "seaborn._core.moves.Norm",
+        "seaborn._core.rules.categorical_order",
+        "seaborn._core.moves.Shift"
+    ]
+}

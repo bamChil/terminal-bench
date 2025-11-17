@@ -1,0 +1,39 @@
+{
+    "file_stats": {
+        "total_files": 262,
+        "patch_count": 1,
+        "left_count": 261,
+        "distribution": {
+            "left": 261,
+            "patch": 1
+        }
+    },
+    "obj_stats": {
+        "total_objects": 987,
+        "top_count": 3,
+        "specific_count": 0,
+        "others_count": 984,
+        "distribution": {
+            "others": 984,
+            "top": 3
+        }
+    },
+    "patch_files": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/sympy/sympy/testing/runtests_pytest.py"
+    ],
+    "top_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/sympy/sympy/testing/runtests_pytest.py:make_absolute_path",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/sympy/sympy/testing/runtests_pytest.py:sympy_dir",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/sympy/sympy/testing/runtests_pytest.py:update_args_with_paths"
+    ],
+    "specific_objects": [],
+    "lines_code": 146,
+    "lines_code_level3": 146,
+    "test_name": "runtests_pytest",
+    "test_file": "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/sympy/sympy/testing/tests/test_runtests_pytest.py",
+    "top_imports": [
+        "sympy.testing.runtests_pytest.make_absolute_path",
+        "sympy.testing.runtests_pytest.update_args_with_paths",
+        "sympy.testing.runtests_pytest.sympy_dir"
+    ]
+}

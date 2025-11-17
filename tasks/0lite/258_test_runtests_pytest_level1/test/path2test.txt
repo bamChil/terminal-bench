@@ -1,0 +1,6 @@
+sympy/sympy/testing/tests/test_runtests_pytest.py
+sympy/sympy/assumptions/tests/test_sathandlers.py
+sympy/sympy/physics/control/tests/test_routh_table.py
+sympy/sympy/functions/special/tests/test_delta_functions.py
+sympy/sympy/stats/tests/test_discrete_rv.py
+sympy/sympy/core/tests/test_singleton.py

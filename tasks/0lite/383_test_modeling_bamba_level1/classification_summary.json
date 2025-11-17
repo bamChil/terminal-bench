@@ -1,0 +1,66 @@
+{
+    "file_stats": {
+        "total_files": 511,
+        "patch_count": 4,
+        "left_count": 507,
+        "distribution": {
+            "left": 507,
+            "patch": 4
+        }
+    },
+    "obj_stats": {
+        "total_objects": 3780,
+        "top_count": 5,
+        "specific_count": 19,
+        "others_count": 3756,
+        "distribution": {
+            "others": 3756,
+            "top": 5,
+            "specific": 19
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/configuration_bamba.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/jamba/modeling_jamba.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/dynamic_module_utils.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/configuration_bamba.py:BambaConfig",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/jamba/modeling_jamba.py:HybridMambaAttentionDynamicCache",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:HybridMambaAttentionDynamicCache",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaModel",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaForCausalLM"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaFlashAttentionKwargs",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaRotaryEmbedding",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaAttention",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaRMSNormGated",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaMixer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaMLP",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaRMSNorm",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaDecoderLayer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:BambaPreTrainedModel",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:apply_mask_to_padding_states",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:pad_tensor_by_size",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:reshape_into_chunks",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:segment_sum",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:apply_rotary_pos_emb",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:rotate_half",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:eager_attention_forward",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/bamba/modeling_bamba.py:repeat_kv",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/dynamic_module_utils.py:resolve_trust_remote_code",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/dynamic_module_utils.py:_raise_timeout_error"
+    ],
+    "lines_code": 1670,
+    "lines_code_level3": 1670,
+    "test_name": "modeling_bamba",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/bamba/test_modeling_bamba.py",
+    "top_imports": [
+        "transformers.BambaForCausalLM",
+        "transformers.BambaModel",
+        "transformers.BambaConfig",
+        "transformers.models.bamba.modeling_bamba.HybridMambaAttentionDynamicCache"
+    ]
+}

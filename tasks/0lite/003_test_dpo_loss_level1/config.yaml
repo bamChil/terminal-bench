@@ -1,0 +1,243 @@
+base_image: pb-python310_cu121_torch251-base_08bcbe5c
+black_links:
+- https://github.com/linkedin/Liger-Kernel/
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e ".[dev]"
+instance_image: pb-instance_ffbb2d38
+library_name: liger-kernel
+pip_packages: []
+pre_install: []
+repo_name: Liger-Kernel
+repository: linkedin/Liger-Kernel
+task_level: 1
+task_name: Liger_Kernel_dpo_loss
+task_statement: '**Task: Implement Fused Linear Layer with Direct Preference Optimization
+  (DPO) Loss**
+
+
+  **Core Functionality:**
+
+  Create a memory-efficient PyTorch autograd function that combines linear layer computation
+  with DPO loss calculation for preference-based language model training.
+
+
+  **Main Features & Requirements:**
+
+  - Fuse linear transformation and preference loss computation into a single operation
+
+  - Support multiple loss variants (sigmoid, APO, SPPO, NCA) for different optimization
+  strategies
+
+  - Handle both policy and reference model comparisons with optional separate parameters
+
+  - Implement proper forward/backward passes with gradient computation
+
+  - Provide a user-friendly module wrapper for easy integration
+
+
+  **Key Challenges:**
+
+  - Memory efficiency through chunked processing for large vocabularies
+
+  - Correct gradient computation for fused operations during backpropagation
+
+  - Support for masked tokens and optional NLL loss computation
+
+  - Handle concatenated chosen/rejected sequence pairs appropriately
+
+  - Balance computational efficiency with flexibility across different DPO variants'
+technical_docs:
+- description: latex source of the paper liger_kernel which implemented many llm operators
+    using triton
+  path: liger-kernel-tex-source
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from liger_kernel.chunked_loss import LigerFusedLinearDPOLoss
+
+  from liger_kernel.chunked_loss.dpo_loss import LigerFusedLinearDPOFunction'
+test_code_example: from liger_kernel.chunked_loss import LigerFusedLinearDPOLoss
+test_code_example_obj: LigerFusedLinearDPOLoss
+test_code_example_path: /testbed/src/liger_kernel/chunked_loss/dpo_loss.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: src-liger_kernel-chunked_loss-dpo_loss.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LigerFusedLinearDPOFunction(LigerFusedLinearPreferenceBase):\n\
+  \    \"\"\"\n    A PyTorch autograd function that implements fused linear layer\
+  \ computation with Direct Preference Optimization (DPO) loss for efficient preference-based\
+  \ model training.\n    \n    This class extends LigerFusedLinearPreferenceBase to\
+  \ provide a memory-efficient implementation of DPO loss computation that fuses the\
+  \ linear transformation and loss calculation into a single operation. DPO is a method\
+  \ for training language models to align with human preferences by optimizing the\
+  \ ratio of probabilities between chosen and rejected responses.\n    \n    The implementation\
+  \ supports multiple loss variants including standard DPO sigmoid loss, APO (Alignment\
+  \ with Preference Optimization) variants, SPPO (Self-Play Preference Optimization),\
+  \ and NCA (Noise Contrastive Alignment) loss functions.\n    \n    Main Methods:\n\
+  \        preference_loss_fn: Static method that computes the DPO loss given log\
+  \ probabilities of chosen and rejected sequences. Implements the core DPO formula:\
+  \ -E[log_sigmoid(β * (log_ratio_chosen - log_ratio_rejected))]. Supports multiple\
+  \ loss types including 'sigmoid' (standard DPO), 'apo_zero', 'apo_down', 'sppo_hard',\
+  \ and 'nca_pair'.\n        \n        forward: Class method that performs the forward\
+  \ pass, computing linear transformations for both policy and reference models (if\
+  \ provided) and calculating the preference loss. Handles chunked processing for\
+  \ memory efficiency and supports optional NLL loss computation.\n        \n    \
+  \    backward: Static method that computes gradients for the input, weight, target,\
+  \ and bias tensors during backpropagation, delegating to the parent class implementation.\n\
+  \    \n    Key Features:\n        - Memory-efficient fused computation of linear\
+  \ layer and DPO loss\n        - Support for reference model comparisons with optional\
+  \ separate weights\n        - Chunked processing to handle large vocabularies\n\
+  \        - Multiple loss function variants for different preference optimization\
+  \ strategies\n        - Optional NLL loss computation for additional training objectives\n\
+  \        - Configurable ignore_index for masked token handling\n    \n    Usage\
+  \ Example:\n        ```python\n        # Create input tensors\n        input_tensor\
+  \ = torch.randn(batch_size * seq_len, hidden_size)\n        weight = torch.randn(vocab_size,\
+  \ hidden_size, requires_grad=True)\n        target = torch.randint(0, vocab_size,\
+  \ (batch_size * seq_len,))\n        \n        # Apply DPO function\n        loss\
+  \ = LigerFusedLinearDPOFunction.apply(\n            input_tensor, weight, target,\
+  \ \n            bias=None, beta=0.1, loss_type='sigmoid'\n        )\n        ```\n\
+  \    \n    The class is typically used through the LigerFusedLinearDPOLoss module\
+  \ wrapper rather than directly, providing a more convenient interface for integration\
+  \ into training pipelines.\n    \"\"\"\n\n    @staticmethod\n    def preference_loss_fn(\n\
+  \        chosen_logps,\n        rejected_logps,\n        full_target,\n        ref_chosen_logps\
+  \ = None,\n        ref_rejected_logps = None,\n        beta = 0.1,\n        loss_type\
+  \ = 'sigmoid'\n    ):\n        \"\"\"\n\n                Paper: https://arxiv.org/pdf/2305.18290\n\
+  \n                Formula:\n                L_DPO = -E[ log_sigmoid( β * (log(π(y_w|x)/π_ref(y_w|x))\
+  \ - log(π(y_l|x)/π_ref(y_l|x))) ) ]\n\n                Where:\n                -\
+  \ π(y|x): Policy (model) probability\n                - π_ref(y|x): Reference model\
+  \ probability\n                - y_w: Chosen sequence\n                - y_l: Rejected\
+  \ sequence\n                - β: Weight for the direct preference loss\n       \
+  \         - E: Expected value over the dataset\n\n                Args:\n      \
+  \              chosen_logps: Log probabilities of chosen tokens (batch_size,)\n\
+  \                    rejected_logps: Log probabilities of rejected tokens (batch_size,)\n\
+  \                    full_target: Non chunked full target tensor\n             \
+  \       ref_chosen_logps: Reference log probs of chosen tokens (batch_size,)\n \
+  \                   ref_rejected_logps: Reference log probs of rejected tokens (batch_size,)\n\
+  \                    beta: Weight for the direct preference loss\n\n        \"\"\
+  \"\n        <your code>\n\n    @classmethod\n    def forward(\n        cls,\n  \
+  \      ctx,\n        _input,\n        weight,\n        target,\n        bias = None,\n\
+  \        ref_input = None,\n        ref_weight = None,\n        ref_bias = None,\n\
+  \        ignore_index = -100,\n        beta = 0.1,\n        compute_nll_loss = False,\n\
+  \        compiled = True,\n        use_ref_model = True,\n        average_log_prob\
+  \ = False,\n        chunk_size = 1,\n        loss_type = 'sigmoid'\n    ):\n   \
+  \     \"\"\"\n\n                Fused linear layer with DPO loss.\n            \
+  \    Args:\n                    _input (torch.Tensor): Input tensor. Shape: (batch_size\
+  \ * seq_len, hidden_size)\n                    weight (torch.Tensor): Weight tensor.\
+  \ Shape: (vocab_size, hidden_size)\n                    target (torch.LongTensor):\
+  \ Target tensor. Shape: (batch_size * seq_len,)\n                    bias (torch.Tensor,\
+  \ optional): Bias tensor. Shape: (vocab_size,)\n                    ref_input (torch.Tensor,\
+  \ optional): Reference model input tensor. Shape: (batch_size * seq_len, hidden_size)\n\
+  \                    ref_weight (torch.Tensor, optional): Reference model weight\
+  \ tensor. Shape: (vocab_size, hidden_size)\n                    ref_bias (torch.Tensor,\
+  \ optional): Reference model bias tensor. Shape: (vocab_size,)\n               \
+  \     ignore_index (int): Index to ignore in loss computation\n                \
+  \    beta (float): Weight for the odds ratio loss\n                    compute_nll_loss\
+  \ (bool): Whether to compute the NLL loss\n                    compiled (bool):\
+  \ Whether to use torch compile\n                    use_ref_model (bool): Whether\
+  \ to use a reference model\n                    average_log_prob (bool): Whether\
+  \ to average the log probability per non-masked token\n                    chunk_size\
+  \ (int): Size of chunks for processing.\n                Returns:\n            \
+  \        torch.Tensor: Computed loss\n\n        \"\"\"\n        <your code>\n\n\
+  \    @staticmethod\n    def backward(ctx, *grad_output):\n        \"\"\"\n     \
+  \   Backward pass for the LigerFusedLinearDPOFunction.\n\n        This static method\
+  \ implements the backward pass of the automatic differentiation for the \n     \
+  \   fused linear layer with DPO (Direct Preference Optimization) loss. It computes\
+  \ gradients\n        with respect to the input parameters by delegating to the parent\
+  \ class backward method\n        and then filtering/padding the results appropriately.\n\
+  \n        Args:\n            ctx: The context object that was saved during the forward\
+  \ pass, containing\n                 intermediate values and tensors needed for\
+  \ gradient computation.\n            *grad_output: Variable length argument list\
+  \ containing the gradients of the loss\n                         with respect to\
+  \ the outputs of the forward pass. Typically contains\n                        \
+  \ the gradient of the scalar loss.\n\n        Returns:\n            tuple: A tuple\
+  \ containing gradients with respect to all input parameters of the\n           \
+  \        forward method, in the same order as the forward method signature:\n  \
+  \                 - Gradient w.r.t. _input (torch.Tensor or None)\n            \
+  \       - Gradient w.r.t. weight (torch.Tensor or None) \n                   - Gradient\
+  \ w.r.t. target (None, as target is not differentiable)\n                   - Gradient\
+  \ w.r.t. bias (torch.Tensor or None)\n                   - None values for all remaining\
+  \ parameters (ref_input, ref_weight, ref_bias,\n                     ignore_index,\
+  \ beta, compute_nll_loss, compiled, use_ref_model, \n                     average_log_prob,\
+  \ chunk_size, loss_type) as they either don't require\n                     gradients\
+  \ or are not differentiable\n\n        Notes:\n            - This method only returns\
+  \ gradients for the first 4 parameters (_input, weight, \n              target,\
+  \ bias) by slicing the parent class result with [:4]\n            - All other parameters\
+  \ receive None gradients as they are either hyperparameters,\n              flags,\
+  \ or reference model parameters that don't participate in the main model's\n   \
+  \           gradient computation\n            - The method follows PyTorch's autograd\
+  \ function convention where the number of\n              returned gradients must\
+  \ match the number of input arguments to the forward method\n        \"\"\"\n  \
+  \      <your code>\n\nclass LigerFusedLinearDPOLoss(torch.nn.Module):\n    \"\"\"\
+  \n    \n        Fused linear layer with DPO loss.\n        \n    \"\"\"\n\n    def\
+  \ __init__(\n        self,\n        ignore_index: int = -100,\n        beta: float\
+  \ = 0.1,\n        compute_nll_loss: bool = False,\n        compiled: bool = True,\n\
+  \        use_ref_model: bool = True,\n        average_log_prob: bool = False,\n\
+  \        chunk_size: int = 1,\n        loss_type: str = 'sigmoid'\n    ):\n    \
+  \    \"\"\"\n\n                Args:\n                    ignore_index (int): Index\
+  \ to ignore in the loss.\n                    beta (float): Weight for the odds\
+  \ ratio loss.\n                    compute_nll_loss (bool): Whether to compute the\
+  \ NLL loss.\n                    compiled (bool): Whether to use the torch compiled\
+  \ kernel.\n                    use_ref_model (bool): Whether to use a reference\
+  \ model for the DPO loss.\n                    average_log_prob (bool): Whether\
+  \ to average the log probability per non-masked token.\n                    chunk_size\
+  \ (int): Size of chunks for processing.\n\n        \"\"\"\n        <your code>\n\
+  \n    def forward(\n        self,\n        lin_weight,\n        _input,\n      \
+  \  target,\n        bias = None,\n        ref_input = None,\n        ref_weight\
+  \ = None,\n        ref_bias = None\n    ):\n        \"\"\"\n        Computes the\
+  \ fused linear layer with Direct Preference Optimization (DPO) loss.\n\n       \
+  \ This method performs a forward pass through a linear layer followed by DPO loss\
+  \ computation,\n        which is used for training language models to align with\
+  \ human preferences by comparing\n        chosen and rejected response pairs.\n\n\
+  \        Parameters:\n            lin_weight (torch.Tensor): Linear layer weight\
+  \ matrix with shape (vocab_size, hidden_size).\n                Contains the learnable\
+  \ parameters for the linear transformation.\n            _input (torch.Tensor):\
+  \ Input tensor with shape (batch_size * seq_len, hidden_size).\n               \
+  \ Represents the hidden states from the model that will be transformed to logits.\n\
+  \            target (torch.LongTensor): Target token indices with shape (batch_size\
+  \ * seq_len,).\n                Contains the ground truth token IDs for both chosen\
+  \ and rejected sequences.\n            bias (torch.Tensor, optional): Bias vector\
+  \ with shape (vocab_size,). Defaults to None.\n                Optional bias term\
+  \ for the linear transformation.\n            ref_input (torch.Tensor, optional):\
+  \ Reference model input tensor with shape \n                (batch_size * seq_len,\
+  \ hidden_size). Defaults to None. Used when comparing\n                against a\
+  \ reference model's predictions.\n            ref_weight (torch.Tensor, optional):\
+  \ Reference model weight matrix with shape\n                (vocab_size, hidden_size).\
+  \ Defaults to None. Weight parameters of the reference model.\n            ref_bias\
+  \ (torch.Tensor, optional): Reference model bias vector with shape (vocab_size,).\n\
+  \                Defaults to None. Bias parameters of the reference model.\n\n \
+  \       Returns:\n            torch.Tensor: Computed DPO loss value as a scalar\
+  \ tensor. The loss encourages the model\n                to increase the likelihood\
+  \ of chosen responses while decreasing the likelihood of\n                rejected\
+  \ responses relative to a reference model.\n\n        Notes:\n            - The\
+  \ input tensors are expected to contain both chosen and rejected sequences concatenated,\n\
+  \              with the first half representing chosen sequences and the second\
+  \ half representing rejected sequences.\n            - The method uses the instance's\
+  \ configuration parameters (ignore_index, beta, compute_nll_loss,\n            \
+  \  compiled, use_ref_model, average_log_prob, chunk_size, loss_type) that were set\
+  \ during initialization.\n            - When ref_input, ref_weight, or ref_bias\
+  \ are None, the reference model computations are skipped\n              and reference\
+  \ log probabilities are treated as zero.\n            - The loss computation supports\
+  \ multiple loss types including 'sigmoid', 'apo_zero', 'apo_down',\n           \
+  \   'sppo_hard', and 'nca_pair' as specified in the loss_type parameter during initialization.\n\
+  \        \"\"\"\n        <your code>\n"
+interface_code_example: "class LigerFusedLinearDPOLoss(torch.nn.Module):\n    \"\"\
+  \"\n    \n        Fused linear layer with DPO loss.\n        \n    \"\"\"\n\n  \
+  \  def __init__(\n        self,\n        ignore_index: int = -100,\n        beta:\
+  \ float = 0.1,\n        compute_nll_loss: bool = False,\n        compiled: bool\
+  \ = True,\n        use_ref_model: bool = True,\n        average_log_prob: bool =\
+  \ False,\n        chunk_size: int = 1,\n        loss_type: str = 'sigmoid'\n   \
+  \ ):\n        \"\"\"\n\n                Args:\n                    ignore_index\
+  \ (int): Index to ignore in the loss.\n                    beta (float): Weight\
+  \ for the odds ratio loss.\n                    compute_nll_loss (bool): Whether\
+  \ to compute the NLL loss.\n                    compiled (bool): Whether to use\
+  \ the torch compiled kernel.\n                    use_ref_model (bool): Whether\
+  \ to use a reference model for the DPO loss.\n                    average_log_prob\
+  \ (bool): Whether to average the log probability per non-masked token.\n       \
+  \             chunk_size (int): Size of chunks for processing.\n\n        \"\"\"\
+  \n        <your code>\n..."

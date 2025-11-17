@@ -1,0 +1,6 @@
+Liger-Kernel/test/transformers/test_fused_add_rms_norm.py
+Liger-Kernel/test/chunked_loss/test_kto_loss.py
+Liger-Kernel/test/chunked_loss/test_cosine_loss.py
+Liger-Kernel/test/transformers/test_flex_attention.py
+Liger-Kernel/test/triton/test_triton_monkey_patch.py
+Liger-Kernel/test/chunked_loss/test_cpo_loss.py

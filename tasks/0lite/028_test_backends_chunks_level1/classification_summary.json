@@ -1,0 +1,38 @@
+{
+    "file_stats": {
+        "total_files": 76,
+        "patch_count": 1,
+        "left_count": 75,
+        "distribution": {
+            "left": 75,
+            "patch": 1
+        }
+    },
+    "obj_stats": {
+        "total_objects": 321,
+        "top_count": 2,
+        "specific_count": 0,
+        "others_count": 319,
+        "distribution": {
+            "others": 319,
+            "top": 2
+        }
+    },
+    "patch_files": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/xarray/xarray/backends/chunks.py"
+    ],
+    "top_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/xarray/xarray/backends/chunks.py:build_grid_chunks",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/xarray/xarray/backends/chunks.py:align_nd_chunks"
+    ],
+    "specific_objects": [],
+    "lines_code": 144,
+    "lines_code_level3": 144,
+    "test_name": "backends_chunks",
+    "test_file": "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/xarray/xarray/tests/test_backends_chunks.py",
+    "top_imports": [
+        "xarray.backends.chunks.grid_rechunk",
+        "xarray.backends.chunks.build_grid_chunks",
+        "xarray.backends.chunks.align_nd_chunks"
+    ]
+}

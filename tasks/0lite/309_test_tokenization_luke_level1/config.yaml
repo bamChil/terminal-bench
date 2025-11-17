@@ -1,0 +1,1002 @@
+base_image: pb-python310_nvidia-base_a48d8454
+black_links:
+- https://github.com/huggingface/transformers/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+    environment:
+      PYTHONPATH: /testbed
+install: python -m pip install --upgrade pip setuptools wheel && pip install -e '.[testing]'
+  && echo 'Transformers环境设置完成'
+instance_image: pb-instance_4702c5d8
+library_name: transformers
+pip_packages:
+- numpy>=1.17
+- packaging>=20.0
+- pyyaml>=5.1
+- regex!=2019.12.17
+- requests
+- tokenizers>=0.19,<0.20
+- safetensors>=0.4.1
+- huggingface-hub>=0.23.2,<1.0
+- filelock
+- tqdm>=4.27
+- pytest>=7.2.0
+- pytest-timeout
+- pytest-xdist
+- parameterized
+- psutil
+- Pillow<=15.0
+- optuna
+- ray[tune]
+- sigopt
+- timm
+- datasets!=2.5.0
+- accelerate>=0.21.0
+- peft>=0.3.0
+- bitsandbytes>0.37.0
+python: '3.10'
+repo_name: transformers
+repository: huggingface/transformers
+task_level: 1
+task_name: transformers_tokenization_luke
+task_statement: '**Task: Implement a Knowledge-Enhanced Tokenizer for Entity-Aware
+  Language Processing**
+
+
+  **Core Functionalities:**
+
+  - Develop a specialized tokenizer that combines standard text tokenization with
+  entity recognition and processing
+
+  - Support both regular text encoding and entity-aware encoding for knowledge-enhanced
+  language models
+
+  - Handle multiple task types: entity classification, entity pair classification,
+  and entity span classification
+
+
+  **Main Features & Requirements:**
+
+  - Extend byte-pair encoding (BPE) tokenization with entity vocabulary management
+
+  - Process entity spans (character-based positions) and convert them to token-based
+  representations
+
+  - Generate multiple output sequences: standard token IDs plus entity-specific sequences
+  (entity IDs, positions, attention masks)
+
+  - Support both single sequences and sequence pairs with corresponding entity information
+
+  - Implement flexible padding, truncation, and batching strategies for variable-length
+  inputs
+
+
+  **Key Challenges & Considerations:**
+
+  - Coordinate between text tokenization and entity span alignment when text is modified
+  by BPE encoding
+
+  - Handle entity span validation and adjustment during truncation/padding operations
+
+  - Manage multiple vocabulary systems (text tokens, entities, special tokens) simultaneously
+
+  - Ensure consistent entity positioning across different sequence lengths and batch
+  processing
+
+  - Balance performance with the complexity of processing both textual and structured
+  entity data'
+technical_docs: []
+test_cmd: pytest --no-header -rA --tb=short -p no:cacheprovider --timeout=50
+test_code1: from transformers import LukeTokenizer
+test_code_example: from transformers import LukeTokenizer
+test_code_example_obj: LukeTokenizer
+test_code_example_path: /testbed/src/transformers/models/luke/tokenization_luke.py
+test_description1: Below is **Test Description 1**
+timeout: 50
+interface_description1: 'Below is **Interface Description 1** for file: src-transformers-models-luke-tokenization_luke.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LukeTokenizer(PreTrainedTokenizer):\n    \"\"\"\n    \n  \
+  \      Constructs a LUKE tokenizer, derived from the GPT-2 tokenizer, using byte-level\
+  \ Byte-Pair-Encoding.\n    \n        This tokenizer has been trained to treat spaces\
+  \ like parts of the tokens (a bit like sentencepiece) so a word will\n        be\
+  \ encoded differently whether it is at the beginning of the sentence (without space)\
+  \ or not:\n    \n        ```python\n        >>> from transformers import LukeTokenizer\n\
+  \    \n        >>> tokenizer = LukeTokenizer.from_pretrained(\"studio-ousia/luke-base\"\
+  )\n        >>> tokenizer(\"Hello world\")[\"input_ids\"]\n        [0, 31414, 232,\
+  \ 2]\n    \n        >>> tokenizer(\" Hello world\")[\"input_ids\"]\n        [0,\
+  \ 20920, 232, 2]\n        ```\n    \n        You can get around that behavior by\
+  \ passing `add_prefix_space=True` when instantiating this tokenizer or when you\n\
+  \        call it on some text, but since the model was not pretrained this way,\
+  \ it might yield a decrease in performance.\n    \n        <Tip>\n    \n       \
+  \ When used with `is_split_into_words=True`, this tokenizer will add a space before\
+  \ each word (even the first one).\n    \n        </Tip>\n    \n        This tokenizer\
+  \ inherits from [`PreTrainedTokenizer`] which contains most of the main methods.\
+  \ Users should refer to\n        this superclass for more information regarding\
+  \ those methods. It also creates entity sequences, namely\n        `entity_ids`,\
+  \ `entity_attention_mask`, `entity_token_type_ids`, and `entity_position_ids` to\
+  \ be used by the LUKE\n        model.\n    \n        Args:\n            vocab_file\
+  \ (`str`):\n                Path to the vocabulary file.\n            merges_file\
+  \ (`str`):\n                Path to the merges file.\n            entity_vocab_file\
+  \ (`str`):\n                Path to the entity vocabulary file.\n            task\
+  \ (`str`, *optional*):\n                Task for which you want to prepare sequences.\
+  \ One of `\"entity_classification\"`,\n                `\"entity_pair_classification\"\
+  `, or `\"entity_span_classification\"`. If you specify this argument, the entity\n\
+  \                sequence is automatically created based on the given entity span(s).\n\
+  \            max_entity_length (`int`, *optional*, defaults to 32):\n          \
+  \      The maximum length of `entity_ids`.\n            max_mention_length (`int`,\
+  \ *optional*, defaults to 30):\n                The maximum number of tokens inside\
+  \ an entity span.\n            entity_token_1 (`str`, *optional*, defaults to `<ent>`):\n\
+  \                The special token used to represent an entity span in a word token\
+  \ sequence. This token is only used when\n                `task` is set to `\"entity_classification\"\
+  ` or `\"entity_pair_classification\"`.\n            entity_token_2 (`str`, *optional*,\
+  \ defaults to `<ent2>`):\n                The special token used to represent an\
+  \ entity span in a word token sequence. This token is only used when\n         \
+  \       `task` is set to `\"entity_pair_classification\"`.\n            errors (`str`,\
+  \ *optional*, defaults to `\"replace\"`):\n                Paradigm to follow when\
+  \ decoding bytes to UTF-8. See\n                [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)\
+  \ for more information.\n            bos_token (`str`, *optional*, defaults to `\"\
+  <s>\"`):\n                The beginning of sequence token that was used during pretraining.\
+  \ Can be used a sequence classifier token.\n    \n                <Tip>\n    \n\
+  \                When building a sequence using special tokens, this is not the\
+  \ token that is used for the beginning of\n                sequence. The token used\
+  \ is the `cls_token`.\n    \n                </Tip>\n    \n            eos_token\
+  \ (`str`, *optional*, defaults to `\"</s>\"`):\n                The end of sequence\
+  \ token.\n    \n                <Tip>\n    \n                When building a sequence\
+  \ using special tokens, this is not the token that is used for the end of sequence.\n\
+  \                The token used is the `sep_token`.\n    \n                </Tip>\n\
+  \    \n            sep_token (`str`, *optional*, defaults to `\"</s>\"`):\n    \
+  \            The separator token, which is used when building a sequence from multiple\
+  \ sequences, e.g. two sequences for\n                sequence classification or\
+  \ for a text and a question for question answering. It is also used as the last\n\
+  \                token of a sequence built with special tokens.\n            cls_token\
+  \ (`str`, *optional*, defaults to `\"<s>\"`):\n                The classifier token\
+  \ which is used when doing sequence classification (classification of the whole\
+  \ sequence\n                instead of per-token classification). It is the first\
+  \ token of the sequence when built with special tokens.\n            unk_token (`str`,\
+  \ *optional*, defaults to `\"<unk>\"`):\n                The unknown token. A token\
+  \ that is not in the vocabulary cannot be converted to an ID and is set to be this\n\
+  \                token instead.\n            pad_token (`str`, *optional*, defaults\
+  \ to `\"<pad>\"`):\n                The token used for padding, for example when\
+  \ batching sequences of different lengths.\n            mask_token (`str`, *optional*,\
+  \ defaults to `\"<mask>\"`):\n                The token used for masking values.\
+  \ This is the token used when training this model with masked language\n       \
+  \         modeling. This is the token which the model will try to predict.\n   \
+  \         add_prefix_space (`bool`, *optional*, defaults to `False`):\n        \
+  \        Whether or not to add an initial space to the input. This allows to treat\
+  \ the leading word just as any\n                other word. (LUKE tokenizer detect\
+  \ beginning of words by the preceding space).\n        \n    \"\"\"\n\n    vocab_files_names\
+  \ = \"VOCAB_FILES_NAMES\"\n    model_input_names = ['input_ids', 'attention_mask']\n\
+  \n    def __init__(\n        self,\n        vocab_file,\n        merges_file,\n\
+  \        entity_vocab_file,\n        task = None,\n        max_entity_length = 32,\n\
+  \        max_mention_length = 30,\n        entity_token_1 = '<ent>',\n        entity_token_2\
+  \ = '<ent2>',\n        entity_unk_token = '[UNK]',\n        entity_pad_token = '[PAD]',\n\
+  \        entity_mask_token = '[MASK]',\n        entity_mask2_token = '[MASK2]',\n\
+  \        errors = 'replace',\n        bos_token = '<s>',\n        eos_token = '</s>',\n\
+  \        sep_token = '</s>',\n        cls_token = '<s>',\n        unk_token = '<unk>',\n\
+  \        pad_token = '<pad>',\n        mask_token = '<mask>',\n        add_prefix_space\
+  \ = False,\n        **kwargs\n    ):\n        \"\"\"\n        Initialize a LUKE\
+  \ tokenizer instance.\n\n        This constructor sets up a LUKE (Language Understanding\
+  \ with Knowledge-based Embeddings) tokenizer,\n        which is derived from the\
+  \ GPT-2 tokenizer using byte-level Byte-Pair-Encoding. The tokenizer is\n      \
+  \  designed to handle both text tokens and entity information for knowledge-enhanced\
+  \ language modeling.\n\n        Parameters:\n            vocab_file (str): Path\
+  \ to the vocabulary file containing the token-to-id mappings.\n            merges_file\
+  \ (str): Path to the BPE merges file containing merge rules for subword tokenization.\n\
+  \            entity_vocab_file (str): Path to the entity vocabulary file containing\
+  \ entity-to-id mappings.\n            task (str, optional): Task type for sequence\
+  \ preparation. Must be one of \"entity_classification\",\n                \"entity_pair_classification\"\
+  , or \"entity_span_classification\". If specified, entity sequences\n          \
+  \      are automatically created based on given entity spans. Defaults to None.\n\
+  \            max_entity_length (int, optional): Maximum length of entity_ids sequence.\
+  \ Defaults to 32.\n                Note: This value is overridden based on task\
+  \ type (1 for entity_classification, \n                2 for entity_pair_classification).\n\
+  \            max_mention_length (int, optional): Maximum number of tokens allowed\
+  \ inside an entity span. \n                Defaults to 30.\n            entity_token_1\
+  \ (str, optional): Special token representing an entity span in word token sequences.\n\
+  \                Used for \"entity_classification\" and \"entity_pair_classification\"\
+  \ tasks. Defaults to \"<ent>\".\n            entity_token_2 (str, optional): Second\
+  \ special token for entity spans, used only for \n                \"entity_pair_classification\"\
+  \ task. Defaults to \"<ent2>\".\n            entity_unk_token (str, optional): Unknown\
+  \ token for entities not found in entity vocabulary.\n                Defaults to\
+  \ \"[UNK]\".\n            entity_pad_token (str, optional): Padding token for entity\
+  \ sequences. Defaults to \"[PAD]\".\n            entity_mask_token (str, optional):\
+  \ Mask token for entities in masked language modeling.\n                Defaults\
+  \ to \"[MASK]\".\n            entity_mask2_token (str, optional): Second mask token\
+  \ for entities. Defaults to \"[MASK2]\".\n            errors (str, optional): Error\
+  \ handling strategy for UTF-8 decoding. See bytes.decode() \n                documentation.\
+  \ Defaults to \"replace\".\n            bos_token (str, optional): Beginning of\
+  \ sequence token from pretraining. Defaults to \"<s>\".\n            eos_token (str,\
+  \ optional): End of sequence token. Defaults to \"</s>\".\n            sep_token\
+  \ (str, optional): Separator token for building sequences from multiple parts.\n\
+  \                Defaults to \"</s>\".\n            cls_token (str, optional): Classifier\
+  \ token for sequence classification tasks. Defaults to \"<s>\".\n            unk_token\
+  \ (str, optional): Unknown token for out-of-vocabulary words. Defaults to \"<unk>\"\
+  .\n            pad_token (str, optional): Padding token for batching sequences of\
+  \ different lengths.\n                Defaults to \"<pad>\".\n            mask_token\
+  \ (str, optional): Mask token for masked language modeling. Defaults to \"<mask>\"\
+  .\n            add_prefix_space (bool, optional): Whether to add initial space to\
+  \ input text. This allows\n                treating the leading word like any other\
+  \ word, as LUKE tokenizer detects word boundaries\n                by preceding\
+  \ spaces. Defaults to False.\n            **kwargs: Additional keyword arguments\
+  \ passed to the parent PreTrainedTokenizer class.\n\n        Raises:\n         \
+  \   ValueError: If the specified task is not one of the supported task types.\n\
+  \            ValueError: If any of the required entity special tokens are not found\
+  \ in the entity vocabulary file.\n\n        Important Notes:\n            - The\
+  \ tokenizer treats spaces as parts of tokens (similar to sentencepiece), so words\
+  \ are\n              encoded differently depending on whether they appear at the\
+  \ beginning of a sentence.\n            - When task is specified, max_entity_length\
+  \ is automatically adjusted: 1 for entity_classification,\n              2 for entity_pair_classification,\
+  \ and uses the provided value for entity_span_classification.\n            - All\
+  \ entity special tokens must exist in the provided entity vocabulary file.\n   \
+  \         - The tokenizer creates additional model inputs including entity_ids,\
+  \ entity_attention_mask,\n              entity_token_type_ids, and entity_position_ids\
+  \ for use with LUKE models.\n        \"\"\"\n        <your code>\n\n    @property\n\
+  \    def vocab_size(self):\n        \"\"\"\n        Get the size of the vocabulary.\n\
+  \n        This property returns the total number of tokens in the tokenizer's vocabulary,\n\
+  \        which corresponds to the number of unique tokens that can be encoded by\
+  \ the\n        tokenizer. This includes all regular tokens from the vocabulary file\
+  \ but does\n        not include special tokens or entity tokens.\n\n        Returns:\n\
+  \            int: The size of the vocabulary (number of tokens in the encoder).\n\
+  \n        Note:\n            This property only counts the base vocabulary tokens\
+  \ loaded from the vocab\n            file. Special tokens added during tokenizer\
+  \ initialization and entity tokens\n            from the entity vocabulary are not\
+  \ included in this count. The vocabulary\n            size is determined by the\
+  \ length of the internal encoder dictionary that\n            maps tokens to their\
+  \ corresponding IDs.\n        \"\"\"\n        <your code>\n\n    def get_vocab(self):\n\
+  \        \"\"\"\n        Retrieve the complete vocabulary dictionary for the tokenizer.\n\
+  \n        This method returns a dictionary containing all tokens from the base vocabulary\n\
+  \        (encoder) combined with any additional special tokens that have been added\
+  \ to\n        the tokenizer. The vocabulary maps token strings to their corresponding\
+  \ integer IDs.\n\n        Returns:\n            dict[str, int]: A dictionary mapping\
+  \ token strings to their integer IDs. This includes:\n                - All tokens\
+  \ from the base vocabulary (self.encoder)\n                - All additional special\
+  \ tokens (self.added_tokens_encoder)\n\n        Notes:\n            - The returned\
+  \ dictionary is a copy of the encoder with added tokens merged in\n            -\
+  \ This method is inherited from RoBERTa tokenizer implementation\n            -\
+  \ The vocabulary size can be obtained using the vocab_size property\n          \
+  \  - This is useful for inspecting the complete token vocabulary or for saving/loading\
+  \ tokenizer state\n        \"\"\"\n        <your code>\n\n    def bpe(self, token):\n\
+  \        \"\"\"\n        Apply Byte-Pair Encoding (BPE) algorithm to tokenize a\
+  \ given token into subword units.\n\n        This method implements the core BPE\
+  \ algorithm that iteratively merges the most frequent\n        pairs of characters\
+  \ or character sequences in a token based on pre-learned merge rules.\n        The\
+  \ process continues until no more valid merges can be performed according to the\n\
+  \        learned BPE ranks.\n\n        Parameters:\n            token (str): The\
+  \ input token string to be processed with BPE. This should be a\n              \
+  \  single word or token that has already been converted to the appropriate\n   \
+  \             byte-level representation.\n\n        Returns:\n            str: A\
+  \ space-separated string of BPE subword tokens. Each subword represents\n      \
+  \          a unit that was learned during the BPE training process. The returned\n\
+  \                string contains the final segmentation of the input token.\n\n\
+  \        Important notes:\n            - This method uses a caching mechanism to\
+  \ store previously computed BPE results\n              for efficiency. If the token\
+  \ has been processed before, the cached result\n              is returned immediately.\n\
+  \            - The BPE merges are performed based on the pre-trained merge rules\
+  \ stored in\n              `self.bpe_ranks`, which contain pairs of characters/subwords\
+  \ and their\n              priority rankings.\n            - If no valid pairs can\
+  \ be found in the BPE ranks, the algorithm stops and\n              returns the\
+  \ current segmentation.\n            - The method modifies the internal cache (`self.cache`)\
+  \ to store results for\n              future lookups.\n            - This is a core\
+  \ component of the tokenization pipeline and is typically called\n             \
+  \ internally by other tokenization methods rather than directly by users.\n    \
+  \    \"\"\"\n        <your code>\n\n    def _tokenize(self, text):\n        \"\"\
+  \"\n        Tokenize a string.\n        \"\"\"\n        <your code>\n\n    def _convert_token_to_id(self,\
+  \ token):\n        \"\"\"\n        Converts a token (str) in an id using the vocab.\n\
+  \        \"\"\"\n        <your code>\n\n    def _convert_id_to_token(self, index):\n\
+  \        \"\"\"\n        Converts an index (integer) in a token (str) using the\
+  \ vocab.\n        \"\"\"\n        <your code>\n\n    def convert_tokens_to_string(self,\
+  \ tokens):\n        \"\"\"\n        Converts a sequence of tokens (string) in a\
+  \ single string.\n        \"\"\"\n        <your code>\n\n    def build_inputs_with_special_tokens(\n\
+  \        self,\n        token_ids_0: list[int],\n        token_ids_1: Optional[list[int]]\
+  \ = None\n    ) -> list[int]:\n        \"\"\"\n\n                Build model inputs\
+  \ from a sequence or a pair of sequence for sequence classification tasks by concatenating\
+  \ and\n                adding special tokens. A LUKE sequence has the following\
+  \ format:\n\n                - single sequence: `<s> X </s>`\n                -\
+  \ pair of sequences: `<s> A </s></s> B </s>`\n\n                Args:\n        \
+  \            token_ids_0 (`list[int]`):\n                        List of IDs to\
+  \ which the special tokens will be added.\n                    token_ids_1 (`list[int]`,\
+  \ *optional*):\n                        Optional second list of IDs for sequence\
+  \ pairs.\n\n                Returns:\n                    `list[int]`: List of [input\
+  \ IDs](../glossary#input-ids) with the appropriate special tokens.\n\n        \"\
+  \"\"\n        <your code>\n\n    def get_special_tokens_mask(\n        self,\n \
+  \       token_ids_0: list[int],\n        token_ids_1: Optional[list[int]] = None,\n\
+  \        already_has_special_tokens: bool = False\n    ) -> list[int]:\n       \
+  \ \"\"\"\n\n                Retrieve sequence ids from a token list that has no\
+  \ special tokens added. This method is called when adding\n                special\
+  \ tokens using the tokenizer `prepare_for_model` method.\n\n                Args:\n\
+  \                    token_ids_0 (`list[int]`):\n                        List of\
+  \ IDs.\n                    token_ids_1 (`list[int]`, *optional*):\n           \
+  \             Optional second list of IDs for sequence pairs.\n                \
+  \    already_has_special_tokens (`bool`, *optional*, defaults to `False`):\n   \
+  \                     Whether or not the token list is already formatted with special\
+  \ tokens for the model.\n\n                Returns:\n                    `list[int]`:\
+  \ A list of integers in the range [0, 1]: 1 for a special token, 0 for a sequence\
+  \ token.\n\n        \"\"\"\n        <your code>\n\n    def create_token_type_ids_from_sequences(\n\
+  \        self,\n        token_ids_0: list[int],\n        token_ids_1: Optional[list[int]]\
+  \ = None\n    ) -> list[int]:\n        \"\"\"\n\n                Create a mask from\
+  \ the two sequences passed to be used in a sequence-pair classification task. LUKE\
+  \ does not\n                make use of token type ids, therefore a list of zeros\
+  \ is returned.\n\n                Args:\n                    token_ids_0 (`list[int]`):\n\
+  \                        List of IDs.\n                    token_ids_1 (`list[int]`,\
+  \ *optional*):\n                        Optional second list of IDs for sequence\
+  \ pairs.\n\n                Returns:\n                    `list[int]`: List of zeros.\n\
+  \n        \"\"\"\n        <your code>\n\n    def prepare_for_tokenization(\n   \
+  \     self,\n        text,\n        is_split_into_words = False,\n        **kwargs\n\
+  \    ):\n        \"\"\"\n        Prepares text for tokenization by applying necessary\
+  \ preprocessing transformations.\n\n        This method performs preprocessing steps\
+  \ on the input text before tokenization occurs. \n        Specifically, it handles\
+  \ the addition of prefix spaces based on the tokenizer configuration\n        and\
+  \ input parameters. This is important for LUKE tokenizer since it treats spaces\
+  \ as part\n        of tokens (similar to sentencepiece), and words are encoded differently\
+  \ depending on\n        whether they appear at the beginning of a sentence or not.\n\
+  \n        Parameters:\n            text (str): The input text string to be prepared\
+  \ for tokenization.\n            is_split_into_words (bool, optional): Whether the\
+  \ input text is already split into \n                words. When True, a space will\
+  \ be added before each word (even the first one).\n                Defaults to False.\n\
+  \            **kwargs: Additional keyword arguments. The method specifically looks\
+  \ for and removes\n                'add_prefix_space' from kwargs, using it to override\
+  \ the tokenizer's default\n                add_prefix_space setting.\n\n       \
+  \ Returns:\n            tuple[str, dict]: A tuple containing:\n                -\
+  \ The preprocessed text string with appropriate spacing applied\n              \
+  \  - The remaining kwargs dictionary with 'add_prefix_space' removed if it was present\n\
+  \n        Important Notes:\n            - If add_prefix_space is True (either from\
+  \ kwargs or tokenizer default) or if \n              is_split_into_words is True,\
+  \ and the text is non-empty and doesn't start with\n              whitespace, a\
+  \ space will be prepended to the text\n            - This preprocessing ensures\
+  \ consistent tokenization behavior regardless of whether\n              text appears\
+  \ at sentence boundaries\n            - The add_prefix_space parameter in kwargs\
+  \ takes precedence over the tokenizer's\n              default add_prefix_space\
+  \ setting\n            - This method is typically called internally during the tokenization\
+  \ process and\n              rarely needs to be called directly by users\n     \
+  \   \"\"\"\n        <your code>\n\n    @add_end_docstrings(ENCODE_KWARGS_DOCSTRING,\
+  \ ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)\n    def __call__(\n        self,\n \
+  \       text: Union[TextInput, list[TextInput]],\n        text_pair: Optional[Union[TextInput,\
+  \ list[TextInput]]] = None,\n        entity_spans: Optional[Union[EntitySpanInput,\
+  \ list[EntitySpanInput]]] = None,\n        entity_spans_pair: Optional[Union[EntitySpanInput,\
+  \ list[EntitySpanInput]]] = None,\n        entities: Optional[Union[EntityInput,\
+  \ list[EntityInput]]] = None,\n        entities_pair: Optional[Union[EntityInput,\
+  \ list[EntityInput]]] = None,\n        add_special_tokens: bool = True,\n      \
+  \  padding: Union[bool, str, PaddingStrategy] = False,\n        truncation: Union[bool,\
+  \ str, TruncationStrategy] = None,\n        max_length: Optional[int] = None,\n\
+  \        max_entity_length: Optional[int] = None,\n        stride: int = 0,\n  \
+  \      is_split_into_words: Optional[bool] = False,\n        pad_to_multiple_of:\
+  \ Optional[int] = None,\n        padding_side: Optional[str] = None,\n        return_tensors:\
+  \ Optional[Union[str, TensorType]] = None,\n        return_token_type_ids: Optional[bool]\
+  \ = None,\n        return_attention_mask: Optional[bool] = None,\n        return_overflowing_tokens:\
+  \ bool = False,\n        return_special_tokens_mask: bool = False,\n        return_offsets_mapping:\
+  \ bool = False,\n        return_length: bool = False,\n        verbose: bool = True,\n\
+  \        **kwargs\n    ) -> BatchEncoding:\n        \"\"\"\n\n                Main\
+  \ method to tokenize and prepare for the model one or several sequence(s) or one\
+  \ or several pair(s) of\n                sequences, depending on the task you want\
+  \ to prepare them for.\n\n                Args:\n                    text (`str`,\
+  \ `list[str]`, `list[list[str]]`):\n                        The sequence or batch\
+  \ of sequences to be encoded. Each sequence must be a string. Note that this\n \
+  \                       tokenizer does not support tokenization based on pretokenized\
+  \ strings.\n                    text_pair (`str`, `list[str]`, `list[list[str]]`):\n\
+  \                        The sequence or batch of sequences to be encoded. Each\
+  \ sequence must be a string. Note that this\n                        tokenizer does\
+  \ not support tokenization based on pretokenized strings.\n                    entity_spans\
+  \ (`list[tuple[int, int]]`, `list[list[tuple[int, int]]]`, *optional*):\n      \
+  \                  The sequence or batch of sequences of entity spans to be encoded.\
+  \ Each sequence consists of tuples each\n                        with two integers\
+  \ denoting character-based start and end positions of entities. If you specify\n\
+  \                        `\"entity_classification\"` or `\"entity_pair_classification\"\
+  ` as the `task` argument in the constructor,\n                        the length\
+  \ of each sequence must be 1 or 2, respectively. If you specify `entities`, the\
+  \ length of each\n                        sequence must be equal to the length of\
+  \ each sequence of `entities`.\n                    entity_spans_pair (`list[tuple[int,\
+  \ int]]`, `list[list[tuple[int, int]]]`, *optional*):\n                        The\
+  \ sequence or batch of sequences of entity spans to be encoded. Each sequence consists\
+  \ of tuples each\n                        with two integers denoting character-based\
+  \ start and end positions of entities. If you specify the\n                    \
+  \    `task` argument in the constructor, this argument is ignored. If you specify\
+  \ `entities_pair`, the\n                        length of each sequence must be\
+  \ equal to the length of each sequence of `entities_pair`.\n                   \
+  \ entities (`list[str]`, `list[list[str]]`, *optional*):\n                     \
+  \   The sequence or batch of sequences of entities to be encoded. Each sequence\
+  \ consists of strings\n                        representing entities, i.e., special\
+  \ entities (e.g., [MASK]) or entity titles of Wikipedia (e.g., Los\n           \
+  \             Angeles). This argument is ignored if you specify the `task` argument\
+  \ in the constructor. The length of\n                        each sequence must\
+  \ be equal to the length of each sequence of `entity_spans`. If you specify\n  \
+  \                      `entity_spans` without specifying this argument, the entity\
+  \ sequence or the batch of entity sequences\n                        is automatically\
+  \ constructed by filling it with the [MASK] entity.\n                    entities_pair\
+  \ (`list[str]`, `list[list[str]]`, *optional*):\n                        The sequence\
+  \ or batch of sequences of entities to be encoded. Each sequence consists of strings\n\
+  \                        representing entities, i.e., special entities (e.g., [MASK])\
+  \ or entity titles of Wikipedia (e.g., Los\n                        Angeles). This\
+  \ argument is ignored if you specify the `task` argument in the constructor. The\
+  \ length of\n                        each sequence must be equal to the length of\
+  \ each sequence of `entity_spans_pair`. If you specify\n                       \
+  \ `entity_spans_pair` without specifying this argument, the entity sequence or the\
+  \ batch of entity\n                        sequences is automatically constructed\
+  \ by filling it with the [MASK] entity.\n                    max_entity_length (`int`,\
+  \ *optional*):\n                        The maximum length of `entity_ids`.\n\n\
+  \        \"\"\"\n        <your code>\n\n    def _encode_plus(\n        self,\n \
+  \       text: Union[TextInput],\n        text_pair: Optional[Union[TextInput]] =\
+  \ None,\n        entity_spans: Optional[EntitySpanInput] = None,\n        entity_spans_pair:\
+  \ Optional[EntitySpanInput] = None,\n        entities: Optional[EntityInput] = None,\n\
+  \        entities_pair: Optional[EntityInput] = None,\n        add_special_tokens:\
+  \ bool = True,\n        padding_strategy: PaddingStrategy = PaddingStrategy.DO_NOT_PAD,\n\
+  \        truncation_strategy: TruncationStrategy = TruncationStrategy.DO_NOT_TRUNCATE,\n\
+  \        max_length: Optional[int] = None,\n        max_entity_length: Optional[int]\
+  \ = None,\n        stride: int = 0,\n        is_split_into_words: Optional[bool]\
+  \ = False,\n        pad_to_multiple_of: Optional[int] = None,\n        padding_side:\
+  \ Optional[str] = None,\n        return_tensors: Optional[Union[str, TensorType]]\
+  \ = None,\n        return_token_type_ids: Optional[bool] = None,\n        return_attention_mask:\
+  \ Optional[bool] = None,\n        return_overflowing_tokens: bool = False,\n   \
+  \     return_special_tokens_mask: bool = False,\n        return_offsets_mapping:\
+  \ bool = False,\n        return_length: bool = False,\n        verbose: bool = True,\n\
+  \        **kwargs\n    ) -> BatchEncoding:\n        \"\"\"\n        \"\"\"\n   \
+  \     Internal method to encode a single text or text pair with entity information\
+  \ for the LUKE model.\n\n        This method handles the core encoding logic for\
+  \ preparing text inputs along with entity spans and entity IDs\n        for use\
+  \ with LUKE (Language Understanding with Knowledge-based Embeddings) models. It\
+  \ processes both regular\n        text tokenization and entity-aware tokenization,\
+  \ supporting various task configurations.\n\n        Parameters:\n            text\
+  \ (Union[TextInput]): The primary text sequence to be encoded. Must be a string\
+  \ that will be tokenized\n                using the model's tokenization strategy.\n\
+  \            text_pair (Optional[Union[TextInput]], optional): The secondary text\
+  \ sequence for sequence pair tasks.\n                Defaults to None for single\
+  \ sequence processing.\n            entity_spans (Optional[EntitySpanInput], optional):\
+  \ List of tuples containing character-based start and end\n                positions\
+  \ of entities in the primary text. Each tuple should contain (start_pos, end_pos)\
+  \ integers.\n                Defaults to None.\n            entity_spans_pair (Optional[EntitySpanInput],\
+  \ optional): List of entity span tuples for the secondary text\n               \
+  \ sequence. Only used when text_pair is provided. Defaults to None.\n          \
+  \  entities (Optional[EntityInput], optional): List of entity names/identifiers\
+  \ corresponding to the entity_spans.\n                If not provided, entities\
+  \ will be filled with [MASK] tokens. Must have the same length as entity_spans\n\
+  \                if specified. Defaults to None.\n            entities_pair (Optional[EntityInput],\
+  \ optional): List of entity names for the secondary text sequence.\n           \
+  \     Must correspond to entity_spans_pair if provided. Defaults to None.\n    \
+  \        add_special_tokens (bool, optional): Whether to add special tokens (CLS,\
+  \ SEP, etc.) to the sequences.\n                Defaults to True.\n            padding_strategy\
+  \ (PaddingStrategy, optional): Strategy for padding sequences. Defaults to DO_NOT_PAD.\n\
+  \            truncation_strategy (TruncationStrategy, optional): Strategy for truncating\
+  \ sequences that exceed max_length.\n                Defaults to DO_NOT_TRUNCATE.\n\
+  \            max_length (Optional[int], optional): Maximum length for input sequences.\
+  \ If None, no length limit is applied.\n                Defaults to None.\n    \
+  \        max_entity_length (Optional[int], optional): Maximum number of entities\
+  \ to include. If None, uses the\n                tokenizer's default max_entity_length.\
+  \ Defaults to None.\n            stride (int, optional): Stride length for handling\
+  \ overflowing tokens when truncation occurs. Defaults to 0.\n            is_split_into_words\
+  \ (Optional[bool], optional): Whether the input text is already split into words.\n\
+  \                Currently not supported and will raise NotImplementedError. Defaults\
+  \ to False.\n            pad_to_multiple_of (Optional[int], optional): Pad sequence\
+  \ length to a multiple of this value. Useful for\n                optimizing tensor\
+  \ operations on specific hardware. Defaults to None.\n            padding_side (Optional[str],\
+  \ optional): Side on which to apply padding ('left' or 'right'). If None,\n    \
+  \            uses the tokenizer's default padding side. Defaults to None.\n    \
+  \        return_tensors (Optional[Union[str, TensorType]], optional): Format for\
+  \ returned tensors ('pt' for PyTorch,\n                'tf' for TensorFlow, 'np'\
+  \ for NumPy). If None, returns Python lists. Defaults to None.\n            return_token_type_ids\
+  \ (Optional[bool], optional): Whether to return token type IDs. If None, determined\
+  \ by\n                model requirements. Defaults to None.\n            return_attention_mask\
+  \ (Optional[bool], optional): Whether to return attention masks. If None, determined\
+  \ by\n                model requirements. Defaults to None.\n            return_overflowing_tokens\
+  \ (bool, optional): Whether to return information about tokens that were truncated.\n\
+  \                Defaults to False.\n            return_special_tokens_mask (bool,\
+  \ optional): Whether to return a mask indicating special tokens.\n             \
+  \   Defaults to False.\n            return_offsets_mapping (bool, optional): Whether\
+  \ to return character-to-token offset mappings. Not supported\n                in\
+  \ this tokenizer and will raise NotImplementedError. Defaults to False.\n      \
+  \      return_length (bool, optional): Whether to return the length of the encoded\
+  \ sequences. Defaults to False.\n            verbose (bool, optional): Whether to\
+  \ print warnings and additional information during processing.\n               \
+  \ Defaults to True.\n            **kwargs: Additional keyword arguments passed to\
+  \ the tokenization methods.\n\n        Returns:\n            BatchEncoding: A BatchEncoding\
+  \ object containing the encoded inputs with the following possible keys:\n     \
+  \           - input_ids: Token IDs for the input sequences\n                - attention_mask:\
+  \ Attention mask indicating valid tokens (if requested)\n                - token_type_ids:\
+  \ Token type IDs for sequence differentiation (if requested)\n                -\
+  \ entity_ids: Entity IDs corresponding to the provided entities\n              \
+  \  - entity_position_ids: Position IDs for entity tokens within the sequence\n \
+  \               - entity_attention_mask: Attention mask for entities (if requested)\n\
+  \                - entity_token_type_ids: Token type IDs for entities (if requested)\n\
+  \                - entity_start_positions: Start positions of entities (for span\
+  \ classification tasks)\n                - entity_end_positions: End positions of\
+  \ entities (for span classification tasks)\n                - special_tokens_mask:\
+  \ Mask indicating special tokens (if requested)\n                - overflowing_tokens:\
+  \ Information about truncated tokens (if requested)\n                - length: Length\
+  \ of the encoded sequence (if requested)\n\n        Raises:\n            NotImplementedError:\
+  \ If return_offsets_mapping is True or is_split_into_words is True, as these features\n\
+  \                are not supported by this tokenizer implementation.\n         \
+  \   ValueError: If entity spans and entities have mismatched lengths, or if invalid\
+  \ task configurations are\n                encountered during entity processing.\n\
+  \n        Notes:\n            - This is an internal method typically called by higher-level\
+  \ encoding methods\n            - Entity processing behavior depends on the task\
+  \ configuration set during tokenizer initialization\n            - For entity classification\
+  \ tasks, special entity tokens are inserted around entity mentions\n           \
+  \ - Entity spans are adjusted to account for special tokens added during sequence\
+  \ building\n            - Invalid entities (those with spans exceeding sequence\
+  \ length after truncation) are automatically filtered out\n        \"\"\"\n    \
+  \    \"\"\"\n        <your code>\n\n    def _batch_encode_plus(\n        self,\n\
+  \        batch_text_or_text_pairs: Union[list[TextInput], list[TextInputPair]],\n\
+  \        batch_entity_spans_or_entity_spans_pairs: Optional[Union[list[EntitySpanInput],\
+  \ list[tuple[EntitySpanInput, EntitySpanInput]]]] = None,\n        batch_entities_or_entities_pairs:\
+  \ Optional[Union[list[EntityInput], list[tuple[EntityInput, EntityInput]]]] = None,\n\
+  \        add_special_tokens: bool = True,\n        padding_strategy: PaddingStrategy\
+  \ = PaddingStrategy.DO_NOT_PAD,\n        truncation_strategy: TruncationStrategy\
+  \ = TruncationStrategy.DO_NOT_TRUNCATE,\n        max_length: Optional[int] = None,\n\
+  \        max_entity_length: Optional[int] = None,\n        stride: int = 0,\n  \
+  \      is_split_into_words: Optional[bool] = False,\n        pad_to_multiple_of:\
+  \ Optional[int] = None,\n        padding_side: Optional[str] = None,\n        return_tensors:\
+  \ Optional[Union[str, TensorType]] = None,\n        return_token_type_ids: Optional[bool]\
+  \ = None,\n        return_attention_mask: Optional[bool] = None,\n        return_overflowing_tokens:\
+  \ bool = False,\n        return_special_tokens_mask: bool = False,\n        return_offsets_mapping:\
+  \ bool = False,\n        return_length: bool = False,\n        verbose: bool = True,\n\
+  \        **kwargs\n    ) -> BatchEncoding:\n        \"\"\"\n        Encode a batch\
+  \ of text sequences or text pairs along with their entity information for the LUKE\
+  \ model.\n\n        This is an internal method that processes multiple sequences\
+  \ at once, handling tokenization,\n        entity processing, padding, and truncation\
+  \ according to the specified strategies. It supports\n        both single sequences\
+  \ and sequence pairs, along with their corresponding entity spans and\n        entity\
+  \ vocabularies.\n\n        Parameters:\n            batch_text_or_text_pairs (Union[list[TextInput],\
+  \ list[TextInputPair]]): \n                A batch of text sequences or text pairs\
+  \ to be encoded. Each element can be either\n                a single text string\
+  \ or a tuple/list containing two text strings for sequence pairs.\n\n          \
+  \  batch_entity_spans_or_entity_spans_pairs (Optional[Union[list[EntitySpanInput],\
+  \ list[tuple[EntitySpanInput, EntitySpanInput]]]], optional):\n                A\
+  \ batch of entity spans corresponding to the text sequences. Each entity span is\n\
+  \                represented as a list of tuples containing (start, end) character\
+  \ positions.\n                For sequence pairs, this should be a list of tuples\
+  \ containing entity spans for\n                both sequences. Defaults to None.\n\
+  \n            batch_entities_or_entities_pairs (Optional[Union[list[EntityInput],\
+  \ list[tuple[EntityInput, EntityInput]]]], optional):\n                A batch of\
+  \ entity names/identifiers corresponding to the entity spans. Each element\n   \
+  \             is a list of entity strings. For sequence pairs, this should be a\
+  \ list of tuples\n                containing entities for both sequences. If not\
+  \ provided, entity spans will be\n                filled with [MASK] tokens. Defaults\
+  \ to None.\n\n            add_special_tokens (bool, optional): \n              \
+  \  Whether to add special tokens (CLS, SEP, etc.) to the sequences. Defaults to\
+  \ True.\n\n            padding_strategy (PaddingStrategy, optional): \n        \
+  \        Strategy for padding sequences to uniform length. Defaults to PaddingStrategy.DO_NOT_PAD.\n\
+  \n            truncation_strategy (TruncationStrategy, optional): \n           \
+  \     Strategy for truncating sequences that exceed maximum length. \n         \
+  \       Defaults to TruncationStrategy.DO_NOT_TRUNCATE.\n\n            max_length\
+  \ (Optional[int], optional): \n                Maximum length for input sequences\
+  \ after tokenization. Defaults to None.\n\n            max_entity_length (Optional[int],\
+  \ optional): \n                Maximum number of entities to include per sequence.\
+  \ Defaults to None.\n\n            stride (int, optional): \n                Stride\
+  \ length for handling overflowing tokens when truncation occurs. Defaults to 0.\n\
+  \n            is_split_into_words (Optional[bool], optional): \n               \
+  \ Whether the input text is already split into words. Currently not supported \n\
+  \                and will raise NotImplementedError if True. Defaults to False.\n\
+  \n            pad_to_multiple_of (Optional[int], optional): \n                Pad\
+  \ sequence lengths to be multiples of this value. Useful for tensor core optimization.\
+  \ \n                Defaults to None.\n\n            padding_side (Optional[str],\
+  \ optional): \n                Side on which to apply padding ('left' or 'right').\
+  \ If None, uses tokenizer default. \n                Defaults to None.\n\n     \
+  \       return_tensors (Optional[Union[str, TensorType]], optional): \n        \
+  \        Format for returned tensors ('pt' for PyTorch, 'tf' for TensorFlow, 'np'\
+  \ for NumPy). \n                Defaults to None.\n\n            return_token_type_ids\
+  \ (Optional[bool], optional): \n                Whether to return token type IDs.\
+  \ If None, follows model defaults. Defaults to None.\n\n            return_attention_mask\
+  \ (Optional[bool], optional): \n                Whether to return attention masks.\
+  \ If None, follows model defaults. Defaults to None.\n\n            return_overflowing_tokens\
+  \ (bool, optional): \n                Whether to return information about tokens\
+  \ that were truncated. Defaults to False.\n\n            return_special_tokens_mask\
+  \ (bool, optional): \n                Whether to return a mask indicating which\
+  \ tokens are special tokens. Defaults to False.\n\n            return_offsets_mapping\
+  \ (bool, optional): \n                Whether to return character-to-token offset\
+  \ mappings. Currently not supported \n                and will raise NotImplementedError\
+  \ if True. Defaults to False.\n\n            return_length (bool, optional): \n\
+  \                Whether to return the length of each encoded sequence. Defaults\
+  \ to False.\n\n            verbose (bool, optional): \n                Whether to\
+  \ print warnings and additional information during processing. Defaults to True.\n\
+  \n            **kwargs: Additional keyword arguments passed to internal tokenization\
+  \ methods.\n\n        Returns:\n            BatchEncoding: A BatchEncoding object\
+  \ containing the processed batch with the following fields:\n                - input_ids:\
+  \ Token IDs for the input sequences\n                - attention_mask: Attention\
+  \ masks (if return_attention_mask=True)\n                - token_type_ids: Token\
+  \ type IDs (if return_token_type_ids=True)\n                - entity_ids: Entity\
+  \ vocabulary IDs for recognized entities\n                - entity_position_ids:\
+  \ Position IDs indicating entity token spans\n                - entity_attention_mask:\
+  \ Attention masks for entities\n                - entity_token_type_ids: Token type\
+  \ IDs for entities (if applicable)\n                - entity_start_positions: Start\
+  \ positions for entity spans (for span classification)\n                - entity_end_positions:\
+  \ End positions for entity spans (for span classification)\n                - Additional\
+  \ fields based on return_* parameters\n\n        Raises:\n            NotImplementedError:\
+  \ If return_offsets_mapping=True or is_split_into_words=True, \n               \
+  \ as these features are not supported in this tokenizer implementation.\n\n    \
+  \        ValueError: If entity spans and entities have mismatched lengths, or if\
+  \ entity \n                spans contain invalid format (not tuples of integers).\n\
+  \n        Notes:\n            - This method processes each sequence in the batch\
+  \ individually before applying\n              batch-level padding and formatting\n\
+  \            - Entity spans that become invalid due to text truncation will be automatically\n\
+  \              filtered out with a warning\n            - The method supports different\
+  \ task types (entity_classification, \n              entity_pair_classification,\
+  \ entity_span_classification) which affect how\n              entities are processed\n\
+  \            - For optimal performance on modern hardware, consider using pad_to_multiple_of=8\n\
+  \              when working with tensor cores\n        \"\"\"\n        <your code>\n\
+  \n    def _check_entity_input_format(\n        self,\n        entities: Optional[EntityInput],\n\
+  \        entity_spans: Optional[EntitySpanInput]\n    ):\n        \"\"\"\n     \
+  \   Validates and checks the format of entity input parameters for the LUKE tokenizer.\n\
+  \n        This internal method performs comprehensive validation of entity-related\
+  \ inputs to ensure they\n        conform to the expected format and structure required\
+  \ by the LUKE model. It validates both\n        entity spans (character-based positions)\
+  \ and optional entity names.\n\n        Parameters:\n            entities (Optional[EntityInput]):\
+  \ \n                Optional list of entity names/identifiers. Each entity should\
+  \ be a string representing\n                either special entities (e.g., [MASK])\
+  \ or entity titles from Wikipedia (e.g., \"Los Angeles\").\n                If provided,\
+  \ must have the same length as entity_spans. Can be None if only entity spans\n\
+  \                are needed.\n            entity_spans (Optional[EntitySpanInput]):\n\
+  \                List of entity span tuples, where each tuple contains two integers\
+  \ representing the\n                character-based start and end positions of entities\
+  \ in the input text. Must be a list\n                of tuples in the format [(start1,\
+  \ end1), (start2, end2), ...].\n\n        Raises:\n            TypeError: If entity_spans\
+  \ is not provided as a list.\n            ValueError: If entity_spans contains elements\
+  \ that are not tuples, if entities is not a list\n                when provided,\
+  \ if entities contains non-string elements, or if the lengths of entities\n    \
+  \            and entity_spans do not match when both are provided.\n\n        Notes:\n\
+  \            - This method does not return any value; it only performs validation\n\
+  \            - Entity spans use character-based indexing (not token-based)\n   \
+  \         - The validation ensures consistency between entity names and their corresponding\
+  \ spans\n            - This method is called internally during the tokenization\
+  \ process to prevent malformed inputs\n        \"\"\"\n        <your code>\n\n \
+  \   def _create_input_sequence(\n        self,\n        text: Union[TextInput],\n\
+  \        text_pair: Optional[Union[TextInput]] = None,\n        entities: Optional[EntityInput]\
+  \ = None,\n        entities_pair: Optional[EntityInput] = None,\n        entity_spans:\
+  \ Optional[EntitySpanInput] = None,\n        entity_spans_pair: Optional[EntitySpanInput]\
+  \ = None,\n        **kwargs\n    ) -> tuple[list, list, list, list, list, list]:\n\
+  \        \"\"\"\n        Create input sequences for LUKE tokenizer processing.\n\
+  \n        This internal method processes text and entity inputs to generate tokenized\
+  \ sequences\n        suitable for the LUKE model. It handles different task types\
+  \ (entity classification,\n        entity pair classification, entity span classification)\
+  \ and creates appropriate\n        token sequences with special entity markers when\
+  \ needed.\n\n        Parameters:\n            text (Union[TextInput]): The primary\
+  \ text sequence to be tokenized. Must be a string\n                that will be\
+  \ processed using the tokenizer's BPE encoding.\n            text_pair (Optional[Union[TextInput]],\
+  \ optional): The secondary text sequence for\n                sequence pair tasks.\
+  \ Defaults to None.\n            entities (Optional[EntityInput], optional): List\
+  \ of entity names corresponding to\n                the entity spans in the primary\
+  \ text. If None and entity_spans is provided,\n                entities will be\
+  \ filled with [MASK] tokens. Defaults to None.\n            entities_pair (Optional[EntityInput],\
+  \ optional): List of entity names corresponding\n                to the entity spans\
+  \ in the secondary text. Only used when text_pair is provided.\n               \
+  \ Defaults to None.\n            entity_spans (Optional[EntitySpanInput], optional):\
+  \ List of tuples containing\n                character-based start and end positions\
+  \ of entities in the primary text.\n                Each tuple should be (start_pos,\
+  \ end_pos). Defaults to None.\n            entity_spans_pair (Optional[EntitySpanInput],\
+  \ optional): List of tuples containing\n                character-based start and\
+  \ end positions of entities in the secondary text.\n                Only used when\
+  \ text_pair is provided. Defaults to None.\n            **kwargs: Additional keyword\
+  \ arguments passed to the tokenize method.\n\n        Returns:\n            tuple[list,\
+  \ list, list, list, list, list]: A 6-tuple containing:\n                - first_ids\
+  \ (list): Token IDs for the primary text sequence\n                - second_ids\
+  \ (list): Token IDs for the secondary text sequence (None if no text_pair)\n   \
+  \             - first_entity_ids (list): Entity IDs for entities in the primary\
+  \ text (None if no entities)\n                - second_entity_ids (list): Entity\
+  \ IDs for entities in the secondary text (None if no entities_pair)\n          \
+  \      - first_entity_token_spans (list): Token-based spans for entities in primary\
+  \ text (None if no entity_spans)\n                - second_entity_token_spans (list):\
+  \ Token-based spans for entities in secondary text (None if no entity_spans_pair)\n\
+  \n        Important Notes:\n            - The behavior varies significantly based\
+  \ on the tokenizer's task configuration:\n                * None/entity_span_classification:\
+  \ Processes entities as provided\n                * entity_classification: Expects\
+  \ exactly one entity span and adds special tokens\n                * entity_pair_classification:\
+  \ Expects exactly two entity spans and adds different special tokens\n         \
+  \   - Entity spans are converted from character-based to token-based positions\n\
+  \            - Special entity tokens (<ent>, <ent2>) are inserted around entity\
+  \ mentions for classification tasks\n            - Invalid entity spans (extending\
+  \ beyond text boundaries) are handled gracefully\n            - The method performs\
+  \ input validation for entity formats and task requirements\n\n        Raises:\n\
+  \            ValueError: If entity_spans format is invalid, if entities and entity_spans\
+  \ have mismatched lengths,\n                if task requirements are not met (wrong\
+  \ number of entity spans for classification tasks),\n                or if an unsupported\
+  \ task is specified.\n            TypeError: If entity_spans is not provided as\
+  \ a list when entities are specified.\n        \"\"\"\n        <your code>\n\n \
+  \   @add_end_docstrings(ENCODE_KWARGS_DOCSTRING, ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)\n\
+  \    def _batch_prepare_for_model(\n        self,\n        batch_ids_pairs: list[tuple[list[int],\
+  \ None]],\n        batch_entity_ids_pairs: list[tuple[Optional[list[int]], Optional[list[int]]]],\n\
+  \        batch_entity_token_spans_pairs: list[tuple[Optional[list[tuple[int, int]]],\
+  \ Optional[list[tuple[int, int]]]]],\n        add_special_tokens: bool = True,\n\
+  \        padding_strategy: PaddingStrategy = PaddingStrategy.DO_NOT_PAD,\n     \
+  \   truncation_strategy: TruncationStrategy = TruncationStrategy.DO_NOT_TRUNCATE,\n\
+  \        max_length: Optional[int] = None,\n        max_entity_length: Optional[int]\
+  \ = None,\n        stride: int = 0,\n        pad_to_multiple_of: Optional[int] =\
+  \ None,\n        padding_side: Optional[str] = None,\n        return_tensors: Optional[str]\
+  \ = None,\n        return_token_type_ids: Optional[bool] = None,\n        return_attention_mask:\
+  \ Optional[bool] = None,\n        return_overflowing_tokens: bool = False,\n   \
+  \     return_special_tokens_mask: bool = False,\n        return_length: bool = False,\n\
+  \        verbose: bool = True\n    ) -> BatchEncoding:\n        \"\"\"\n\n     \
+  \           Prepares a sequence of input id, or a pair of sequences of inputs ids\
+  \ so that it can be used by the model. It\n                adds special tokens,\
+  \ truncates sequences if overflowing while taking into account the special tokens\
+  \ and\n                manages a moving window (with user defined stride) for overflowing\
+  \ tokens\n\n\n                Args:\n                    batch_ids_pairs: list of\
+  \ tokenized input ids or input ids pairs\n                    batch_entity_ids_pairs:\
+  \ list of entity ids or entity ids pairs\n                    batch_entity_token_spans_pairs:\
+  \ list of entity spans or entity spans pairs\n                    max_entity_length:\
+  \ The maximum length of the entity sequence.\n\n        \"\"\"\n        <your code>\n\
+  \n    @add_end_docstrings(ENCODE_KWARGS_DOCSTRING, ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING)\n\
+  \    def prepare_for_model(\n        self,\n        ids: list[int],\n        pair_ids:\
+  \ Optional[list[int]] = None,\n        entity_ids: Optional[list[int]] = None,\n\
+  \        pair_entity_ids: Optional[list[int]] = None,\n        entity_token_spans:\
+  \ Optional[list[tuple[int, int]]] = None,\n        pair_entity_token_spans: Optional[list[tuple[int,\
+  \ int]]] = None,\n        add_special_tokens: bool = True,\n        padding: Union[bool,\
+  \ str, PaddingStrategy] = False,\n        truncation: Union[bool, str, TruncationStrategy]\
+  \ = None,\n        max_length: Optional[int] = None,\n        max_entity_length:\
+  \ Optional[int] = None,\n        stride: int = 0,\n        pad_to_multiple_of: Optional[int]\
+  \ = None,\n        padding_side: Optional[str] = None,\n        return_tensors:\
+  \ Optional[Union[str, TensorType]] = None,\n        return_token_type_ids: Optional[bool]\
+  \ = None,\n        return_attention_mask: Optional[bool] = None,\n        return_overflowing_tokens:\
+  \ bool = False,\n        return_special_tokens_mask: bool = False,\n        return_offsets_mapping:\
+  \ bool = False,\n        return_length: bool = False,\n        verbose: bool = True,\n\
+  \        prepend_batch_axis: bool = False,\n        **kwargs\n    ) -> BatchEncoding:\n\
+  \        \"\"\"\n\n                Prepares a sequence of input id, entity id and\
+  \ entity span, or a pair of sequences of inputs ids, entity ids,\n             \
+  \   entity spans so that it can be used by the model. It adds special tokens, truncates\
+  \ sequences if overflowing\n                while taking into account the special\
+  \ tokens and manages a moving window (with user defined stride) for\n          \
+  \      overflowing tokens. Please Note, for *pair_ids* different than `None` and\
+  \ *truncation_strategy = longest_first*\n                or `True`, it is not possible\
+  \ to return overflowing tokens. Such a combination of arguments will raise an\n\
+  \                error.\n\n                Args:\n                    ids (`list[int]`):\n\
+  \                        Tokenized input ids of the first sequence.\n          \
+  \          pair_ids (`list[int]`, *optional*):\n                        Tokenized\
+  \ input ids of the second sequence.\n                    entity_ids (`list[int]`,\
+  \ *optional*):\n                        Entity ids of the first sequence.\n    \
+  \                pair_entity_ids (`list[int]`, *optional*):\n                  \
+  \      Entity ids of the second sequence.\n                    entity_token_spans\
+  \ (`list[tuple[int, int]]`, *optional*):\n                        Entity spans of\
+  \ the first sequence.\n                    pair_entity_token_spans (`list[tuple[int,\
+  \ int]]`, *optional*):\n                        Entity spans of the second sequence.\n\
+  \                    max_entity_length (`int`, *optional*):\n                  \
+  \      The maximum length of the entity sequence.\n\n        \"\"\"\n        <your\
+  \ code>\n\n    def pad(\n        self,\n        encoded_inputs: Union[BatchEncoding,\
+  \ list[BatchEncoding], dict[str, EncodedInput], dict[str, list[EncodedInput]], list[dict[str,\
+  \ EncodedInput]]],\n        padding: Union[bool, str, PaddingStrategy] = True,\n\
+  \        max_length: Optional[int] = None,\n        max_entity_length: Optional[int]\
+  \ = None,\n        pad_to_multiple_of: Optional[int] = None,\n        padding_side:\
+  \ Optional[str] = None,\n        return_attention_mask: Optional[bool] = None,\n\
+  \        return_tensors: Optional[Union[str, TensorType]] = None,\n        verbose:\
+  \ bool = True\n    ) -> BatchEncoding:\n        \"\"\"\n\n                Pad a\
+  \ single encoded input or a batch of encoded inputs up to predefined length or to\
+  \ the max sequence length\n                in the batch. Padding side (left/right)\
+  \ padding token ids are defined at the tokenizer level (with\n                `self.padding_side`,\
+  \ `self.pad_token_id` and `self.pad_token_type_id`) .. note:: If the `encoded_inputs`\
+  \ passed\n                are dictionary of numpy arrays, PyTorch tensors or TensorFlow\
+  \ tensors, the result will use the same type unless\n                you provide\
+  \ a different tensor type with `return_tensors`. In the case of PyTorch tensors,\
+  \ you will lose the\n                specific device of your tensors however.\n\n\
+  \                Args:\n                    encoded_inputs ([`BatchEncoding`], list\
+  \ of [`BatchEncoding`], `dict[str, list[int]]`, `dict[str, list[list[int]]` or `list[dict[str,\
+  \ list[int]]]`):\n                        Tokenized inputs. Can represent one input\
+  \ ([`BatchEncoding`] or `dict[str, list[int]]`) or a batch of\n                \
+  \        tokenized inputs (list of [`BatchEncoding`], *dict[str, list[list[int]]]*\
+  \ or *list[dict[str,\n                        list[int]]]*) so you can use this\
+  \ method during preprocessing as well as in a PyTorch Dataloader\n             \
+  \           collate function. Instead of `list[int]` you can have tensors (numpy\
+  \ arrays, PyTorch tensors or\n                        TensorFlow tensors), see the\
+  \ note above for the return type.\n                    padding (`bool`, `str` or\
+  \ [`~utils.PaddingStrategy`], *optional*, defaults to `True`):\n               \
+  \          Select a strategy to pad the returned sequences (according to the model's\
+  \ padding side and padding\n                         index) among:\n\n         \
+  \               - `True` or `'longest'`: Pad to the longest sequence in the batch\
+  \ (or no padding if only a single\n                          sequence if provided).\n\
+  \                        - `'max_length'`: Pad to a maximum length specified with\
+  \ the argument `max_length` or to the maximum\n                          acceptable\
+  \ input length for the model if that argument is not provided.\n               \
+  \         - `False` or `'do_not_pad'` (default): No padding (i.e., can output a\
+  \ batch with sequences of different\n                          lengths).\n     \
+  \               max_length (`int`, *optional*):\n                        Maximum\
+  \ length of the returned list and optionally padding length (see above).\n     \
+  \               max_entity_length (`int`, *optional*):\n                       \
+  \ The maximum length of the entity sequence.\n                    pad_to_multiple_of\
+  \ (`int`, *optional*):\n                        If set will pad the sequence to\
+  \ a multiple of the provided value. This is especially useful to enable\n      \
+  \                  the use of Tensor Cores on NVIDIA hardware with compute capability\
+  \ `>= 7.5` (Volta).\n                    padding_side:\n                       \
+  \ The side on which the model should have padding applied. Should be selected between\
+  \ ['right', 'left'].\n                        Default value is picked from the class\
+  \ attribute of the same name.\n                    return_attention_mask (`bool`,\
+  \ *optional*):\n                        Whether to return the attention mask. If\
+  \ left to the default, will return the attention mask according\n              \
+  \          to the specific tokenizer's default, defined by the `return_outputs`\
+  \ attribute. [What are attention\n                        masks?](../glossary#attention-mask)\n\
+  \                    return_tensors (`str` or [`~utils.TensorType`], *optional*):\n\
+  \                        If set, will return tensors instead of list of python integers.\
+  \ Acceptable values are:\n\n                        - `'tf'`: Return TensorFlow\
+  \ `tf.constant` objects.\n                        - `'pt'`: Return PyTorch `torch.Tensor`\
+  \ objects.\n                        - `'np'`: Return Numpy `np.ndarray` objects.\n\
+  \                    verbose (`bool`, *optional*, defaults to `True`):\n       \
+  \                 Whether or not to print more information and warnings.\n\n   \
+  \     \"\"\"\n        <your code>\n\n    def _pad(\n        self,\n        encoded_inputs:\
+  \ Union[dict[str, EncodedInput], BatchEncoding],\n        max_length: Optional[int]\
+  \ = None,\n        max_entity_length: Optional[int] = None,\n        padding_strategy:\
+  \ PaddingStrategy = PaddingStrategy.DO_NOT_PAD,\n        pad_to_multiple_of: Optional[int]\
+  \ = None,\n        padding_side: Optional[str] = None,\n        return_attention_mask:\
+  \ Optional[bool] = None\n    ) -> dict:\n        \"\"\"\n\n                Pad encoded\
+  \ inputs (on left/right and up to predefined length or max length in the batch)\n\
+  \n\n                Args:\n                    encoded_inputs:\n               \
+  \         Dictionary of tokenized inputs (`list[int]`) or batch of tokenized inputs\
+  \ (`list[list[int]]`).\n                    max_length: maximum length of the returned\
+  \ list and optionally padding length (see below).\n                        Will\
+  \ truncate by taking into account the special tokens.\n                    max_entity_length:\
+  \ The maximum length of the entity sequence.\n                    padding_strategy:\
+  \ PaddingStrategy to use for padding.\n\n\n                        - PaddingStrategy.LONGEST\
+  \ Pad to the longest sequence in the batch\n                        - PaddingStrategy.MAX_LENGTH:\
+  \ Pad to the max length (default)\n                        - PaddingStrategy.DO_NOT_PAD:\
+  \ Do not pad\n                        The tokenizer padding sides are defined in\
+  \ self.padding_side:\n\n\n                            - 'left': pads on the left\
+  \ of the sequences\n                            - 'right': pads on the right of\
+  \ the sequences\n                    pad_to_multiple_of: (optional) Integer if set\
+  \ will pad the sequence to a multiple of the provided value.\n                 \
+  \       This is especially useful to enable the use of Tensor Core on NVIDIA hardware\
+  \ with compute capability\n                        `>= 7.5` (Volta).\n         \
+  \           padding_side:\n                        The side on which the model should\
+  \ have padding applied. Should be selected between ['right', 'left'].\n        \
+  \                Default value is picked from the class attribute of the same name.\n\
+  \                    return_attention_mask:\n                        (optional)\
+  \ Set to False to avoid returning attention mask (default: set to model specifics)\n\
+  \n        \"\"\"\n        <your code>\n\n    def save_vocabulary(\n        self,\n\
+  \        save_directory: str,\n        filename_prefix: Optional[str] = None\n \
+  \   ) -> tuple[str]:\n        \"\"\"\n        Save the tokenizer's vocabulary files\
+  \ to a specified directory.\n\n        This method saves three vocabulary files\
+  \ required by the LUKE tokenizer:\n        1. The main vocabulary file (vocab.json)\
+  \ containing token-to-ID mappings\n        2. The BPE merges file (merges.txt) containing\
+  \ byte-pair encoding merge rules\n        3. The entity vocabulary file (entity_vocab.json)\
+  \ containing entity-to-ID mappings\n\n        Parameters:\n            save_directory\
+  \ (str): The directory path where the vocabulary files will be saved. \n       \
+  \         Must be an existing directory.\n            filename_prefix (Optional[str],\
+  \ optional): An optional prefix to add to the \n                vocabulary filenames.\
+  \ If provided, filenames will be formatted as \n                \"{prefix}-{original_filename}\"\
+  . Defaults to None.\n\n        Returns:\n            tuple[str]: A tuple containing\
+  \ the full paths to the three saved vocabulary files:\n                - Path to\
+  \ the saved vocab.json file\n                - Path to the saved merges.txt file\
+  \  \n                - Path to the saved entity_vocab.json file\n\n        Important\
+  \ Notes:\n            - The save_directory must be an existing directory, otherwise\
+  \ an error will be logged\n            - The vocab.json file contains the main tokenizer\
+  \ vocabulary with token-to-ID mappings\n            - The merges.txt file contains\
+  \ BPE merge rules in the format \"#version: 0.2\" followed by merge pairs\n    \
+  \        - The entity_vocab.json file contains entity names mapped to their corresponding\
+  \ IDs\n            - All files are saved with UTF-8 encoding\n            - JSON\
+  \ files are formatted with 2-space indentation and sorted keys for readability\n\
+  \            - If BPE merge indices are not consecutive, a warning will be logged\
+  \ indicating potential tokenizer corruption\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class LukeTokenizer(PreTrainedTokenizer):\n    \"\"\"\n \
+  \   \n        Constructs a LUKE tokenizer, derived from the GPT-2 tokenizer, using\
+  \ byte-level Byte-Pair-Encoding.\n    \n        This tokenizer has been trained\
+  \ to treat spaces like parts of the tokens (a bit like sentencepiece) so a word\
+  \ will\n        be encoded differently whether it is at the beginning of the sentence\
+  \ (without space) or not:\n    \n        ```python\n        >>> from transformers\
+  \ import LukeTokenizer\n    \n        >>> tokenizer = LukeTokenizer.from_pretrained(\"\
+  studio-ousia/luke-base\")\n        >>> tokenizer(\"Hello world\")[\"input_ids\"\
+  ]\n        [0, 31414, 232, 2]\n    \n        >>> tokenizer(\" Hello world\")[\"\
+  input_ids\"]\n        [0, 20920, 232, 2]\n        ```\n    \n        You can get\
+  \ around that behavior by passing `add_prefix_space=True` when instantiating this\
+  \ tokenizer or when you\n        call it on some text, but since the model was not\
+  \ pretrained this way, it might yield a decrease in performance.\n    \n       \
+  \ <Tip>\n    \n        When used with `is_split_into_words=True`, this tokenizer\
+  \ will add a space before each word (even the first one).\n    \n        </Tip>\n\
+  \    \n        This tokenizer inherits from [`PreTrainedTokenizer`] which contains\
+  \ most of the main methods. Users should refer to\n        this superclass for more\
+  \ information regarding those methods. It also creates entity sequences, namely\n\
+  \        `entity_ids`, `entity_attention_mask`, `entity_token_type_ids`, and `entity_position_ids`\
+  \ to be used by the LUKE\n        model.\n    \n        Args:\n            vocab_file\
+  \ (`str`):\n                Path to the vocabulary file.\n            merges_file\
+  \ (`str`):\n                Path to the merges file.\n            entity_vocab_file\
+  \ (`str`):\n                Path to the entity vocabulary file.\n            task\
+  \ (`str`, *optional*):\n                Task for which you want to prepare sequences.\
+  \ One of `\"entity_classification\"`,\n                `\"entity_pair_classification\"\
+  `, or `\"entity_span_classification\"`. If you specify this argument, the entity\n\
+  \                sequence is automatically created based on the given entity span(s).\n\
+  \            max_entity_length (`int`, *optional*, defaults to 32):\n          \
+  \      The maximum length of `entity_ids`.\n            max_mention_length (`int`,\
+  \ *optional*, defaults to 30):\n                The maximum number of tokens inside\
+  \ an entity span.\n            entity_token_1 (`str`, *optional*, defaults to `<ent>`):\n\
+  \                The special token used to represent an entity span in a word token\
+  \ sequence. This token is only used when\n                `task` is set to `\"entity_classification\"\
+  ` or `\"entity_pair_classification\"`.\n            entity_token_2 (`str`, *optional*,\
+  \ defaults to `<ent2>`):\n                The special token used to represent an\
+  \ entity span in a word token sequence. This token is only used when\n         \
+  \       `task` is set to `\"entity_pair_classification\"`.\n            errors (`str`,\
+  \ *optional*, defaults to `\"replace\"`):\n                Paradigm to follow when\
+  \ decoding bytes to UTF-8. See\n                [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)\
+  \ for more information.\n            bos_token (`str`, *optional*, defaults to `\"\
+  <s>\"`):\n                The beginning of sequence token that was used during pretraining.\
+  \ Can be used a sequence classifier token.\n    \n                <Tip>\n    \n\
+  \                When building a sequence using special tokens, this is not the\
+  \ token that is used for the beginning of\n                sequence. The token used\
+  \ is the `cls_token`.\n    \n                </Tip>\n    \n            eos_token\
+  \ (`str`, *optional*, defaults to `\"</s>\"`):\n                The end of sequence\
+  \ token.\n    \n                <Tip>\n    \n                When building a sequence\
+  \ using special tokens, this is not the token that is used for the end of sequence.\n\
+  \                The token used is the `sep_token`.\n    \n                </Tip>\n\
+  \    \n            sep_token (`str`, *optional*, defaults to `\"</s>\"`):\n    \
+  \            The separator token, which is used when building a sequence from multiple\
+  \ sequences, e.g. two sequences for\n                sequence classification or\
+  \ for a text and a question for question answering. It is also used as the last\n\
+  \                token of a sequence built with special tokens.\n            cls_token\
+  \ (`str`, *optional*, defaults to `\"<s>\"`):\n                The classifier token\
+  \ which is used when doing sequence classification (classification of the whole\
+  \ sequence\n                instead of per-token classification). It is the first\
+  \ token of the sequence when built with special tokens.\n            unk_token (`str`,\
+  \ *optional*, defaults to `\"<unk>\"`):\n                The unknown token. A token\
+  \ that is not in the vocabulary cannot be converted to an ID and is set to be this\n\
+  \                token instead.\n            pad_token (`str`, *optional*, defaults\
+  \ to `\"<pad>\"`):\n                The token used for padding, for example when\
+  \ batching sequences of different lengths.\n            mask_token (`str`, *optional*,\
+  \ defaults to `\"<mask>\"`):\n                The token used for masking values.\
+  \ This is the token used when training this model with masked language\n       \
+  \         modeling. This is the token which the model will try to predict.\n   \
+  \         add_prefix_space (`bool`, *optional*, defaults to `False`):\n        \
+  \        Whether or not to add an initial space to the input. This allows to treat\
+  \ the leading word just as any\n                other word. (LUKE tokenizer detect\
+  \ beginning of words by the preceding space).\n        \n    \"\"\"\n\n    vocab_files_names\
+  \ = \"VOCAB_FILES_NAMES\"\n    model_input_names = ['input_ids', 'attention_mask']\n\
+  \n    def __init__(\n        self,\n        vocab_file,\n        merges_file,\n\
+  \        entity_vocab_file,\n        task = None,\n        max_entity_length = 32,\n\
+  \        max_mention_length = 30,\n        entity_token_1 = '<ent>',\n        entity_token_2\
+  \ = '<ent2>',\n        entity_unk_token = '[UNK]',\n        entity_pad_token = '[PAD]',\n\
+  \        entity_mask_token = '[MASK]',\n        entity_mask2_token = '[MASK2]',\n\
+  \        errors = 'replace',\n        bos_token = '<s>',\n        eos_token = '</s>',\n\
+  \        sep_token = '</s>',\n        cls_token = '<s>',\n        unk_token = '<unk>',\n\
+  \        pad_token = '<pad>',\n        mask_token = '<mask>',\n        add_prefix_space\
+  \ = False,\n        **kwargs\n    ):\n        \"\"\"\n        Initialize a LUKE\
+  \ tokenizer instance.\n\n        This constructor sets up a LUKE (Language Understanding\
+  \ with Knowledge-based Embeddings) tokenizer,\n        which is derived from the\
+  \ GPT-2 tokenizer using byte-level Byte-Pair-Encoding. The tokenizer is\n      \
+  \  designed to handle both text tokens and entity information for knowledge-enhanced\
+  \ language modeling.\n\n        Parameters:\n            vocab_file (str): Path\
+  \ to the vocabulary file containing the token-to-id mappings.\n            merges_file\
+  \ (str): Path to the BPE merges file containing merge rules for subword tokenization.\n\
+  \            entity_vocab_file (str): Path to the entity vocabulary file containing\
+  \ entity-to-id mappings.\n            task (str, optional): Task type for sequence\
+  \ preparation. Must be one of \"entity_classification\",\n                \"entity_pair_classification\"\
+  , or \"entity_span_classification\". If specified, entity sequences\n          \
+  \      are automatically created based on given entity spans. Defaults to None.\n\
+  \            max_entity_length (int, optional): Maximum length of entity_ids sequence.\
+  \ Defaults to 32.\n                Note: This value is overridden based on task\
+  \ type (1 for entity_classification, \n                2 for entity_pair_classification).\n\
+  \            max_mention_length (int, optional): Maximum number of tokens allowed\
+  \ inside an entity span. \n                Defaults to 30.\n            entity_token_1\
+  \ (str, optional): Special token representing an entity span in word token sequences.\n\
+  \                Used for \"entity_classification\" and \"entity_pair_classification\"\
+  \ tasks. Defaults to \"<ent>\".\n            entity_token_2 (str, optional): Second\
+  \ special token for entity spans, used only for \n                \"entity_pair_classification\"\
+  \ task. Defaults to \"<ent2>\".\n            entity_unk_token (str, optional): Unknown\
+  \ token for entities not found in entity vocabulary.\n                Defaults to\
+  \ \"[UNK]\".\n            entity_pad_token (str, optional): Padding token for entity\
+  \ sequences. Defaults to \"[PAD]\".\n            entity_mask_token (str, optional):\
+  \ Mask token for entities in masked language modeling.\n                Defaults\
+  \ to \"[MASK]\".\n            entity_mask2_token (str, optional): Second mask token\
+  \ for entities. Defaults to \"[MASK2]\".\n            errors (str, optional): Error\
+  \ handling strategy for UTF-8 decoding. See bytes.decode() \n                documentation.\
+  \ Defaults to \"replace\".\n            bos_token (str, optional): Beginning of\
+  \ sequence token from pretraining. Defaults to \"<s>\".\n            eos_token (str,\
+  \ optional): End of sequence token. Defaults to \"</s>\".\n            sep_token\
+  \ (str, optional): Separator token for building sequences from multiple parts.\n\
+  \                Defaults to \"</s>\".\n            cls_token (str, optional): Classifier\
+  \ token for sequence classification tasks. Defaults to \"<s>\".\n            unk_token\
+  \ (str, optional): Unknown token for out-of-vocabulary words. Defaults to \"<unk>\"\
+  .\n            pad_token (str, optional): Padding token for batching sequences of\
+  \ different lengths.\n                Defaults to \"<pad>\".\n            mask_token\
+  \ (str, optional): Mask token for masked language modeling. Defaults to \"<mask>\"\
+  .\n            add_prefix_space (bool, optional): Whether to add initial space to\
+  \ input text. This allows\n                treating the leading word like any other\
+  \ word, as LUKE tokenizer detects word boundaries\n                by preceding\
+  \ spaces. Defaults to False.\n            **kwargs: Additional keyword arguments\
+  \ passed to the parent PreTrainedTokenizer class.\n\n        Raises:\n         \
+  \   ValueError: If the specified task is not one of the supported task types.\n\
+  \            ValueError: If any of the required entity special tokens are not found\
+  \ in the entity vocabulary file.\n\n        Important Notes:\n            - The\
+  \ tokenizer treats spaces as parts of tokens (similar to sentencepiece), so words\
+  \ are\n              encoded differently depending on whether they appear at the\
+  \ beginning of a sentence.\n            - When task is specified, max_entity_length\
+  \ is automatically adjusted: 1 for entity_classification,\n              2 for entity_pair_classification,\
+  \ and uses the provided value for entity_span_classification.\n            - All\
+  \ entity special tokens must exist in the provided entity vocabulary file.\n   \
+  \         - The tokenizer creates additional model inputs including entity_ids,\
+  \ entity_attention_mask,\n              entity_token_type_ids, and entity_position_ids\
+  \ for use with LUKE models.\n        \"\"\"\n        <your code>\n..."

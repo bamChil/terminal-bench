@@ -1,0 +1,174 @@
+base_image: pb-python310_cu121_torch251-base_08bcbe5c
+black_links:
+- https://github.com/linkedin/Liger-Kernel/
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e ".[dev]"
+instance_image: pb-instance_ffbb2d38
+library_name: liger-kernel
+pip_packages: []
+pre_install: []
+repo_name: Liger-Kernel
+repository: linkedin/Liger-Kernel
+task_level: 3
+task_name: Liger_Kernel_multi_token_attention
+task_statement: '**Task: Implement Multi-Token Attention Module**
+
+
+  **Core Functionality:**
+
+  Develop a neural network module that applies multi-token attention mechanism using
+  masked convolution operations on attention scores.
+
+
+  **Main Features & Requirements:**
+
+  - Apply sequential operations: negative infinity masking → softmax normalization
+  → 2D convolution → zero masking
+
+  - Support configurable convolution parameters (channels, kernel size, stride, padding,
+  dilation, groups)
+
+  - Provide both class-based and functional interfaces
+
+  - Handle optional bias and sparse computation modes
+
+  - Implement proper parameter initialization (Kaiming uniform for weights, zeros
+  for bias)
+
+
+  **Key Challenges:**
+
+  - Efficiently implement the masking operations before and after convolution
+
+  - Ensure gradient flow through custom autograd functions
+
+  - Handle 4D tensor operations with proper shape transformations
+
+  - Maintain numerical stability during softmax computation on masked scores
+
+  - Optimize performance for both dense and sparse tensor operations'
+technical_docs:
+- description: latex source of the paper liger_kernel which implemented many llm operators
+    using triton
+  path: liger-kernel-tex-source
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from agent_code.liger_kernel.transformers.functional import liger_multi_token_attention
+
+  from agent_code.liger_kernel.transformers.multi_token_attention import LigerMultiTokenAttention'
+test_code_example: from agent_code.liger_kernel.transformers.functional import liger_multi_token_attention
+test_code_example_obj: liger_multi_token_attention
+test_code_example_path: /testbed/agent_code/liger_kernel/transformers/functional.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: src-liger_kernel-transformers-multi_token_attention.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LigerMultiTokenAttention(nn.Module):\n    \"\"\"\n    \n \
+  \       Multi-Token Attention:\n            out = mask_{0}(conv2d(softmax(mask_{-\\\
+  inf}(scores))))\n    \n        Reference: https://arxiv.org/pdf/2504.00927\n   \
+  \     \n    \"\"\"\n\n    def __init__(\n        self,\n        in_channels: int,\n\
+  \        out_channels: int,\n        kernel_size: int,\n        stride: int = 1,\n\
+  \        padding: int = 0,\n        dilation: int = 1,\n        groups: int = 1,\n\
+  \        bias: bool = True,\n        sparse: bool = False\n    ):\n        \"\"\"\
+  \n        Initialize a Multi-Token Attention layer.\n\n        This layer implements\
+  \ the Multi-Token Attention mechanism as described in the reference paper,\n   \
+  \     which applies a convolution operation on softmax-normalized attention scores\
+  \ with masking:\n        out = mask_{0}(conv2d(softmax(mask_{-∞}(scores))))\n\n\
+  \        Parameters:\n            in_channels (int): Number of channels in the input\
+  \ tensor. Must be divisible by groups.\n            out_channels (int): Number of\
+  \ channels produced by the convolution operation.\n            kernel_size (int):\
+  \ Size of the convolving kernel. Will be converted to a 2D kernel size pair.\n \
+  \           stride (int, optional): Stride of the convolution operation. Defaults\
+  \ to 1.\n                Will be converted to a 2D stride pair.\n            padding\
+  \ (int, optional): Padding added to all four sides of the input. Defaults to 0.\n\
+  \                Will be converted to a 2D padding pair.\n            dilation (int,\
+  \ optional): Spacing between kernel elements. Defaults to 1.\n                Will\
+  \ be converted to a 2D dilation pair.\n            groups (int, optional): Number\
+  \ of blocked connections from input channels to output channels.\n             \
+  \   Defaults to 1. in_channels and out_channels must be divisible by groups.\n \
+  \           bias (bool, optional): If True, adds a learnable bias to the output.\
+  \ Defaults to True.\n            sparse (bool, optional): If True, enables sparse\
+  \ computation mode. Defaults to False.\n\n        Raises:\n            ValueError:\
+  \ If in_channels is not divisible by groups.\n\n        Notes:\n            - The\
+  \ weight parameter is initialized using Kaiming uniform initialization.\n      \
+  \      - The bias parameter (if enabled) is initialized to zeros.\n            -\
+  \ All spatial parameters (kernel_size, stride, padding, dilation) are converted\
+  \ to 2D pairs\n              using torch.nn.modules.utils._pair for compatibility\
+  \ with 2D convolution operations.\n            - This implementation is based on\
+  \ the Multi-Token Attention paper: https://arxiv.org/pdf/2504.00927\n        \"\"\
+  \"\n        <your code>\n\n    def reset_parameters(self):\n        \"\"\"\n   \
+  \     Reset the parameters of the Multi-Token Attention layer to their initial values.\n\
+  \n        This method initializes the weight and bias parameters using standard\
+  \ initialization\n        schemes commonly used in neural networks. The weight parameter\
+  \ is initialized using\n        Kaiming uniform initialization, while the bias parameter\
+  \ (if present) is initialized\n        to zeros.\n\n        Parameters:\n      \
+  \      None\n\n        Returns:\n            None\n\n        Notes:\n          \
+  \  - The weight parameter is initialized using `nn.init.kaiming_uniform_` with \n\
+  \              `a=math.sqrt(5)`, which is suitable for layers with ReLU-like activations\n\
+  \            - The bias parameter is initialized to zeros using `nn.init.zeros_`\
+  \ if bias\n              is enabled during layer construction\n            - This\
+  \ method is automatically called during layer initialization but can\n         \
+  \     be called manually to reinitialize the parameters\n            - The initialization\
+  \ follows PyTorch's standard practices for convolutional layers\n        \"\"\"\n\
+  \        <your code>\n\n    def forward(self, scores: torch.Tensor) -> torch.Tensor:\n\
+  \        \"\"\"\n        Forward pass of the Multi-Token Attention module.\n\n \
+  \       This method applies the multi-token attention mechanism which performs a\
+  \ sequence of operations:\n        1. Applies negative infinity masking to the input\
+  \ scores\n        2. Computes softmax normalization on the masked scores\n     \
+  \   3. Performs 2D convolution on the softmax output\n        4. Applies zero masking\
+  \ to the convolution result\n\n        The operation can be mathematically expressed\
+  \ as:\n        out = mask_{0}(conv2d(softmax(mask_{-∞}(scores))))\n\n        Parameters:\n\
+  \            scores (torch.Tensor): Input attention scores tensor. Expected to be\
+  \ a 4D tensor\n                                  with shape (batch_size, in_channels,\
+  \ height, width) for 2D\n                                  convolution operations.\n\
+  \n        Returns:\n            torch.Tensor: Output tensor after applying multi-token\
+  \ attention. The output shape\n                         depends on the convolution\
+  \ parameters (kernel_size, stride, padding, etc.)\n                         and\
+  \ will typically have shape (batch_size, out_channels, out_height, out_width).\n\
+  \n        Notes:\n            - This method delegates the actual computation to\
+  \ LigerMultiTokenAttentionFunction.apply()\n              which implements the optimized\
+  \ kernel operations\n            - The sparse parameter affects the masking behavior\
+  \ during computation\n            - All convolution parameters (stride, padding,\
+  \ dilation, groups) are applied during\n              the convolution step of the\
+  \ multi-token attention mechanism\n            - The method preserves gradients\
+  \ for backpropagation through the custom autograd function\n        \"\"\"\n   \
+  \     <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: src-liger_kernel-transformers-functional.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "def liger_multi_token_attention(\n    scores,\n    weight,\n   \
+  \ bias = None,\n    stride: int = 1,\n    padding: int = 0,\n    dilation: int =\
+  \ 1,\n    groups: int = 1,\n    sparse: bool = False\n):\n    \"\"\"\n    \n   \
+  \     Functional interface for multi-token attention.\n    \n        Args:\n   \
+  \         scores: Input tensor of shape (B, C_in, L, L)\n            weight: Convolution\
+  \ weight tensor of shape (C_out, C_in // groups, K, K)\n            bias: Optional\
+  \ bias tensor of shape (C_out,)\n            stride: Stride for the convolution\
+  \ (default: 1)\n            padding: Padding for the convolution (default: 0)\n\
+  \            dilation: Dilation factor for the convolution (default: 1)\n      \
+  \      groups: Number of groups for the convolution (default: 1)\n            sparse:\
+  \ Specifies if input tensors are expected to be sparse (default: False)\n      \
+  \  Returns:\n            Output tensor after applying multi-token attention.\n \
+  \       \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def liger_multi_token_attention(\n    scores,\n    weight,\n\
+  \    bias = None,\n    stride: int = 1,\n    padding: int = 0,\n    dilation: int\
+  \ = 1,\n    groups: int = 1,\n    sparse: bool = False\n):\n    \"\"\"\n    \n \
+  \       Functional interface for multi-token attention.\n    \n        Args:\n \
+  \           scores: Input tensor of shape (B, C_in, L, L)\n            weight: Convolution\
+  \ weight tensor of shape (C_out, C_in // groups, K, K)\n            bias: Optional\
+  \ bias tensor of shape (C_out,)\n            stride: Stride for the convolution\
+  \ (default: 1)\n            padding: Padding for the convolution (default: 0)\n\
+  \            dilation: Dilation factor for the convolution (default: 1)\n      \
+  \      groups: Number of groups for the convolution (default: 1)\n            sparse:\
+  \ Specifies if input tensors are expected to be sparse (default: False)\n      \
+  \  Returns:\n            Output tensor after applying multi-token attention.\n \
+  \       \n    \"\"\"\n    <your code>\n..."

@@ -1,0 +1,6 @@
+transformers/tests/models/longformer/test_tokenization_longformer.py
+transformers/tests/quantization/bitnet_integration/test_bitnet.py
+transformers/tests/models/vision_text_dual_encoder/test_processing_vision_text_dual_encoder.py
+transformers/tests/models/beit/test_image_processing_beit.py
+transformers/tests/models/openai/test_tokenization_openai.py
+transformers/tests/models/vits/test_modeling_vits.py

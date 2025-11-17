@@ -1,0 +1,6 @@
+scikit-learn/sklearn/ensemble/_hist_gradient_boosting/tests/test_monotonic_constraints.py
+scikit-learn/sklearn/feature_extraction/tests/test_image.py
+scikit-learn/sklearn/linear_model/_glm/tests/test_glm.py
+scikit-learn/sklearn/cluster/tests/test_affinity_propagation.py
+scikit-learn/sklearn/datasets/tests/test_arff_parser.py
+scikit-learn/sklearn/manifold/tests/test_isomap.py

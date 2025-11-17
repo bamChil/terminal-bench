@@ -1,0 +1,6 @@
+Liger-Kernel/test/chunked_loss/test_cosine_loss.py
+Liger-Kernel/test/transformers/test_dyt.py
+Liger-Kernel/test/transformers/test_sparsemax.py
+Liger-Kernel/test/transformers/test_softmax.py
+Liger-Kernel/test/transformers/test_fused_add_rms_norm.py
+Liger-Kernel/test/transformers/test_rope.py

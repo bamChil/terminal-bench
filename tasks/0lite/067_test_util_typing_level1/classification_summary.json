@@ -1,0 +1,60 @@
+{
+    "file_stats": {
+        "total_files": 53,
+        "patch_count": 3,
+        "left_count": 50,
+        "distribution": {
+            "left": 50,
+            "patch": 3
+        }
+    },
+    "obj_stats": {
+        "total_objects": 347,
+        "top_count": 3,
+        "specific_count": 16,
+        "others_count": 328,
+        "distribution": {
+            "others": 328,
+            "specific": 16,
+            "top": 3
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/inspect.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:restify",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:mock",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:stringify_annotation"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:_MockObject",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:_MockModule",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:MockLoader",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:MockFinder",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:ismockmodule",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:ismock",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/inspect.py:safe_getattr",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:is_invalid_builtin_class",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:_is_annotated_form",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/inspect.py:isgenericalias",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:is_system_TypeVar",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/inspect.py:object_description",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:_format_literal_arg_restify",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/ext/autodoc/mock.py:_make_subclass",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:_is_unpack_form",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/sphinx/util/typing.py:_format_literal_arg_stringify"
+    ],
+    "lines_code": 627,
+    "lines_code_level3": 627,
+    "test_name": "util_typing",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/sphinx/tests/test_util/test_util_typing.py",
+    "top_imports": [
+        "sphinx.util.typing.stringify_annotation",
+        "sphinx.util.typing.restify",
+        "sphinx.util.typing._INVALID_BUILTIN_CLASSES",
+        "sphinx.ext.autodoc.mock.mock"
+    ]
+}

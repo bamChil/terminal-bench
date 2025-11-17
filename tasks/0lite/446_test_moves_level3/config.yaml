@@ -1,0 +1,356 @@
+base_image: pb-python310-base_7ba262c1
+black_links:
+- https://github.com/mwaskom/seaborn/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e '.[dev]'
+instance_image: pb-instance_4948071e
+library_name: seaborn
+pip_packages: []
+python: '3.10'
+repo_name: seaborn
+repository: mwaskom/seaborn
+task_level: 3
+task_name: seaborn_moves
+task_statement: "## Task: Data Visualization Position Adjustment System\n\n**Core\
+  \ Functionality:**\nImplement a system for adjusting the positions of data visualization\
+  \ marks (points, bars, areas) to handle overlapping elements and improve visual\
+  \ clarity.\n\n**Main Features:**\n- **Categorical ordering** with customizable sequence\
+  \ rules\n- **Position transformations** including:\n  - Random jittering to reduce\
+  \ overplotting\n  - Dodging to separate overlapping marks horizontally/vertically\n\
+  \  - Stacking to create cumulative displays\n  - Uniform shifting for consistent\
+  \ displacement\n  - Normalization for proportional scaling\n\n**Key Requirements:**\n\
+  - Process grouped data with flexible orientation (x/y axis)\n- Maintain data integrity\
+  \ while transforming coordinates\n- Support configurable parameters (gap sizes,\
+  \ magnitudes, aggregation functions)\n- Handle both categorical and continuous data\
+  \ appropriately\n\n**Main Challenges:**\n- Coordinate system awareness and proper\
+  \ scaling\n- Efficient grouping and transformation of large datasets\n- Maintaining\
+  \ visual consistency across different mark types\n- Balancing automatic positioning\
+  \ with user customization options"
+technical_docs: []
+test_cmd: pytest --no-header -rA --timeout=20
+test_code1: 'from agent_code.seaborn._core.moves import Dodge
+
+  from agent_code.seaborn._core.moves import Jitter
+
+  from agent_code.seaborn._core.moves import Shift
+
+  from agent_code.seaborn._core.moves import Stack
+
+  from agent_code.seaborn._core.moves import Norm
+
+  from agent_code.seaborn._core.rules import categorical_order'
+test_code_example: from agent_code.seaborn._core.moves import Dodge
+test_code_example_obj: Dodge
+test_code_example_path: /testbed/agent_code/seaborn/_core/moves.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: seaborn-_core-rules.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def categorical_order(\n    vector: Series,\n    order: list | None\
+  \ = None\n) -> list:\n    \"\"\"\n    \n        Return a list of unique data values\
+  \ using seaborn's ordering rules.\n    \n        Parameters\n        ----------\n\
+  \        vector : Series\n            Vector of \"categorical\" values\n       \
+  \ order : list\n            Desired order of category levels to override the order\
+  \ determined\n            from the `data` object.\n    \n        Returns\n     \
+  \   -------\n        order : list\n            Ordered list of category levels not\
+  \ including null values.\n    \n        \n    \"\"\"\n    <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: seaborn-_core-moves.py
+
+
+  This file contains 5 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "@dataclass\nclass Jitter(Move):\n    \"\"\"\n    \n        Random\
+  \ displacement along one or both axes to reduce overplotting.\n    \n        Parameters\n\
+  \        ----------\n        width : float\n            Magnitude of jitter, relative\
+  \ to mark width, along the orientation axis.\n            If not provided, the default\
+  \ value will be 0 when `x` or `y` are set, otherwise\n            there will be\
+  \ a small amount of jitter applied by default.\n        x : float\n            Magnitude\
+  \ of jitter, in data units, along the x axis.\n        y : float\n            Magnitude\
+  \ of jitter, in data units, along the y axis.\n    \n        Examples\n        --------\n\
+  \        .. include:: ../docstrings/objects.Jitter.rst\n    \n        \n    \"\"\
+  \"\n\n    width = \"default\"\n    x = 0\n    y = 0\n    seed = None\n\n    def\
+  \ __call__(\n        self,\n        data: DataFrame,\n        groupby: GroupBy,\n\
+  \        orient: str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n \
+  \       \"\"\"\n        Apply positional transformations to data based on grouping\
+  \ and orientation.\n\n        This method is the main entry point for Move subclasses\
+  \ to transform data coordinates.\n        It takes grouped data and applies position-based\
+  \ transformations such as jittering,\n        dodging, stacking, shifting, or normalization\
+  \ depending on the specific Move implementation.\n\n        Parameters\n       \
+  \ ----------\n        data : DataFrame\n            The input data containing coordinates\
+  \ and other variables to be transformed.\n            Expected to have columns like\
+  \ 'x', 'y', 'width', 'baseline', etc. depending\n            on the specific Move\
+  \ transformation being applied.\n        groupby : GroupBy\n            A GroupBy\
+  \ object that defines how the data should be grouped for applying\n            the\
+  \ transformation. Contains grouping variables and aggregation methods.\n       \
+  \ orient : str\n            The orientation axis for the transformation, typically\
+  \ 'x' or 'y'.\n            Determines which axis is considered the \"orientation\"\
+  \ axis vs the \"value\" axis\n            for transformations like dodging or stacking.\n\
+  \        scales : dict[str, Scale]\n            A dictionary mapping variable names\
+  \ to Scale objects that define the\n            coordinate system and scaling for\
+  \ each variable. Used to ensure transformations\n            are applied in the\
+  \ correct coordinate space.\n\n        Returns\n        -------\n        DataFrame\n\
+  \            A new DataFrame with the same structure as the input data but with\n\
+  \            transformed coordinates. The specific columns modified depend on the\n\
+  \            Move subclass implementation.\n\n        Raises\n        ------\n \
+  \       NotImplementedError\n            This base class method must be overridden\
+  \ by subclasses. Calling this\n            method directly on the Move base class\
+  \ will raise NotImplementedError.\n\n        Notes\n        -----\n        This\
+  \ is an abstract method that must be implemented by all Move subclasses.\n     \
+  \   Each subclass applies a different type of positional transformation:\n     \
+  \   - Jitter: adds random displacement to reduce overplotting\n        - Dodge:\
+  \ displaces overlapping marks along the orientation axis\n        - Stack: stacks\
+  \ marks along the value axis\n        - Shift: applies uniform displacement to all\
+  \ marks\n        - Norm: applies divisive scaling after grouping\n\n        The\
+  \ method typically returns a copy or modified version of the input data\n      \
+  \  rather than modifying it in place.\n        \"\"\"\n        <your code>\n\n@dataclass\n\
+  class Dodge(Move):\n    \"\"\"\n    \n        Displacement and narrowing of overlapping\
+  \ marks along orientation axis.\n    \n        Parameters\n        ----------\n\
+  \        empty : {'keep', 'drop', 'fill'}\n        gap : float\n            Size\
+  \ of gap between dodged marks.\n        by : list of variable names\n          \
+  \  Variables to apply the movement to, otherwise use all.\n    \n        Examples\n\
+  \        --------\n        .. include:: ../docstrings/objects.Dodge.rst\n    \n\
+  \        \n    \"\"\"\n\n    empty = \"keep\"\n    gap = 0\n    by = None\n\n  \
+  \  def __call__(\n        self,\n        data: DataFrame,\n        groupby: GroupBy,\n\
+  \        orient: str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n \
+  \       \"\"\"\n        Apply positional transformations to data based on grouping\
+  \ and orientation.\n\n        This method is the main entry point for Move subclasses\
+  \ to transform data coordinates.\n        It processes the input DataFrame by applying\
+  \ position-based transformations that are\n        specific to each Move implementation\
+  \ (e.g., jittering, dodging, stacking, shifting, or\n        normalizing).\n\n \
+  \       Parameters\n        ----------\n        data : DataFrame\n            The\
+  \ input data containing coordinates and other variables to be transformed.\n   \
+  \         Expected to have columns like 'x', 'y', and potentially 'width', 'baseline'\n\
+  \            depending on the specific Move subclass.\n        groupby : GroupBy\n\
+  \            A GroupBy object that defines how the data should be grouped for applying\n\
+  \            transformations. Contains grouping variables and aggregation logic.\n\
+  \        orient : str\n            The orientation axis for the transformation,\
+  \ typically 'x' or 'y'. This\n            determines which axis is considered the\
+  \ \"orientation axis\" vs the \"value axis\"\n            for moves that distinguish\
+  \ between them.\n        scales : dict[str, Scale]\n            A dictionary mapping\
+  \ variable names to Scale objects that define the\n            coordinate system\
+  \ and scaling for each axis. Used by some moves to\n            understand the data\
+  \ space.\n\n        Returns\n        -------\n        DataFrame\n            A new\
+  \ DataFrame with transformed coordinates. The structure matches the input\n    \
+  \        DataFrame but with modified position values according to the specific Move\n\
+  \            transformation applied.\n\n        Raises\n        ------\n       \
+  \ NotImplementedError\n            This base implementation always raises NotImplementedError.\
+  \ Subclasses must\n            override this method to provide specific transformation\
+  \ logic.\n\n        Notes\n        -----\n        This is an abstract method in\
+  \ the base Move class. Each Move subclass (Jitter,\n        Dodge, Stack, Shift,\
+  \ Norm) implements its own version of this method with\n        transformation logic\
+  \ appropriate to that move type.\n\n        The method typically returns a copy\
+  \ or modified version of the input data rather\n        than modifying it in place,\
+  \ following pandas conventions for data transformation.\n        \"\"\"\n      \
+  \  <your code>\n\n@dataclass\nclass Stack(Move):\n    \"\"\"\n    \n        Displacement\
+  \ of overlapping bar or area marks along the value axis.\n    \n        Examples\n\
+  \        --------\n        .. include:: ../docstrings/objects.Stack.rst\n    \n\
+  \        \n    \"\"\"\n\n    def _stack(self, df, orient):\n        \"\"\"\n   \
+  \     Stack data along the value axis by computing cumulative sums within groups.\n\
+  \n        This method performs the core stacking operation for the Stack move by:\n\
+  \        1. Validating that all marks have homogeneous baselines within the group\n\
+  \        2. Computing cumulative sums of mark lengths (value - baseline) \n    \
+  \    3. Updating mark positions and baselines to create the stacked effect\n\n \
+  \       Parameters\n        ----------\n        df : DataFrame\n            Input\
+  \ data containing mark information for a single group. Must contain\n          \
+  \  columns for the orientation axis, value axis, and 'baseline'.\n        orient\
+  \ : str\n            The orientation axis ('x' or 'y') that defines the stacking\
+  \ direction.\n            The stacking occurs along the opposite axis (the value\
+  \ axis).\n\n        Returns\n        -------\n        DataFrame\n            Modified\
+  \ dataframe with updated positions where:\n            - Value axis coordinates\
+  \ are replaced with cumulative sums\n            - Baseline coordinates are shifted\
+  \ by cumulative offsets to stack marks\n\n        Raises\n        ------\n     \
+  \   RuntimeError\n            If the input data contains heterogeneous baselines\
+  \ (baseline column has\n            more than one unique value), as stacking requires\
+  \ consistent starting\n            positions within each group.\n\n        Notes\n\
+  \        -----\n        The stacking operation transforms marks from overlapping\
+  \ to vertically/horizontally\n        displaced positions. For each mark, the new\
+  \ baseline becomes the sum of all\n        previous mark lengths, and the new value\
+  \ position extends from this new baseline.\n\n        This is an internal helper\
+  \ method called by the main Stack.__call__ method\n        after data has been properly\
+  \ grouped by position and grouping variables.\n        \"\"\"\n        <your code>\n\
+  \n    def __call__(\n        self,\n        data: DataFrame,\n        groupby: GroupBy,\n\
+  \        orient: str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n \
+  \       \"\"\"\n        Apply positional transformations to data based on grouping\
+  \ and orientation.\n\n        This method is the main entry point for Move subclasses\
+  \ to transform data coordinates.\n        It takes grouped data and applies position-based\
+  \ transformations such as jittering,\n        dodging, stacking, shifting, or normalization\
+  \ depending on the specific Move implementation.\n\n        Parameters\n       \
+  \ ----------\n        data : DataFrame\n            The input data containing coordinates\
+  \ and other variables to be transformed.\n            Expected to have columns like\
+  \ 'x', 'y', 'width', 'baseline', etc. depending\n            on the specific Move\
+  \ transformation being applied.\n        groupby : GroupBy\n            A GroupBy\
+  \ object that defines how the data should be grouped for applying\n            the\
+  \ transformation. Contains grouping variables and aggregation methods.\n       \
+  \ orient : str\n            The orientation axis for the transformation, typically\
+  \ 'x' or 'y'.\n            Determines which axis is considered the \"orientation\"\
+  \ axis vs the \"value\" axis\n            for transformations like dodging or stacking.\n\
+  \        scales : dict[str, Scale]\n            A dictionary mapping variable names\
+  \ to Scale objects that define the\n            coordinate system and scaling for\
+  \ each variable. Used to ensure transformations\n            are applied in the\
+  \ correct coordinate space.\n\n        Returns\n        -------\n        DataFrame\n\
+  \            A new DataFrame with the same structure as the input data but with\n\
+  \            transformed coordinates. The specific columns modified depend on the\n\
+  \            Move subclass implementation.\n\n        Raises\n        ------\n \
+  \       NotImplementedError\n            This base class method must be overridden\
+  \ by subclasses. Calling this\n            method directly on the Move base class\
+  \ will raise NotImplementedError.\n\n        Notes\n        -----\n        This\
+  \ is an abstract method that must be implemented by all Move subclasses.\n     \
+  \   Each subclass applies a different type of positional transformation:\n     \
+  \   - Jitter: adds random displacement to reduce overplotting\n        - Dodge:\
+  \ displaces overlapping marks along the orientation axis\n        - Stack: stacks\
+  \ marks along the value axis\n        - Shift: applies uniform displacement to all\
+  \ marks\n        - Norm: applies divisive scaling after grouping\n\n        The\
+  \ method typically returns a copy or modified version of the input data\n      \
+  \  rather than modifying it in place.\n        \"\"\"\n        <your code>\n\n@dataclass\n\
+  class Shift(Move):\n    \"\"\"\n    \n        Displacement of all marks with the\
+  \ same magnitude / direction.\n    \n        Parameters\n        ----------\n  \
+  \      x, y : float\n            Magnitude of shift, in data units, along each axis.\n\
+  \    \n        Examples\n        --------\n        .. include:: ../docstrings/objects.Shift.rst\n\
+  \    \n        \n    \"\"\"\n\n    x = 0\n    y = 0\n\n    def __call__(\n     \
+  \   self,\n        data: DataFrame,\n        groupby: GroupBy,\n        orient:\
+  \ str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n        \"\"\"\n\
+  \        Apply positional transformations to data based on grouping and orientation.\n\
+  \n        This method is the main entry point for Move subclasses to transform data\
+  \ coordinates.\n        It takes grouped data and applies position-based transformations\
+  \ such as jittering,\n        dodging, stacking, shifting, or normalization depending\
+  \ on the specific Move implementation.\n\n        Parameters\n        ----------\n\
+  \        data : DataFrame\n            The input data containing coordinates and\
+  \ other variables to be transformed.\n            Expected to have columns like\
+  \ 'x', 'y', 'width', 'baseline', etc. depending\n            on the specific Move\
+  \ transformation being applied.\n        groupby : GroupBy\n            A GroupBy\
+  \ object that defines how the data should be grouped for applying\n            the\
+  \ transformation. Contains grouping variables and aggregation methods.\n       \
+  \ orient : str\n            The orientation axis for the transformation, typically\
+  \ 'x' or 'y'.\n            Determines which axis is considered the \"orientation\"\
+  \ axis vs the \"value\" axis\n            for transformations like dodging or stacking.\n\
+  \        scales : dict[str, Scale]\n            A dictionary mapping variable names\
+  \ to Scale objects that define the\n            coordinate system and scaling for\
+  \ each variable. Used to ensure transformations\n            are applied in the\
+  \ correct coordinate space.\n\n        Returns\n        -------\n        DataFrame\n\
+  \            A new DataFrame with the same structure as the input data but with\n\
+  \            transformed coordinates. The specific columns modified depend on the\n\
+  \            Move subclass implementation.\n\n        Raises\n        ------\n \
+  \       NotImplementedError\n            This base class method must be overridden\
+  \ by subclasses. Calling this\n            method directly on the Move base class\
+  \ will raise NotImplementedError.\n\n        Notes\n        -----\n        This\
+  \ is an abstract method that must be implemented by all Move subclasses.\n     \
+  \   Each subclass applies a different type of positional transformation:\n     \
+  \   - Jitter: adds random displacement to reduce overplotting\n        - Dodge:\
+  \ displaces overlapping marks along the orientation axis\n        - Stack: stacks\
+  \ marks along the value axis\n        - Shift: applies uniform displacement to all\
+  \ marks\n        - Norm: applies divisive scaling after grouping\n\n        The\
+  \ method typically returns a copy or modified version of the input data\n      \
+  \  rather than modifying it in place.\n        \"\"\"\n        <your code>\n\n@dataclass\n\
+  class Norm(Move):\n    \"\"\"\n    \n        Divisive scaling on the value axis\
+  \ after aggregating within groups.\n    \n        Parameters\n        ----------\n\
+  \        func : str or callable\n            Function called on each group to define\
+  \ the comparison value.\n        where : str\n            Query string defining\
+  \ the subset used to define the comparison values.\n        by : list of variables\n\
+  \            Variables used to define aggregation groups.\n        percent : bool\n\
+  \            If True, multiply the result by 100.\n    \n        Examples\n    \
+  \    --------\n        .. include:: ../docstrings/objects.Norm.rst\n    \n     \
+  \   \n    \"\"\"\n\n    func = \"max\"\n    where = None\n    by = None\n    percent\
+  \ = False\n    group_by_orient = False\n\n    def _norm(self, df, var):\n      \
+  \  \"\"\"\n        Normalize values within groups by dividing by an aggregated comparison\
+  \ value.\n\n        This is a helper method for the Norm class that performs the\
+  \ actual normalization\n        operation on a DataFrame. It divides all values\
+  \ in the specified variable by an\n        aggregated value (computed using the\
+  \ specified function) from either the entire\n        group or a filtered subset.\n\
+  \n        Parameters\n        ----------\n        df : pandas.DataFrame\n      \
+  \      The DataFrame containing the data to be normalized. Must contain the column\n\
+  \            specified by the 'var' parameter.\n        var : str\n            The\
+  \ name of the column/variable to normalize. This should be a numeric column\n  \
+  \          as it will be divided by the computed denominator value.\n\n        Returns\n\
+  \        -------\n        pandas.DataFrame\n            A modified copy of the input\
+  \ DataFrame where the specified variable has been\n            normalized. The normalization\
+  \ is performed by dividing all values in the\n            variable by the aggregated\
+  \ comparison value. If percent=True, the normalized\n            values are multiplied\
+  \ by 100.\n\n        Notes\n        -----\n        - The denominator for normalization\
+  \ is computed by applying self.func to either\n          all values in the variable\
+  \ (if self.where is None) or to a filtered subset\n          (if self.where is specified\
+  \ as a query string).\n        - The normalization preserves the original structure\
+  \ of the DataFrame while only\n          modifying the values in the specified variable\
+  \ column.\n        - If self.percent is True, the normalized values are converted\
+  \ to percentages\n          by multiplying by 100.\n        \"\"\"\n        <your\
+  \ code>\n\n    def __call__(\n        self,\n        data: DataFrame,\n        groupby:\
+  \ GroupBy,\n        orient: str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n\
+  \        \"\"\"\n        Apply positional transformations to data based on grouping\
+  \ and orientation.\n\n        This method is the main entry point for Move subclasses\
+  \ to transform data coordinates.\n        It takes grouped data and applies position-based\
+  \ transformations such as jittering,\n        dodging, stacking, shifting, or normalization\
+  \ depending on the specific Move implementation.\n\n        Parameters\n       \
+  \ ----------\n        data : DataFrame\n            The input data containing coordinates\
+  \ and other variables to be transformed.\n            Expected to have columns like\
+  \ 'x', 'y', 'width', 'baseline', etc. depending\n            on the specific Move\
+  \ transformation being applied.\n        groupby : GroupBy\n            A GroupBy\
+  \ object that defines how the data should be grouped for applying\n            the\
+  \ transformation. Contains grouping variables and aggregation methods.\n       \
+  \ orient : str\n            The orientation axis for the transformation, typically\
+  \ 'x' or 'y'.\n            Determines which axis is considered the \"orientation\"\
+  \ axis vs the \"value\" axis\n            for transformations like dodging or stacking.\n\
+  \        scales : dict[str, Scale]\n            A dictionary mapping variable names\
+  \ to Scale objects that define the\n            coordinate system and scaling for\
+  \ each variable. Used to ensure transformations\n            are applied in the\
+  \ correct coordinate space.\n\n        Returns\n        -------\n        DataFrame\n\
+  \            A new DataFrame with the same structure as the input data but with\n\
+  \            transformed coordinates. The specific columns modified depend on the\n\
+  \            Move subclass implementation.\n\n        Raises\n        ------\n \
+  \       NotImplementedError\n            This base class method must be overridden\
+  \ by subclasses. Calling this\n            method directly on the Move base class\
+  \ will raise NotImplementedError.\n\n        Notes\n        -----\n        This\
+  \ is an abstract method that must be implemented by all Move subclasses.\n     \
+  \   Each subclass applies a different type of positional transformation:\n     \
+  \   - Jitter: adds random displacement to reduce overplotting\n        - Dodge:\
+  \ displaces overlapping marks along the orientation axis\n        - Stack: stacks\
+  \ marks along the value axis\n        - Shift: applies uniform displacement to all\
+  \ marks\n        - Norm: applies divisive scaling after grouping\n\n        The\
+  \ method typically returns a copy or modified version of the input data\n      \
+  \  rather than modifying it in place.\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class Dodge(Move):\n    \"\"\"\n    \n        Displacement\
+  \ and narrowing of overlapping marks along orientation axis.\n    \n        Parameters\n\
+  \        ----------\n        empty : {'keep', 'drop', 'fill'}\n        gap : float\n\
+  \            Size of gap between dodged marks.\n        by : list of variable names\n\
+  \            Variables to apply the movement to, otherwise use all.\n    \n    \
+  \    Examples\n        --------\n        .. include:: ../docstrings/objects.Dodge.rst\n\
+  \    \n        \n    \"\"\"\n\n    empty = \"keep\"\n    gap = 0\n    by = None\n\
+  \n    def __call__(\n        self,\n        data: DataFrame,\n        groupby: GroupBy,\n\
+  \        orient: str,\n        scales: dict[str, Scale]\n    ) -> DataFrame:\n \
+  \       \"\"\"\n        Apply positional transformations to data based on grouping\
+  \ and orientation.\n\n        This method is the main entry point for Move subclasses\
+  \ to transform data coordinates.\n        It processes the input DataFrame by applying\
+  \ position-based transformations that are\n        specific to each Move implementation\
+  \ (e.g., jittering, dodging, stacking, shifting, or\n        normalizing).\n\n \
+  \       Parameters\n        ----------\n        data : DataFrame\n            The\
+  \ input data containing coordinates and other variables to be transformed.\n   \
+  \         Expected to have columns like 'x', 'y', and potentially 'width', 'baseline'\n\
+  \            depending on the specific Move subclass.\n        groupby : GroupBy\n\
+  \            A GroupBy object that defines how the data should be grouped for applying\n\
+  \            transformations. Contains grouping variables and aggregation logic.\n\
+  \        orient : str\n            The orientation axis for the transformation,\
+  \ typically 'x' or 'y'. This\n            determines which axis is considered the\
+  \ \"orientation axis\" vs the \"value axis\"\n            for moves that distinguish\
+  \ between them.\n        scales : dict[str, Scale]\n            A dictionary mapping\
+  \ variable names to Scale objects that define the\n            coordinate system\
+  \ and scaling for each axis. Used by some moves to\n            understand the data\
+  \ space.\n\n        Returns\n        -------\n        DataFrame\n            A new\
+  \ DataFrame with transformed coordinates. The structure matches the input\n    \
+  \        DataFrame but with modified position values according to the specific Move\n\
+  \            transformation applied.\n\n        Raises\n        ------\n       \
+  \ NotImplementedError\n            This base implementation always raises NotImplementedError.\
+  \ Subclasses must\n            override this method to provide specific transformation\
+  \ logic.\n\n        Notes\n        -----\n        This is an abstract method in\
+  \ the base Move class. Each Move subclass (Jitter,\n        Dodge, Stack, Shift,\
+  \ Norm) implements its own version of this method with\n        transformation logic\
+  \ appropriate to that move type.\n\n        The method typically returns a copy\
+  \ or modified version of the input data rather\n        than modifying it in place,\
+  \ following pandas conventions for data transformation.\n        \"\"\"\n      \
+  \  <your code>\n..."

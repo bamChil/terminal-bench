@@ -1,0 +1,405 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/matplotlib/matplotlib
+commit: null
+custom_instance_image_build: []
+docker_specs:
+  custom_docker_args:
+  - -v /data2/cache_pb_datapipeline:/root/my_cache/
+  run_args:
+    cap_add: []
+    enable_gpu: true
+    shm_size: 4g
+exclude_keywords: []
+install: python -m pip install --upgrade pip setuptools wheel && python -m pip install
+  build meson-python>=0.16.0 Cython>=3.1.2 pybind11>=2.13.2 patchelf>=0.11.0 && python
+  -m pip install -e . --no-build-isolation -v
+instance_image: pb-instance_ce0971e5
+library_name: matplotlib
+pip_packages:
+- build
+- meson-python>=0.16.0
+- Cython>=3.1.2
+- pybind11>=2.13.2
+- patchelf>=0.11.0
+- contourpy==1.1.0
+- cycler==0.11.0
+- fonttools==4.42.1
+- ghostscript
+- kiwisolver==1.4.5
+- numpy==1.25.2
+- packaging==23.1
+- pillow==10.0.0
+- pikepdf
+- pyparsing==3.0.9
+- python-dateutil==2.8.2
+- six==1.16.0
+- setuptools==68.1.2
+- setuptools-scm==7.1.0
+- typing-extensions==4.7.1
+- pytest>=7.1.2
+- openai
+- pytest
+- pytest_mock
+pre_install:
+- QHULL_URL="http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz"
+- QHULL_TAR="/tmp/qhull-2020-src-8.0.2.tgz"
+- QHULL_BUILD_DIR="/testbed/build"
+- wget -O "$QHULL_TAR" "$QHULL_URL"
+- mkdir -p "$QHULL_BUILD_DIR"
+- tar -xvzf "$QHULL_TAR" -C "$QHULL_BUILD_DIR"
+repo_name: matplotlib
+repository: matplotlib/matplotlib
+start_time: '2024-01-01'
+task_level: 1
+task_name: matplotlib_backend_pgf
+task_statement: '**Task: Multi-page PDF Generation and Color Mapping System**
+
+
+  **Core Functionalities:**
+
+  - Create and manage multi-page PDF documents from matplotlib figures
+
+  - Provide color mapping capabilities for data visualization (univariate and bivariate)
+
+  - Handle container-based layout and positioning of visual elements
+
+
+  **Main Features & Requirements:**
+
+  - Context manager support for automatic resource management and file finalization
+
+  - Lazy initialization and deferred file creation until content is added
+
+  - Support for PDF metadata, page counting, and annotations
+
+  - Flexible colormap operations including resampling, reversing, and RGBA conversion
+
+  - Proper cleanup and compilation processes (including LaTeX backend support)
+
+
+  **Key Challenges:**
+
+  - Ensure proper file handling and resource cleanup in various exit scenarios
+
+  - Handle different PDF backend implementations with consistent interfaces
+
+  - Manage color space transformations and clipping for complex data mappings
+
+  - Coordinate figure rendering, page layout, and final document assembly
+
+  - Balance memory efficiency with performance through lazy loading patterns'
+technical_docs: []
+test_cmd: pytest -rA --timeout=10
+test_code1: from matplotlib.backends.backend_pgf import PdfPages
+test_code_example: from matplotlib.backends.backend_pgf import PdfPages
+test_code_example_obj: PdfPages
+test_code_example_path: /testbed/lib/matplotlib/backends/backend_pdf.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 10
+interface_description1: 'Below is **Interface Description 1** for file: lib-matplotlib-backends-backend_pdf.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class PdfPages:\n    \"\"\"\n    \n        A multi-page PDF file.\n\
+  \    \n        Examples\n        --------\n        >>> import matplotlib.pyplot\
+  \ as plt\n        >>> # Initialize:\n        >>> with PdfPages('foo.pdf') as pdf:\n\
+  \        ...     # As many times as you like, create a figure fig and save it:\n\
+  \        ...     fig = plt.figure()\n        ...     pdf.savefig(fig)\n        ...\
+  \     # When no figure is specified the current figure is saved\n        ...   \
+  \  pdf.savefig()\n    \n        Notes\n        -----\n        In reality `PdfPages`\
+  \ is a thin wrapper around `PdfFile`, in order to avoid\n        confusion when\
+  \ using `~.pyplot.savefig` and forgetting the format argument.\n        \n    \"\
+  \"\"\n\n    @_api.delete_parameter('3.10', 'keep_empty', addendum='This parameter\
+  \ does nothing.')\n    def __init__(\n        self,\n        filename,\n       \
+  \ keep_empty = None,\n        metadata = None\n    ):\n        \"\"\"\n\n      \
+  \          Create a new PdfPages object.\n\n                Parameters\n       \
+  \         ----------\n                filename : str or path-like or file-like\n\
+  \                    Plots using `PdfPages.savefig` will be written to a file at\
+  \ this location.\n                    The file is opened when a figure is saved\
+  \ for the first time (overwriting\n                    any older file with the same\
+  \ name).\n\n                metadata : dict, optional\n                    Information\
+  \ dictionary object (see PDF reference section 10.2.1\n                    'Document\
+  \ Information Dictionary'), e.g.:\n                    ``{'Creator': 'My software',\
+  \ 'Author': 'Me', 'Title': 'Awesome'}``.\n\n                    The standard keys\
+  \ are 'Title', 'Author', 'Subject', 'Keywords',\n                    'Creator',\
+  \ 'Producer', 'CreationDate', 'ModDate', and\n                    'Trapped'. Values\
+  \ have been predefined for 'Creator', 'Producer'\n                    and 'CreationDate'.\
+  \ They can be removed by setting them to `None`.\n\n        \"\"\"\n        <your\
+  \ code>\n\n    def __enter__(self):\n        \"\"\"\n        Enter the runtime context\
+  \ for this object.\n\n        This method is part of the context manager protocol\
+  \ and is automatically called\n        when entering a `with` statement. It enables\
+  \ the object to be used in context\n        management scenarios where setup operations\
+  \ need to be performed before the\n        main code block executes.\n\n       \
+  \ Parameters\n        ----------\n        None\n\n        Returns\n        -------\n\
+  \        self\n            Returns the instance itself, allowing the object to be\
+  \ bound to the target\n            variable in the `with` statement.\n\n       \
+  \ Notes\n        -----\n        This method should be paired with `__exit__` to\
+  \ form a complete context manager.\n        The `__enter__` method is called at\
+  \ the beginning of the `with` block, while\n        `__exit__` is called when exiting\
+  \ the block (either normally or due to an exception).\n\n        For PdfPages objects,\
+  \ this enables usage patterns like:\n            with PdfPages('output.pdf') as\
+  \ pdf:\n                # Use pdf object here\n                pdf.savefig(figure)\n\
+  \n        The context manager ensures proper resource cleanup when the `with` block\
+  \ is exited,\n        automatically calling the `close()` method to finalize the\
+  \ PDF file.\n        \"\"\"\n        <your code>\n\n    def __exit__(\n        self,\n\
+  \        exc_type,\n        exc_val,\n        exc_tb\n    ):\n        \"\"\"\n \
+  \       Exit the runtime context related to this object.\n\n        This method\
+  \ is part of the context manager protocol and is automatically called when exiting\
+  \ a `with` statement block or when the context manager is explicitly closed.\n\n\
+  \        Parameters\n        ----------\n        exc_type : type or None\n     \
+  \       The exception type that caused the context to be exited, or None if the\
+  \ context was exited normally without an exception.\n        exc_val : Exception\
+  \ or None\n            The exception instance that caused the context to be exited,\
+  \ or None if no exception occurred.\n        exc_tb : traceback or None\n      \
+  \      The traceback object associated with the exception, or None if no exception\
+  \ occurred.\n\n        Returns\n        -------\n        None\n            This\
+  \ method does not return a value. Any return value is ignored by the context manager\
+  \ protocol.\n\n        Notes\n        -----\n        This method performs cleanup\
+  \ operations when exiting the context manager. It calls the `close()` method to\
+  \ finalize the PDF file, ensuring that all content is properly written and the file\
+  \ is closed correctly. The method handles cleanup regardless of whether the context\
+  \ was exited normally or due to an exception.\n\n        The parameters follow the\
+  \ standard context manager protocol as defined in PEP 343. If an exception occurred\
+  \ during the execution of the `with` block, the exception information is passed\
+  \ to this method, but the method does not suppress the exception (it returns None,\
+  \ which is falsy).\n        \"\"\"\n        <your code>\n\n    def _ensure_file(self):\n\
+  \        \"\"\"\n        Ensure that the PDF file object is properly initialized.\n\
+  \n        This method creates a new PdfFile instance if one doesn't already exist,\
+  \ using the filename and metadata provided during PdfPages initialization. It serves\
+  \ as a lazy initialization mechanism to defer file creation until the first figure\
+  \ is actually saved.\n\n        Returns\n        -------\n        PdfFile\n    \
+  \        The initialized PDF file object that can be used for writing PDF content.\n\
+  \n        Notes\n        -----\n        This method implements lazy initialization\
+  \ - the actual PDF file is only created when needed (i.e., when the first figure\
+  \ is saved), rather than immediately when the PdfPages object is constructed. This\
+  \ approach avoids creating empty PDF files if no figures are ever saved.\n\n   \
+  \     The method is idempotent - calling it multiple times will return the same\
+  \ PdfFile instance without creating additional files.\n        \"\"\"\n        <your\
+  \ code>\n\n    def close(self):\n        \"\"\"\n\n                Finalize this\
+  \ object, making the underlying file a complete\n                PDF file.\n\n \
+  \       \"\"\"\n        <your code>\n\n    def infodict(self):\n        \"\"\"\n\
+  \n                Return a modifiable information dictionary object\n          \
+  \      (see PDF reference section 10.2.1 'Document Information\n               \
+  \ Dictionary').\n\n        \"\"\"\n        <your code>\n\n    def savefig(self,\
+  \ figure = None, **kwargs):\n        \"\"\"\n\n                Save a `.Figure`\
+  \ to this file as a new page.\n\n                Any other keyword arguments are\
+  \ passed to `~.Figure.savefig`.\n\n                Parameters\n                ----------\n\
+  \                figure : `.Figure` or int, default: the active figure\n       \
+  \             The figure, or index of the figure, that is saved to the file.\n\n\
+  \        \"\"\"\n        <your code>\n\n    def get_pagecount(self):\n        \"\
+  \"\"\n        Return the current number of pages in the multipage pdf file.\n  \
+  \      \"\"\"\n        <your code>\n\n    def attach_note(\n        self,\n    \
+  \    text,\n        positionRect = [-100, -100, 0, 0]\n    ):\n        \"\"\"\n\n\
+  \                Add a new text note to the page to be saved next. The optional\n\
+  \                positionRect specifies the position of the new note on the\n  \
+  \              page. It is outside the page per default to make sure it is\n   \
+  \             invisible on printouts.\n\n        \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: lib-matplotlib-colors.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class Colormap:\n    \"\"\"\n    \n        Baseclass for all scalar\
+  \ to RGBA mappings.\n    \n        Typically, Colormap instances are used to convert\
+  \ data values (floats)\n        from the interval ``[0, 1]`` to the RGBA color that\
+  \ the respective\n        Colormap represents. For scaling of data into the ``[0,\
+  \ 1]`` interval see\n        `matplotlib.colors.Normalize`. Subclasses of `matplotlib.cm.ScalarMappable`\n\
+  \        make heavy use of this ``data -> normalize -> map-to-color`` processing\n\
+  \        chain.\n        \n    \"\"\"\n\n    def _init(self):\n        \"\"\"\n\
+  \        Generate the lookup table, ``self._lut``.\n        \"\"\"\n        <your\
+  \ code>\n\n    def resampled(self, lutsize):\n        \"\"\"\n        Return a new\
+  \ colormap with *lutsize* entries.\n        \"\"\"\n        <your code>\n\n    def\
+  \ reversed(self, name = None):\n        \"\"\"\n\n                Return a reversed\
+  \ instance of the Colormap.\n\n                .. note:: This function is not implemented\
+  \ for the base class.\n\n                Parameters\n                ----------\n\
+  \                name : str, optional\n                    The name for the reversed\
+  \ colormap. If None, the\n                    name is set to ``self.name + \"_r\"\
+  ``.\n\n                See Also\n                --------\n                LinearSegmentedColormap.reversed\n\
+  \                ListedColormap.reversed\n\n        \"\"\"\n        <your code>\n\
+  \nclass BivarColormap:\n    \"\"\"\n    \n        Base class for all bivariate to\
+  \ RGBA mappings.\n    \n        Designed as a drop-in replacement for Colormap when\
+  \ using a 2D\n        lookup table. To be used with `~matplotlib.cm.ScalarMappable`.\n\
+  \        \n    \"\"\"\n\n    def _init(self):\n        \"\"\"\n        Generate\
+  \ the lookup table, ``self._lut``.\n        \"\"\"\n        <your code>\n\n    def\
+  \ _clip(self, X):\n        \"\"\"\n\n                For internal use when applying\
+  \ a BivarColormap to data.\n                i.e. cm.ScalarMappable().to_rgba()\n\
+  \                Clips X[0] and X[1] according to 'self.shape'.\n              \
+  \  X is modified in-place.\n\n                Parameters\n                ----------\n\
+  \                X: np.array\n                    array of floats or ints to be\
+  \ clipped\n                shape : {'square', 'circle', 'ignore', 'circleignore'}\n\
+  \n                    - If 'square' each variate is clipped to [0,1] independently\n\
+  \                    - If 'circle' the variates are clipped radially to the center\n\
+  \                      of the colormap.\n                      It is assumed that\
+  \ a circular mask is applied when the colormap\n                      is displayed\n\
+  \                    - If 'ignore' the variates are not clipped, but instead assigned\
+  \ the\n                      'outside' color\n                    - If 'circleignore'\
+  \ a circular mask is applied, but the data is not clipped\n                    \
+  \  and instead assigned the 'outside' color\n\n\n        \"\"\"\n        <your code>\n"
+interface_description3: 'Below is **Interface Description 3** for file: lib-matplotlib-backends-backend_pgf.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code3: "class PdfPages:\n    \"\"\"\n    \n        A multi-page PDF file\
+  \ using the pgf backend\n    \n        Examples\n        --------\n        >>> import\
+  \ matplotlib.pyplot as plt\n        >>> # Initialize:\n        >>> with PdfPages('foo.pdf')\
+  \ as pdf:\n        ...     # As many times as you like, create a figure fig and\
+  \ save it:\n        ...     fig = plt.figure()\n        ...     pdf.savefig(fig)\n\
+  \        ...     # When no figure is specified the current figure is saved\n   \
+  \     ...     pdf.savefig()\n        \n    \"\"\"\n\n    def __init__(self, filename):\n\
+  \        \"\"\"\n\n                Create a new PdfPages object.\n\n           \
+  \     Parameters\n                ----------\n                filename : str or\
+  \ path-like\n                    Plots using `PdfPages.savefig` will be written\
+  \ to a file at this\n                    location. Any older file with the same\
+  \ name is overwritten.\n\n                metadata : dict, optional\n          \
+  \          Information dictionary object (see PDF reference section 10.2.1\n   \
+  \                 'Document Information Dictionary'), e.g.:\n                  \
+  \  ``{'Creator': 'My software', 'Author': 'Me', 'Title': 'Awesome'}``.\n\n     \
+  \               The standard keys are 'Title', 'Author', 'Subject', 'Keywords',\n\
+  \                    'Creator', 'Producer', 'CreationDate', 'ModDate', and\n   \
+  \                 'Trapped'. Values have been predefined for 'Creator', 'Producer'\n\
+  \                    and 'CreationDate'. They can be removed by setting them to\
+  \ `None`.\n\n                    Note that some versions of LaTeX engines may ignore\
+  \ the 'Producer'\n                    key and set it to themselves.\n\n        \"\
+  \"\"\n        <your code>\n\n    def _write_header(self, width_inches, height_inches):\n\
+  \        \"\"\"\n        Write the LaTeX document header for a PGF-based PDF page.\n\
+  \n        This method generates and writes the initial LaTeX document structure\
+  \ required\n        for creating a PDF page using the PGF backend. It sets up the\
+  \ document class,\n        page geometry, required packages, and begins the document\
+  \ environment.\n\n        Parameters\n        ----------\n        width_inches :\
+  \ float\n            The width of the page in inches. This value is used to configure\
+  \ the\n            page geometry and ensure proper sizing of the PDF output.\n \
+  \       height_inches : float\n            The height of the page in inches. This\
+  \ value is used to configure the\n            page geometry and ensure proper sizing\
+  \ of the PDF output.\n\n        Important Notes\n        ---------------\n     \
+  \   - This method writes directly to the internal file buffer (self._file)\n   \
+  \     - The header includes PDF metadata information from self._info_dict\n    \
+  \    - Sets up hyperref package with PDF metadata for document properties\n    \
+  \    - Configures geometry package with zero margins and custom paper size\n   \
+  \     - Includes the PGF package and custom preamble for LaTeX rendering\n     \
+  \   - Sets paragraph indentation to zero and begins the document environment\n \
+  \       - Should only be called once per PDF document, typically for the first page\n\
+  \        - The output is encoded as UTF-8 bytes before writing to the file buffer\n\
+  \        \"\"\"\n        <your code>\n\n    def __enter__(self):\n        \"\"\"\
+  \n        Context manager entry method for the PdfPages class.\n\n        This method\
+  \ is called when entering a `with` statement context and enables the PdfPages object\
+  \ to be used as a context manager for creating multi-page PDF files.\n\n       \
+  \ Returns\n        -------\n        PdfPages\n            Returns self to allow\
+  \ the PdfPages instance to be used within the context manager block.\n\n       \
+  \ Notes\n        -----\n        This method is part of the context manager protocol.\
+  \ When used with a `with` statement, it allows for automatic resource management\
+  \ where the PDF file will be properly finalized and closed when exiting the context,\
+  \ even if an exception occurs.\n\n        The typical usage pattern is:\n      \
+  \      with PdfPages('filename.pdf') as pdf:\n                # Create and save\
+  \ figures to the PDF\n                pdf.savefig(figure)\n\n        This ensures\
+  \ that `close()` will be called automatically when exiting the `with` block, which\
+  \ finalizes the PDF by running LaTeX compilation and moving the final PDF file to\
+  \ the specified location.\n        \"\"\"\n        <your code>\n\n    def __exit__(\n\
+  \        self,\n        exc_type,\n        exc_val,\n        exc_tb\n    ):\n  \
+  \      \"\"\"\n        Exit the runtime context related to this object.\n\n    \
+  \    This method is called when exiting a context manager (when used with the `with`\
+  \ statement). It handles cleanup operations for the PdfPages object, specifically\
+  \ finalizing the PDF document and running LaTeX compilation.\n\n        Parameters\n\
+  \        ----------\n        exc_type : type or None\n            The exception\
+  \ type that caused the context to be exited, or None if no exception occurred.\n\
+  \        exc_val : Exception or None\n            The exception instance that caused\
+  \ the context to be exited, or None if no exception occurred.\n        exc_tb :\
+  \ traceback or None\n            The traceback object associated with the exception,\
+  \ or None if no exception occurred.\n\n        Returns\n        -------\n      \
+  \  None\n            This method does not return a value. Returning None (or not\
+  \ returning anything) indicates that any exception should be propagated normally.\n\
+  \n        Notes\n        -----\n        This method is automatically called when\
+  \ exiting a `with` block and delegates the actual cleanup work to the `close()`\
+  \ method. The exception parameters are provided by Python's context manager protocol\
+  \ but are not used in this implementation - exceptions are allowed to propagate\
+  \ normally.\n\n        The method enables usage patterns like:\n            with\
+  \ PdfPages('output.pdf') as pdf:\n                # Create and save figures\n  \
+  \              pdf.savefig(fig)\n            # PDF is automatically finalized when\
+  \ exiting the with block\n        \"\"\"\n        <your code>\n\n    def close(self):\n\
+  \        \"\"\"\n\n                Finalize this object, running LaTeX in a temporary\
+  \ directory\n                and moving the final pdf file to *filename*.\n\n  \
+  \      \"\"\"\n        <your code>\n\n    def _run_latex(self):\n        \"\"\"\n\
+  \        Execute LaTeX compilation process to generate PDF output from accumulated\
+  \ LaTeX content.\n\n        This private method handles the compilation of LaTeX\
+  \ source code that has been written to the internal file buffer. It creates a temporary\
+  \ directory, writes the LaTeX source to a file, runs the configured LaTeX engine\
+  \ to compile it, and moves the resulting PDF to the final output location.\n\n \
+  \       Parameters\n        ----------\n        self : PdfPages\n            The\
+  \ PdfPages instance containing the LaTeX content to be compiled.\n\n        Returns\n\
+  \        -------\n        None\n            This method does not return a value\
+  \ but produces a PDF file as a side effect.\n\n        Raises\n        ------\n\
+  \        subprocess.CalledProcessError\n            If the LaTeX compilation process\
+  \ fails or returns a non-zero exit code.\n        FileNotFoundError\n          \
+  \  If the specified LaTeX engine (from rcParams['pgf.texsystem']) is not found.\n\
+  \        OSError\n            If there are issues with file operations during the\
+  \ compilation process.\n\n        Notes\n        -----\n        - This method should\
+  \ only be called when there is at least one figure to compile (self._n_figures >\
+  \ 0)\n        - The method uses the LaTeX engine specified in matplotlib's rcParams['pgf.texsystem']\n\
+  \        - LaTeX is run with '-interaction=nonstopmode' and '-halt-on-error' flags\
+  \ for automated processing\n        - All intermediate files are created in a temporary\
+  \ directory that is automatically cleaned up\n        - The final PDF file is moved\
+  \ to the location specified during PdfPages initialization\n        \"\"\"\n   \
+  \     <your code>\n\n    def savefig(self, figure = None, **kwargs):\n        \"\
+  \"\"\n\n                Save a `.Figure` to this file as a new page.\n\n       \
+  \         Any other keyword arguments are passed to `~.Figure.savefig`.\n\n    \
+  \            Parameters\n                ----------\n                figure : `.Figure`\
+  \ or int, default: the active figure\n                    The figure, or index of\
+  \ the figure, that is saved to the file.\n\n        \"\"\"\n        <your code>\n\
+  \n    def get_pagecount(self):\n        \"\"\"\n        Return the current number\
+  \ of pages in the multipage pdf file.\n        \"\"\"\n        <your code>\n"
+interface_description4: 'Below is **Interface Description 4** for file: lib-matplotlib-offsetbox.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code4: "class OffsetBox(martist.Artist):\n    \"\"\"\n    \n        A simple\
+  \ container artist.\n    \n        The child artists are meant to be drawn at a\
+  \ relative position to its\n        parent.\n    \n        Being an artist itself,\
+  \ all keyword arguments are passed on to `.Artist`.\n        \n    \"\"\"\n\n  \
+  \  def _get_bbox_and_child_offsets(self, renderer):\n        \"\"\"\n\n        \
+  \        Return the bbox of the offsetbox and the child offsets.\n\n           \
+  \     The bbox should satisfy ``x0 <= x1 and y0 <= y1``.\n\n                Parameters\n\
+  \                ----------\n                renderer : `.RendererBase` subclass\n\
+  \n                Returns\n                -------\n                bbox\n     \
+  \           list of (xoffset, yoffset) pairs\n\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class PdfPages:\n    \"\"\"\n    \n        A multi-page PDF\
+  \ file.\n    \n        Examples\n        --------\n        >>> import matplotlib.pyplot\
+  \ as plt\n        >>> # Initialize:\n        >>> with PdfPages('foo.pdf') as pdf:\n\
+  \        ...     # As many times as you like, create a figure fig and save it:\n\
+  \        ...     fig = plt.figure()\n        ...     pdf.savefig(fig)\n        ...\
+  \     # When no figure is specified the current figure is saved\n        ...   \
+  \  pdf.savefig()\n    \n        Notes\n        -----\n        In reality `PdfPages`\
+  \ is a thin wrapper around `PdfFile`, in order to avoid\n        confusion when\
+  \ using `~.pyplot.savefig` and forgetting the format argument.\n        \n    \"\
+  \"\"\n\n    @_api.delete_parameter('3.10', 'keep_empty', addendum='This parameter\
+  \ does nothing.')\n    def __init__(\n        self,\n        filename,\n       \
+  \ keep_empty = None,\n        metadata = None\n    ):\n        \"\"\"\n\n      \
+  \          Create a new PdfPages object.\n\n                Parameters\n       \
+  \         ----------\n                filename : str or path-like or file-like\n\
+  \                    Plots using `PdfPages.savefig` will be written to a file at\
+  \ this location.\n                    The file is opened when a figure is saved\
+  \ for the first time (overwriting\n                    any older file with the same\
+  \ name).\n\n                metadata : dict, optional\n                    Information\
+  \ dictionary object (see PDF reference section 10.2.1\n                    'Document\
+  \ Information Dictionary'), e.g.:\n                    ``{'Creator': 'My software',\
+  \ 'Author': 'Me', 'Title': 'Awesome'}``.\n\n                    The standard keys\
+  \ are 'Title', 'Author', 'Subject', 'Keywords',\n                    'Creator',\
+  \ 'Producer', 'CreationDate', 'ModDate', and\n                    'Trapped'. Values\
+  \ have been predefined for 'Creator', 'Producer'\n                    and 'CreationDate'.\
+  \ They can be removed by setting them to `None`.\n\n        \"\"\"\n        <your\
+  \ code>\n..."

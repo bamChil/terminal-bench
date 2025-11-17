@@ -1,0 +1,49 @@
+{
+    "file_stats": {
+        "total_files": 120,
+        "patch_count": 5,
+        "left_count": 115,
+        "distribution": {
+            "left": 115,
+            "patch": 5
+        }
+    },
+    "obj_stats": {
+        "total_objects": 730,
+        "top_count": 2,
+        "specific_count": 6,
+        "others_count": 722,
+        "distribution": {
+            "others": 722,
+            "top": 2,
+            "specific": 6
+        }
+    },
+    "patch_files": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/tokenization_auto.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/processing_auto.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/evolla/processing_evolla.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/llama/tokenization_llama_fast.py",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/esm/tokenization_esm.py"
+    ],
+    "top_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/processing_auto.py:AutoProcessor",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/evolla/processing_evolla.py:EvollaProcessor"
+    ],
+    "specific_objects": [
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/tokenization_auto.py:get_tokenizer_config",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/tokenization_auto.py:tokenizer_class_from_name",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/llama/tokenization_llama_fast.py:LlamaTokenizerFast",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/esm/tokenization_esm.py:EsmTokenizer",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/esm/tokenization_esm.py:load_vocab_file",
+        "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/src/transformers/models/auto/processing_auto.py:processor_class_from_name"
+    ],
+    "lines_code": 934,
+    "lines_code_level3": 934,
+    "test_name": "processing_evolla",
+    "test_file": "/home/rui.hao/PB-DataPipeline/PB/real_world/test_driven/repositories/transformers/tests/models/evolla/test_processing_evolla.py",
+    "top_imports": [
+        "transformers.EvollaProcessor",
+        "transformers.AutoProcessor"
+    ]
+}

@@ -1,0 +1,49 @@
+{
+    "file_stats": {
+        "total_files": 50,
+        "patch_count": 1,
+        "left_count": 49,
+        "distribution": {
+            "left": 49,
+            "patch": 1
+        }
+    },
+    "obj_stats": {
+        "total_objects": 315,
+        "top_count": 1,
+        "specific_count": 4,
+        "others_count": 310,
+        "distribution": {
+            "others": 310,
+            "top": 1,
+            "specific": 4
+        }
+    },
+    "patch_files": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py"
+    ],
+    "top_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py:PrettyPrinter"
+    ],
+    "specific_objects": [
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py:_safe_tuple",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py:_safe_key",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py:_recursion",
+        "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/src/_pytest/_io/pprint.py:_wrap_bytes_repr"
+    ],
+    "lines_code": 611,
+    "lines_code_level3": 611,
+    "test_name": "pprint",
+    "test_file": "/home/jiahe.wang/github_project/PB-DataPipeline/PB/real_world/test_driven/repositories/pytest/testing/io/test_pprint.py",
+    "top_imports": [
+        "collections.deque",
+        "collections.defaultdict",
+        "types.MappingProxyType",
+        "collections.Counter",
+        "types.SimpleNamespace",
+        "dataclasses.dataclass",
+        "collections.ChainMap",
+        "_pytest._io.pprint.PrettyPrinter",
+        "collections.OrderedDict"
+    ]
+}

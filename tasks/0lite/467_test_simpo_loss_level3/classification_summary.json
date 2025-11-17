@@ -1,0 +1,42 @@
+{
+    "file_stats": {
+        "total_files": 16,
+        "patch_count": 2,
+        "left_count": 14,
+        "distribution": {
+            "left": 14,
+            "patch": 2
+        }
+    },
+    "obj_stats": {
+        "total_objects": 32,
+        "top_count": 2,
+        "specific_count": 1,
+        "others_count": 29,
+        "distribution": {
+            "others": 29,
+            "specific": 1,
+            "top": 2
+        }
+    },
+    "patch_files": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/fused_linear_preference.py",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/simpo_loss.py"
+    ],
+    "top_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/simpo_loss.py:LigerFusedLinearSimPOFunction",
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/simpo_loss.py:LigerFusedLinearSimPOLoss"
+    ],
+    "specific_objects": [
+        "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/src/liger_kernel/chunked_loss/fused_linear_preference.py:LigerFusedLinearPreferenceBase"
+    ],
+    "lines_code": 579,
+    "lines_code_level3": 579,
+    "test_name": "simpo_loss",
+    "test_file": "/home/jiacheng.zhang/projects/PB-DataPipeline/PB/real_world/test_driven/repositories/Liger-Kernel/test/chunked_loss/test_simpo_loss.py",
+    "top_imports": [
+        "liger_kernel.chunked_loss.LigerFusedLinearSimPOLoss",
+        "liger_kernel.chunked_loss.simpo_loss.LigerFusedLinearSimPOFunction",
+        "liger_kernel.chunked_loss.functional.liger_fused_linear_simpo"
+    ]
+}

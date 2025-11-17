@@ -1,0 +1,114 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sphinx-doc/sphinx/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e .&& python setup.py build_ext --inplace && pip install -U
+  sphinx
+instance_image: pb-instance_5fc75856
+library_name: sphinx
+pip_packages:
+- pytest>=8.0
+- pytest-xdist[psutil]>=3.4
+- pytest-timeout
+- Cython>=3.1.2
+- defusedxml>=0.7.1
+- setuptools>=70.0
+- typing_extensions>=4.9
+- threadpoolctl>=3.1.0
+- docutils>=0.18
+- Jinja2>=3.0
+- Pygments>=2.13
+- requests>=2.25.0
+- packaging>=21.0
+- babel>=2.9
+python: '3.11'
+repo_name: sphinx
+repository: sphinx-doc/sphinx
+task_level: 1
+task_name: sphinx_util_typing
+task_statement: '**Task: Python Type Annotation Processing and Documentation Generation**
+
+
+  **Core Functionalities:**
+
+  - Convert Python type annotations and class objects into human-readable string representations
+
+  - Generate reStructuredText (reST) references for documentation systems
+
+  - Provide mock module capabilities for testing and development environments
+
+
+  **Main Features & Requirements:**
+
+  - Support multiple stringification modes (fully-qualified, smart, typing-aware)
+
+  - Handle complex type annotations with configurable formatting options
+
+  - Enable temporary module mocking through context management
+
+  - Generate documentation-ready references from Python objects
+
+
+  **Key Challenges:**
+
+  - Accurately resolve and format nested/complex type annotations
+
+  - Balance between readability and precision in different display modes
+
+  - Handle edge cases with typing module references and literal types
+
+  - Ensure proper cleanup and isolation when using mock modules'
+technical_docs: []
+test_cmd: python -m pytest --timeout=20
+test_code1: 'from sphinx.ext.autodoc.mock import mock
+
+  from sphinx.util.typing import restify
+
+  from sphinx.util.typing import stringify_annotation'
+test_code_example: from sphinx.ext.autodoc.mock import mock
+test_code_example_obj: mock
+test_code_example_path: /testbed/sphinx/ext/autodoc/mock.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: sphinx-ext-autodoc-mock.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "@contextlib.contextmanager\ndef mock(modnames: list[str]) -> Iterator[None]:\n\
+  \    \"\"\"\n    Insert mock modules during context::\n    \n        with mock(['target.module.name']):\n\
+  \            # mock modules are enabled here\n            ...\n        \n    \"\"\
+  \"\n    <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: sphinx-util-typing.py
+
+
+  This file contains 2 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "def restify(\n    cls: Any,\n    mode: _RestifyMode = 'fully-qualified-except-typing'\n\
+  ) -> str:\n    \"\"\"\n    Convert a type-like object to a reST reference.\n   \
+  \ \n        :param mode: Specify a method how annotations will be stringified.\n\
+  \    \n                     'fully-qualified-except-typing'\n                  \
+  \       Show the module name and qualified name of the annotation except\n     \
+  \                    the \"typing\" module.\n                     'smart'\n    \
+  \                     Show the name of the annotation.\n        \n    \"\"\"\n \
+  \   <your code>\n\ndef stringify_annotation(\n    mode: _StringifyMode = 'fully-qualified-except-typing'\n\
+  ) -> str:\n    \"\"\"\n    Stringify type annotation object.\n    \n        :param\
+  \ annotation: The annotation to stringified.\n        :param mode: Specify a method\
+  \ how annotations will be stringified.\n    \n                     'fully-qualified-except-typing'\n\
+  \                         Show the module name and qualified name of the annotation\
+  \ except\n                         the \"typing\" module.\n                    \
+  \ 'smart'\n                         Show the name of the annotation.\n         \
+  \            'fully-qualified'\n                         Show the module name and\
+  \ qualified name of the annotation.\n    \n        :param short_literals: Render\
+  \ :py:class:`Literals` in PEP 604 style (``|``).\n        \n    \"\"\"\n    <your\
+  \ code>\n"
+interface_code_example: "def mock(modnames: list[str]) -> Iterator[None]:\n    \"\"\
+  \"\n    Insert mock modules during context::\n    \n        with mock(['target.module.name']):\n\
+  \            # mock modules are enabled here\n            ...\n        \n    \"\"\
+  \"\n    <your code>\n..."

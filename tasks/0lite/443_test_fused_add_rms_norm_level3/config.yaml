@@ -1,0 +1,287 @@
+base_image: pb-python310_cu121_torch251-base_08bcbe5c
+black_links:
+- https://github.com/linkedin/Liger-Kernel/
+commit: null
+docker_specs:
+  run_args:
+    cap_add: []
+    enable_gpu: true
+install: pip install -e ".[dev]"
+instance_image: pb-instance_ffbb2d38
+library_name: liger-kernel
+pip_packages: []
+pre_install: []
+repo_name: Liger-Kernel
+repository: linkedin/Liger-Kernel
+task_level: 3
+task_name: Liger_Kernel_fused_add_rms_norm
+task_statement: '**Task: Implement Fused Addition and RMS Normalization Operations**
+
+
+  **Core Functionality:**
+
+  Develop optimized neural network operations that combine residual connection addition
+  with RMS (Root Mean Square) normalization in a single fused kernel for transformer
+  architectures.
+
+
+  **Main Features & Requirements:**
+
+  - Fuse two sequential operations (tensor addition + RMS normalization) into one
+  optimized computation
+
+  - Support both functional interface and PyTorch module wrapper
+
+  - Handle different precision casting modes for various model architectures (Llama,
+  Gemma)
+
+  - Implement custom autograd functions with proper forward and backward passes
+
+  - Provide configurable parameters (epsilon, offset, in-place operations)
+
+  - Support tensor broadcasting and flexible input shapes
+
+
+  **Key Challenges:**
+
+  - Memory optimization through kernel fusion and in-place operations
+
+  - Numerical stability across different floating-point precisions
+
+  - Compatibility with multiple model architectures'' casting behaviors
+
+  - Efficient gradient computation for backpropagation
+
+  - Maintaining accuracy while optimizing performance
+
+
+  The task focuses on creating high-performance building blocks for transformer models
+  by combining common sequential operations into optimized fused kernels.'
+technical_docs:
+- description: latex source of the paper liger_kernel which implemented many llm operators
+    using triton
+  path: liger-kernel-tex-source
+test_cmd: pytest -rA --timeout=20
+test_code1: 'from agent_code.liger_kernel.ops.fused_add_rms_norm import LigerFusedAddRMSNormFunction
+
+  from agent_code.liger_kernel.transformers.functional import liger_fused_add_rms_norm
+
+  from agent_code.liger_kernel.transformers.fused_add_rms_norm import LigerFusedAddRMSNorm'
+test_code_example: from agent_code.liger_kernel.ops.fused_add_rms_norm import LigerFusedAddRMSNormFunction
+test_code_example_obj: LigerFusedAddRMSNormFunction
+test_code_example_path: /testbed/agent_code/liger_kernel/ops/fused_add_rms_norm.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: src-liger_kernel-ops-fused_add_rms_norm.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class LigerFusedAddRMSNormFunction(torch.autograd.Function):\n \
+  \   \"\"\"\n    \n        Performs a fused operation that first adds a residual\
+  \ tensor to the hidden_states tensor (`X`), then applies RMSNorm (Root Mean Square\
+  \ Normalization) to the result using the weight tensor `W`, with optional offset\
+  \ and casting mode.\n    \n        This class implements the following sequence,\
+  \ commonly used in transformer decoder layers:\n            1. hidden_states = residual\
+  \ + hidden_states\n            2. residual = hidden_states (after addition)\n  \
+  \          3. hidden_states = rmsnorm(hidden_states)\n    \n        Both the normalized\
+  \ hidden_states and the updated residual are returned as outputs.\n    \n      \
+  \  Some models use an 'offset' to shift the weight tensor `W` by a constant value.\
+  \ For example, Gemma\n        uses an offset of 1.0, so the computation becomes\
+  \ `(X / RMS(X)) * (W + 1.0)` instead of the usual\n        `(X / RMS(X)) * W`. You\
+  \ can pass the offset value as an argument to the forward function.\n    \n    \
+  \    In addition, different models cast their inputs at different places during\
+  \ RMSNorm computation. For\n        example, Gemma casts everything to fp32 before\
+  \ starting the computation, while Llama casts only the\n        inverse RMS to fp32.\
+  \ You can specify the casting mode using the `casting_mode` argument. We currently\n\
+  \        support the following casting modes (they match HuggingFace Transformers'\
+  \ implementations):\n        - 'llama': matches the Llama implementation, where\
+  \ only the inverse RMS is computed on fp32.\n        - 'gemma': matches the Gemma\
+  \ implementation, where everything is cast to fp32, then computed, then cast back\
+  \ to the original dtype.\n        - 'none': no casting is done. The computation\
+  \ is done in the original dtype. This saves memory and is slightly faster, but has\
+  \ more error w.r.t. the original implementation.\n    \n        The `in_place` option\
+  \ determines whether to modify dY in-place to store dX. This defaults to `True`\
+  \ to save memory.\n        \n    \"\"\"\n\n    @staticmethod\n    @ensure_contiguous\n\
+  \    def forward(\n        ctx,\n        X,\n        R,\n        W,\n        eps,\n\
+  \        offset = 0.0,\n        casting_mode = 'llama',\n        in_place = False\n\
+  \    ):\n        \"\"\"\n\n                X: (B, T, H) or (BxT, H)\n          \
+  \      W: (H,)\n\n        \"\"\"\n        <your code>\n\n    @staticmethod\n   \
+  \ @ensure_contiguous\n    def backward(ctx, dY, dS_out):\n        \"\"\"\n\n   \
+  \             Y: (B, T, H) or (BxT, H)\n\n        \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: src-liger_kernel-transformers-functional.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "def liger_fused_add_rms_norm(\n    X,\n    R,\n    W,\n    eps,\n\
+  \    offset: float = 0.0,\n    casting_mode: str = 'llama',\n    in_place: bool\
+  \ = True\n):\n    \"\"\"\n    Applies fused addition and RMS normalization in a\
+  \ single optimized operation.\n    \n    This function performs element-wise addition\
+  \ of input tensor X and residual tensor R, \n    followed by RMS (Root Mean Square)\
+  \ normalization. The fusion of these operations \n    provides better memory efficiency\
+  \ and computational performance compared to separate \n    addition and normalization\
+  \ steps.\n    \n    Args:\n        X: Input tensor to be normalized after addition\
+  \ with residual.\n        R: Residual tensor to be added to the input tensor X.\
+  \ Must be broadcastable with X.\n        W: Weight tensor for scaling the normalized\
+  \ output. Should have the same shape as \n           the last dimension of X or\
+  \ be broadcastable.\n        eps: Small epsilon value added to the denominator for\
+  \ numerical stability during \n             RMS normalization. Prevents division\
+  \ by zero.\n        offset (float, optional): Offset value applied during normalization\
+  \ computation. \n                                 Defaults to 0.0.\n        casting_mode\
+  \ (str, optional): Specifies the precision casting behavior during \n          \
+  \                           computation. Supported modes include 'llama' and others\
+  \ \n                                     depending on implementation. Defaults to\
+  \ 'llama'.\n        in_place (bool, optional): If True, performs the operation in-place\
+  \ to save memory. \n                                  If False, creates a new tensor\
+  \ for the result. \n                                  Defaults to True.\n    \n\
+  \    Returns:\n        Tensor: The result of fused addition and RMS normalization.\
+  \ If in_place is True, \n                the input tensor X is modified and returned.\
+  \ Otherwise, a new tensor with \n                the same shape as X is returned.\n\
+  \    \n    Notes:\n        - The RMS normalization is computed as: (X + R) / sqrt(mean((X\
+  \ + R)^2) + eps) * W\n        - This fused operation is particularly beneficial\
+  \ in transformer architectures \n          where residual connections are followed\
+  \ by normalization layers\n        - The casting_mode parameter affects numerical\
+  \ precision and should be chosen \n          based on the specific model requirements\n\
+  \        - When in_place=True, the original input tensor X will be modified\n  \
+  \  \"\"\"\n    <your code>\n"
+interface_description3: 'Below is **Interface Description 3** for file: src-liger_kernel-transformers-fused_add_rms_norm.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code3: "class LigerFusedAddRMSNorm(nn.Module):\n    \"\"\"\n    A PyTorch\
+  \ neural network module that performs fused addition and RMS (Root Mean Square)\
+  \ normalization operations in a single, optimized kernel.\n    \n    This class\
+  \ combines residual connection addition with RMS normalization, which is commonly\
+  \ used in transformer architectures like LLaMA. The fused implementation provides\
+  \ better memory efficiency and computational performance compared to separate operations.\n\
+  \    \n    Attributes:\n        weight (nn.Parameter): Learnable scaling parameter\
+  \ of shape (hidden_size,). Used to scale the normalized output.\n        variance_epsilon\
+  \ (float): Small constant added to variance for numerical stability during normalization.\n\
+  \        offset (float): Offset value applied during the normalization computation.\n\
+  \        casting_mode (str): Mode for type casting operations, typically set to\
+  \ 'llama' for LLaMA-style models.\n        in_place (bool): Whether to perform operations\
+  \ in-place to save memory.\n    \n    Methods:\n        __init__(hidden_size, eps=1e-6,\
+  \ offset=0.0, casting_mode='llama', init_fn='ones', in_place=False):\n         \
+  \   Initializes the fused add-RMSNorm layer with specified parameters.\n       \
+  \     \n            Args:\n                hidden_size (int): Dimension of the hidden\
+  \ states\n                eps (float): Epsilon value for numerical stability\n \
+  \               offset (float): Offset for normalization computation\n         \
+  \       casting_mode (str): Type casting mode ('llama' for LLaMA models)\n     \
+  \           init_fn (str): Weight initialization function ('ones' or 'zeros')\n\
+  \                in_place (bool): Whether to use in-place operations\n        \n\
+  \        forward(hidden_states, residual):\n            Performs the fused addition\
+  \ and RMS normalization operation.\n            \n            Args:\n          \
+  \      hidden_states (torch.Tensor): Input tensor to be normalized\n           \
+  \     residual (torch.Tensor): Residual tensor to be added before normalization\n\
+  \                \n            Returns:\n                torch.Tensor: Normalized\
+  \ output after adding residual and applying RMS normalization\n        \n      \
+  \  extra_repr():\n            Returns a string representation of the module's key\
+  \ parameters for debugging.\n    \n    Usage Example:\n        ```python\n     \
+  \   # Initialize the layer\n        hidden_size = 768\n        norm_layer = LigerFusedAddRMSNorm(hidden_size,\
+  \ eps=1e-5)\n        \n        # Forward pass\n        hidden_states = torch.randn(batch_size,\
+  \ seq_len, hidden_size)\n        residual = torch.randn(batch_size, seq_len, hidden_size)\n\
+  \        output = norm_layer(hidden_states, residual)\n        ```\n    \n    Note:\n\
+  \        This implementation is optimized for transformer models and provides significant\
+  \ performance benefits over separate addition and normalization operations, especially\
+  \ for large models and long sequences.\n    \"\"\"\n\n    def __init__(\n      \
+  \  self,\n        hidden_size,\n        eps = 1e-06,\n        offset = 0.0,\n  \
+  \      casting_mode = 'llama',\n        init_fn = 'ones',\n        in_place = False\n\
+  \    ):\n        \"\"\"\n        Initialize a Liger Fused Add RMS Normalization\
+  \ layer.\n\n        This layer performs a fused addition and RMS (Root Mean Square)\
+  \ normalization operation,\n        which combines residual connection addition\
+  \ with RMS normalization for improved efficiency.\n        RMS normalization is\
+  \ a variant of layer normalization that normalizes using the root mean\n       \
+  \ square of the input values.\n\n        Parameters:\n            hidden_size (int):\
+  \ The size of the hidden dimension/feature dimension of the input tensors.\n   \
+  \                           This determines the size of the learnable weight parameter.\n\
+  \            eps (float, optional): A small epsilon value added to the denominator\
+  \ for numerical \n                                  stability during normalization.\
+  \ Defaults to 1e-6.\n            offset (float, optional): An offset value applied\
+  \ during the normalization computation.\n                                     Defaults\
+  \ to 0.0.\n            casting_mode (str, optional): The casting mode for type conversions\
+  \ during computation.\n                                         Currently supports\
+  \ 'llama' mode. Defaults to 'llama'.\n            init_fn (str, optional): Initialization\
+  \ function for the weight parameter. Must be either\n                          \
+  \          'ones' (initialize weights to 1.0) or 'zeros' (initialize weights \n\
+  \                                    to 0.0). Defaults to 'ones'.\n            in_place\
+  \ (bool, optional): Whether to perform the operation in-place to save memory.\n\
+  \                                      When True, input tensors may be modified\
+  \ directly. \n                                      Defaults to False.\n\n     \
+  \   Raises:\n            AssertionError: If init_fn is not 'ones' or 'zeros'.\n\n\
+  \        Notes:\n            - The weight parameter is a learnable parameter of\
+  \ shape (hidden_size,) that scales\n              the normalized output.\n     \
+  \       - This fused operation is more memory and computationally efficient than\
+  \ performing\n              addition and RMS normalization separately.\n       \
+  \     - The layer expects two input tensors during forward pass: hidden_states and\
+  \ residual.\n        \"\"\"\n        <your code>\n\n    def forward(self, hidden_states,\
+  \ residual):\n        \"\"\"\n        Performs fused addition and RMS normalization\
+  \ on the input tensors.\n\n        This forward method applies a fused operation\
+  \ that combines element-wise addition of hidden_states \n        and residual tensors,\
+  \ followed by Root Mean Square (RMS) normalization. The operation is optimized \n\
+  \        for performance by fusing these two common neural network operations into\
+  \ a single kernel call.\n\n        Parameters:\n            hidden_states (torch.Tensor):\
+  \ The primary input tensor to be normalized. This tensor contains\n            \
+  \    the hidden states from the current layer that need to be combined with the\
+  \ residual\n                connection and then normalized.\n            residual\
+  \ (torch.Tensor): The residual tensor to be added to hidden_states. This typically\n\
+  \                represents the skip connection from a previous layer. Must have\
+  \ the same shape as\n                hidden_states or be broadcastable to it.\n\n\
+  \        Returns:\n            torch.Tensor: The output tensor after performing\
+  \ fused addition and RMS normalization.\n                The tensor has the same\
+  \ shape as the input hidden_states and contains the normalized\n               \
+  \ result of (hidden_states + residual).\n\n        Notes:\n            - The normalization\
+  \ uses the weight parameter initialized during module construction\n           \
+  \ - The variance epsilon, offset, casting mode, and in-place operation settings\
+  \ are\n              determined by the module's configuration set during initialization\n\
+  \            - This fused operation is more memory and computationally efficient\
+  \ than performing\n              addition and RMS normalization separately\n   \
+  \         - The actual computation is delegated to LigerFusedAddRMSNormFunction.apply()\
+  \ which\n              implements the optimized kernel\n        \"\"\"\n       \
+  \ <your code>\n\n    def extra_repr(self):\n        \"\"\"\n        Return a string\
+  \ representation of the extra parameters of this module.\n\n        This method\
+  \ provides a human-readable string containing the key configuration\n        parameters\
+  \ of the LigerFusedAddRMSNorm module, which is useful for debugging\n        and\
+  \ logging purposes.\n\n        Returns:\n            str: A formatted string containing\
+  \ the weight tensor shape, epsilon value,\n                 offset value, and in-place\
+  \ operation flag. The format is:\n                 \"(shape_tuple), eps=epsilon_value,\
+  \ offset=offset_value, in_place=in_place_flag\"\n\n        Notes:\n            This\
+  \ method is automatically called by PyTorch when printing the module\n         \
+  \   or converting it to a string representation. It extends the default\n      \
+  \      module representation with module-specific parameters to provide more\n \
+  \           detailed information about the layer's configuration.\n        \"\"\"\
+  \n        <your code>\n"
+interface_code_example: "class LigerFusedAddRMSNormFunction(torch.autograd.Function):\n\
+  \    \"\"\"\n    \n        Performs a fused operation that first adds a residual\
+  \ tensor to the hidden_states tensor (`X`), then applies RMSNorm (Root Mean Square\
+  \ Normalization) to the result using the weight tensor `W`, with optional offset\
+  \ and casting mode.\n    \n        This class implements the following sequence,\
+  \ commonly used in transformer decoder layers:\n            1. hidden_states = residual\
+  \ + hidden_states\n            2. residual = hidden_states (after addition)\n  \
+  \          3. hidden_states = rmsnorm(hidden_states)\n    \n        Both the normalized\
+  \ hidden_states and the updated residual are returned as outputs.\n    \n      \
+  \  Some models use an 'offset' to shift the weight tensor `W` by a constant value.\
+  \ For example, Gemma\n        uses an offset of 1.0, so the computation becomes\
+  \ `(X / RMS(X)) * (W + 1.0)` instead of the usual\n        `(X / RMS(X)) * W`. You\
+  \ can pass the offset value as an argument to the forward function.\n    \n    \
+  \    In addition, different models cast their inputs at different places during\
+  \ RMSNorm computation. For\n        example, Gemma casts everything to fp32 before\
+  \ starting the computation, while Llama casts only the\n        inverse RMS to fp32.\
+  \ You can specify the casting mode using the `casting_mode` argument. We currently\n\
+  \        support the following casting modes (they match HuggingFace Transformers'\
+  \ implementations):\n        - 'llama': matches the Llama implementation, where\
+  \ only the inverse RMS is computed on fp32.\n        - 'gemma': matches the Gemma\
+  \ implementation, where everything is cast to fp32, then computed, then cast back\
+  \ to the original dtype.\n        - 'none': no casting is done. The computation\
+  \ is done in the original dtype. This saves memory and is slightly faster, but has\
+  \ more error w.r.t. the original implementation.\n    \n        The `in_place` option\
+  \ determines whether to modify dY in-place to store dX. This defaults to `True`\
+  \ to save memory.\n        \n    \"\"\"\n\n    @staticmethod\n    @ensure_contiguous\n\
+  \    def forward(\n        ctx,\n        X,\n        R,\n        W,\n        eps,\n\
+  \        offset = 0.0,\n        casting_mode = 'llama',\n        in_place = False\n\
+  \    ):\n        \"\"\"\n\n                X: (B, T, H) or (BxT, H)\n          \
+  \      W: (H,)\n\n        \"\"\"\n        <your code>\n..."

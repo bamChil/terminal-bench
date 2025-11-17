@@ -1,0 +1,137 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sphinx-doc/sphinx/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e .&& python setup.py build_ext --inplace && pip install -U
+  sphinx
+instance_image: pb-instance_5fc75856
+library_name: sphinx
+pip_packages:
+- pytest>=8.0
+- pytest-xdist[psutil]>=3.4
+- pytest-timeout
+- Cython>=3.1.2
+- defusedxml>=0.7.1
+- setuptools>=70.0
+- typing_extensions>=4.9
+- threadpoolctl>=3.1.0
+- docutils>=0.18
+- Jinja2>=3.0
+- Pygments>=2.13
+- requests>=2.25.0
+- packaging>=21.0
+- babel>=2.9
+python: '3.11'
+repo_name: sphinx
+repository: sphinx-doc/sphinx
+task_level: 3
+task_name: sphinx_ext_autodoc_autoclass
+task_statement: '**Task: Programmatic Documentation Generation**
+
+
+  **Core Functionality:**
+
+  Generate structured documentation for Python code objects using Sphinx''s autodoc
+  system programmatically, without requiring manual directive writing.
+
+
+  **Main Features & Requirements:**
+
+  - Accept Python object specifications (type, name, options) as input parameters
+
+  - Integrate with existing Sphinx application environments and configurations
+
+  - Support multiple object types (modules, classes, functions, methods, attributes)
+
+  - Process customizable documentation options and formatting preferences
+
+  - Output reStructuredText-compatible documentation content
+
+
+  **Key Challenges:**
+
+  - Handle dynamic object discovery and import resolution
+
+  - Manage Sphinx application state and documenter registry integration
+
+  - Ensure compatibility with various autodoc configuration options
+
+  - Provide robust error handling for missing or invalid objects
+
+  - Maintain consistency with standard autodoc directive output formatting'
+technical_docs: []
+test_cmd: python -m pytest --timeout=20
+test_code1: from agent_code.tests.test_extensions.autodoc_util import do_autodoc
+test_code_example: from agent_code.tests.test_extensions.autodoc_util import do_autodoc
+test_code_example_obj: do_autodoc
+test_code_example_path: /testbed/agent_code/tests/test_extensions/autodoc_util.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: tests-test_extensions-autodoc_util.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def do_autodoc(\n    app: Sphinx,\n    objtype: str,\n    name:\
+  \ str,\n    options: dict[str, Any] | None = None\n) -> StringList:\n    \"\"\"\n\
+  \    Generate autodoc documentation for a Python object using Sphinx's autodoc extension.\n\
+  \    \n    This function programmatically creates documentation for a specified\
+  \ Python object\n    using Sphinx's autodoc functionality. It sets up the necessary\
+  \ documenter bridge,\n    processes options, and generates the documentation content\
+  \ that would normally be\n    produced by autodoc directives in reStructuredText\
+  \ files.\n    \n    Parameters:\n        app (Sphinx): The Sphinx application instance\
+  \ containing the environment,\n            configuration, and registry of documenters.\n\
+  \        objtype (str): The type of object to document (e.g., 'module', 'class',\
+  \ \n            'function', 'method', 'attribute'). Must be a valid documenter type\n\
+  \            registered in the Sphinx application.\n        name (str): The fully\
+  \ qualified name of the Python object to document\n            (e.g., 'mymodule.MyClass'\
+  \ or 'mymodule.my_function').\n        options (dict[str, Any] | None, optional):\
+  \ Dictionary of autodoc options\n            to control documentation generation\
+  \ behavior. These correspond to the\n            options available in autodoc directives\
+  \ (e.g., 'members', 'undoc-members',\n            'show-inheritance'). Defaults\
+  \ to None, which results in an empty options dict.\n    \n    Returns:\n       \
+  \ StringList: A docutils StringList containing the generated reStructuredText\n\
+  \            documentation lines for the specified object. This can be further processed\n\
+  \            or inserted into documentation.\n    \n    Raises:\n        KeyError:\
+  \ If the specified objtype is not found in the application's\n            documenter\
+  \ registry.\n        ImportError: If the specified object name cannot be imported\
+  \ or found.\n        \n    Notes:\n        - If the current document has no docname\
+  \ set, it will be automatically set to 'index'\n        - The function creates a\
+  \ mock state object with a default tab width of 8 spaces\n        - Options are\
+  \ merged with default autodoc options from the Sphinx configuration\n        - The\
+  \ generated content follows the same format as standard autodoc directives\n   \
+  \ \"\"\"\n    <your code>\n"
+interface_code_example: "def do_autodoc(\n    app: Sphinx,\n    objtype: str,\n  \
+  \  name: str,\n    options: dict[str, Any] | None = None\n) -> StringList:\n   \
+  \ \"\"\"\n    Generate autodoc documentation for a Python object using Sphinx's\
+  \ autodoc extension.\n    \n    This function programmatically creates documentation\
+  \ for a specified Python object\n    using Sphinx's autodoc functionality. It sets\
+  \ up the necessary documenter bridge,\n    processes options, and generates the\
+  \ documentation content that would normally be\n    produced by autodoc directives\
+  \ in reStructuredText files.\n    \n    Parameters:\n        app (Sphinx): The Sphinx\
+  \ application instance containing the environment,\n            configuration, and\
+  \ registry of documenters.\n        objtype (str): The type of object to document\
+  \ (e.g., 'module', 'class', \n            'function', 'method', 'attribute'). Must\
+  \ be a valid documenter type\n            registered in the Sphinx application.\n\
+  \        name (str): The fully qualified name of the Python object to document\n\
+  \            (e.g., 'mymodule.MyClass' or 'mymodule.my_function').\n        options\
+  \ (dict[str, Any] | None, optional): Dictionary of autodoc options\n           \
+  \ to control documentation generation behavior. These correspond to the\n      \
+  \      options available in autodoc directives (e.g., 'members', 'undoc-members',\n\
+  \            'show-inheritance'). Defaults to None, which results in an empty options\
+  \ dict.\n    \n    Returns:\n        StringList: A docutils StringList containing\
+  \ the generated reStructuredText\n            documentation lines for the specified\
+  \ object. This can be further processed\n            or inserted into documentation.\n\
+  \    \n    Raises:\n        KeyError: If the specified objtype is not found in the\
+  \ application's\n            documenter registry.\n        ImportError: If the specified\
+  \ object name cannot be imported or found.\n        \n    Notes:\n        - If the\
+  \ current document has no docname set, it will be automatically set to 'index'\n\
+  \        - The function creates a mock state object with a default tab width of\
+  \ 8 spaces\n        - Options are merged with default autodoc options from the Sphinx\
+  \ configuration\n        - The generated content follows the same format as standard\
+  \ autodoc directives\n    \"\"\"\n    <your code>\n..."

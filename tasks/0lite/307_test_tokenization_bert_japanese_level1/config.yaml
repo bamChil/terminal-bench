@@ -1,0 +1,563 @@
+base_image: pb-python310_nvidia-base_a48d8454
+black_links:
+- https://github.com/huggingface/transformers/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+    environment:
+      PYTHONPATH: /testbed
+install: python -m pip install --upgrade pip setuptools wheel && pip install -e '.[testing]'
+  && echo 'Transformers环境设置完成'
+instance_image: pb-instance_4702c5d8
+library_name: transformers
+pip_packages:
+- numpy>=1.17
+- packaging>=20.0
+- pyyaml>=5.1
+- regex!=2019.12.17
+- requests
+- tokenizers>=0.19,<0.20
+- safetensors>=0.4.1
+- huggingface-hub>=0.23.2,<1.0
+- filelock
+- tqdm>=4.27
+- pytest>=7.2.0
+- pytest-timeout
+- pytest-xdist
+- parameterized
+- psutil
+- Pillow<=15.0
+- optuna
+- ray[tune]
+- sigopt
+- timm
+- datasets!=2.5.0
+- accelerate>=0.21.0
+- peft>=0.3.0
+- bitsandbytes>0.37.0
+python: '3.10'
+repo_name: transformers
+repository: huggingface/transformers
+task_level: 1
+task_name: transformers_tokenization_bert_japanese
+task_statement: '**Task: Implement a Japanese Text Tokenizer for BERT Models**
+
+
+  **Core Functionalities:**
+
+  - Build a comprehensive Japanese text tokenization system that converts raw Japanese
+  text into tokens suitable for BERT model processing
+
+  - Support multiple Japanese morphological analyzers (MeCab, Sudachi, Juman++) and
+  tokenization strategies (WordPiece, Character, SentencePiece)
+
+  - Handle BERT-specific requirements including special tokens ([CLS], [SEP], [MASK],
+  etc.) and sequence formatting
+
+
+  **Main Features & Requirements:**
+
+  - **Multi-stage tokenization pipeline**: Word-level tokenization followed by subword
+  tokenization
+
+  - **Flexible configuration**: Support different combinations of word tokenizers
+  and subword tokenizers
+
+  - **Japanese language support**: Integration with popular Japanese NLP tools and
+  proper handling of Japanese text characteristics
+
+  - **Vocabulary management**: Handle vocabulary files, token-to-ID conversion, and
+  unknown token processing
+
+  - **Serialization support**: Enable saving/loading tokenizer state while handling
+  non-serializable components
+
+  - **BERT compatibility**: Generate properly formatted input sequences for BERT models
+
+
+  **Key Challenges:**
+
+  - **Language complexity**: Handle Japanese text segmentation challenges (no spaces
+  between words, multiple writing systems)
+
+  - **Tool integration**: Manage dependencies and configurations for multiple external
+  Japanese NLP libraries
+
+  - **Serialization handling**: Deal with non-picklable morphological analyzer objects
+  during save/load operations
+
+  - **Performance optimization**: Balance tokenization quality with processing speed
+  for different analyzer options
+
+  - **Vocabulary consistency**: Ensure proper token-ID mapping across different tokenization
+  strategies'
+technical_docs: []
+test_cmd: pytest --no-header -rA --tb=short -p no:cacheprovider --timeout=50
+test_code1: 'from transformers.models.bert_japanese.tokenization_bert_japanese import
+  BertJapaneseTokenizer
+
+  from transformers.models.bert_japanese.tokenization_bert_japanese import CharacterTokenizer
+
+  from transformers.models.bert_japanese.tokenization_bert_japanese import JumanppTokenizer
+
+  from transformers.models.bert_japanese.tokenization_bert_japanese import MecabTokenizer
+
+  from transformers.models.bert_japanese.tokenization_bert_japanese import SudachiTokenizer
+
+  from transformers.models.bert_japanese.tokenization_bert_japanese import WordpieceTokenizer'
+test_code_example: from transformers.models.bert_japanese.tokenization_bert_japanese
+  import BertJapaneseTokenizer
+test_code_example_obj: BertJapaneseTokenizer
+test_code_example_path: /testbed/src/transformers/models/bert_japanese/tokenization_bert_japanese.py
+test_description1: Below is **Test Description 1**
+timeout: 50
+interface_description1: 'Below is **Interface Description 1** for file: src-transformers-models-bert_japanese-tokenization_bert_japanese.py
+
+
+  This file contains 6 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class BertJapaneseTokenizer(PreTrainedTokenizer):\n    \"\"\"\n\
+  \    \n        Construct a BERT tokenizer for Japanese text.\n    \n        This\
+  \ tokenizer inherits from [`PreTrainedTokenizer`] which contains most of the main\
+  \ methods. Users should refer\n        to: this superclass for more information\
+  \ regarding those methods.\n    \n        Args:\n            vocab_file (`str`):\n\
+  \                Path to a one-wordpiece-per-line vocabulary file.\n           \
+  \ spm_file (`str`, *optional*):\n                Path to [SentencePiece](https://github.com/google/sentencepiece)\
+  \ file (generally has a .spm or .model\n                extension) that contains\
+  \ the vocabulary.\n            do_lower_case (`bool`, *optional*, defaults to `True`):\n\
+  \                Whether to lower case the input. Only has an effect when do_basic_tokenize=True.\n\
+  \            do_word_tokenize (`bool`, *optional*, defaults to `True`):\n      \
+  \          Whether to do word tokenization.\n            do_subword_tokenize (`bool`,\
+  \ *optional*, defaults to `True`):\n                Whether to do subword tokenization.\n\
+  \            word_tokenizer_type (`str`, *optional*, defaults to `\"basic\"`):\n\
+  \                Type of word tokenizer. Choose from [\"basic\", \"mecab\", \"sudachi\"\
+  , \"jumanpp\"].\n            subword_tokenizer_type (`str`, *optional*, defaults\
+  \ to `\"wordpiece\"`):\n                Type of subword tokenizer. Choose from [\"\
+  wordpiece\", \"character\", \"sentencepiece\",].\n            mecab_kwargs (`dict`,\
+  \ *optional*):\n                Dictionary passed to the `MecabTokenizer` constructor.\n\
+  \            sudachi_kwargs (`dict`, *optional*):\n                Dictionary passed\
+  \ to the `SudachiTokenizer` constructor.\n            jumanpp_kwargs (`dict`, *optional*):\n\
+  \                Dictionary passed to the `JumanppTokenizer` constructor.\n    \
+  \    \n    \"\"\"\n\n    vocab_files_names = \"VOCAB_FILES_NAMES\"\n\n    def __init__(\n\
+  \        self,\n        vocab_file,\n        spm_file = None,\n        do_lower_case\
+  \ = False,\n        do_word_tokenize = True,\n        do_subword_tokenize = True,\n\
+  \        word_tokenizer_type = 'basic',\n        subword_tokenizer_type = 'wordpiece',\n\
+  \        never_split = None,\n        unk_token = '[UNK]',\n        sep_token =\
+  \ '[SEP]',\n        pad_token = '[PAD]',\n        cls_token = '[CLS]',\n       \
+  \ mask_token = '[MASK]',\n        mecab_kwargs = None,\n        sudachi_kwargs =\
+  \ None,\n        jumanpp_kwargs = None,\n        **kwargs\n    ):\n        \"\"\"\
+  \n        Initialize a BERT tokenizer for Japanese text processing.\n\n        This\
+  \ constructor sets up a comprehensive tokenization pipeline that can handle both\
+  \ word-level\n        and subword-level tokenization using various Japanese morphological\
+  \ analyzers and tokenization\n        strategies. The tokenizer inherits from PreTrainedTokenizer\
+  \ and provides flexible configuration\n        options for different Japanese text\
+  \ processing needs.\n\n        Parameters:\n            vocab_file (str): Path to\
+  \ a one-wordpiece-per-line vocabulary file. Required when using\n              \
+  \  wordpiece or character subword tokenization.\n            spm_file (str, optional):\
+  \ Path to SentencePiece model file (typically .spm or .model extension)\n      \
+  \          containing the vocabulary. Required when subword_tokenizer_type is 'sentencepiece'.\n\
+  \                Defaults to None.\n            do_lower_case (bool, optional):\
+  \ Whether to convert input text to lowercase during tokenization.\n            \
+  \    Only effective when do_word_tokenize is True. Defaults to False.\n        \
+  \    do_word_tokenize (bool, optional): Whether to perform word-level tokenization\
+  \ before subword\n                tokenization. Defaults to True.\n            do_subword_tokenize\
+  \ (bool, optional): Whether to perform subword tokenization after word\n       \
+  \         tokenization. Defaults to True.\n            word_tokenizer_type (str,\
+  \ optional): Type of word tokenizer to use. Must be one of:\n                'basic',\
+  \ 'mecab', 'sudachi', 'jumanpp'. Defaults to 'basic'.\n            subword_tokenizer_type\
+  \ (str, optional): Type of subword tokenizer to use. Must be one of:\n         \
+  \       'wordpiece', 'character', 'sentencepiece'. Defaults to 'wordpiece'.\n  \
+  \          never_split (list of str, optional): List of tokens that should never\
+  \ be split during\n                tokenization. Defaults to None.\n           \
+  \ unk_token (str, optional): Special token to represent unknown/out-of-vocabulary\
+  \ words.\n                Defaults to '[UNK]'.\n            sep_token (str, optional):\
+  \ Special token used to separate sequences. Defaults to '[SEP]'.\n            pad_token\
+  \ (str, optional): Special token used for padding sequences to equal length.\n \
+  \               Defaults to '[PAD]'.\n            cls_token (str, optional): Special\
+  \ token used at the beginning of sequences for classification\n                tasks.\
+  \ Defaults to '[CLS]'.\n            mask_token (str, optional): Special token used\
+  \ for masked language modeling tasks.\n                Defaults to '[MASK]'.\n \
+  \           mecab_kwargs (dict, optional): Additional keyword arguments passed to\
+  \ MecabTokenizer\n                constructor when word_tokenizer_type is 'mecab'.\
+  \ Defaults to None.\n            sudachi_kwargs (dict, optional): Additional keyword\
+  \ arguments passed to SudachiTokenizer\n                constructor when word_tokenizer_type\
+  \ is 'sudachi'. Defaults to None.\n            jumanpp_kwargs (dict, optional):\
+  \ Additional keyword arguments passed to JumanppTokenizer\n                constructor\
+  \ when word_tokenizer_type is 'jumanpp'. Defaults to None.\n            **kwargs:\
+  \ Additional keyword arguments passed to the parent PreTrainedTokenizer class.\n\
+  \n        Raises:\n            ValueError: If the specified vocab_file or spm_file\
+  \ does not exist, or if invalid\n                word_tokenizer_type or subword_tokenizer_type\
+  \ values are provided.\n            ModuleNotFoundError: If required dependencies\
+  \ for specific tokenizers (fugashi for MeCab,\n                sudachipy for Sudachi,\
+  \ rhoknp for Juman++, sentencepiece for SentencePiece) are not\n               \
+  \ installed.\n\n        Notes:\n            - When using 'sentencepiece' as subword_tokenizer_type,\
+  \ spm_file must be provided and\n              vocab_file is not used.\n       \
+  \     - For morphological analyzers (MeCab, Sudachi, Juman++), additional system\
+  \ dependencies\n              and dictionaries may need to be installed separately.\n\
+  \            - The tokenizer supports serialization/deserialization but morphological\
+  \ analyzer instances\n              are recreated during deserialization to handle\
+  \ non-serializable components.\n            - Special tokens are automatically handled\
+  \ and can be accessed through properties like\n              cls_token_id, sep_token_id,\
+  \ etc.\n        \"\"\"\n        <your code>\n\n    @property\n    def do_lower_case(self):\n\
+  \        \"\"\"\n        Get the lowercase configuration setting for the tokenizer.\n\
+  \n        This property provides access to the tokenizer's case handling configuration,\n\
+  \        indicating whether text should be converted to lowercase during tokenization.\n\
+  \n        Returns:\n            bool: True if the tokenizer is configured to convert\
+  \ input text to lowercase\n                during tokenization, False otherwise.\
+  \ This value is determined by the\n                `do_lower_case` parameter passed\
+  \ during tokenizer initialization.\n\n        Note:\n            This property returns\
+  \ the value of the internal `lower_case` attribute,\n            which stores the\
+  \ lowercase configuration. The lowercase conversion is\n            applied during\
+  \ word tokenization when `do_word_tokenize` is True and\n            affects how\
+  \ the underlying word tokenizer (BasicTokenizer, MecabTokenizer,\n            SudachiTokenizer,\
+  \ or JumanppTokenizer) processes the input text.\n        \"\"\"\n        <your\
+  \ code>\n\n    def __getstate__(self):\n        \"\"\"\n        Prepare the object's\
+  \ state for pickling by creating a serializable dictionary representation.\n\n \
+  \       This method is called automatically during the pickling process to determine\
+  \ what data should be serialized when the tokenizer object is saved. For certain\
+  \ Japanese morphological analyzers (MeCab, Sudachi, JumanPP), the word_tokenizer\
+  \ object is removed from the state because these tokenizers contain non-serializable\
+  \ components that need to be reconstructed during unpickling.\n\n        Parameters:\n\
+  \            None\n\n        Returns:\n            dict: A dictionary containing\
+  \ the object's serializable state. This is a copy of the object's __dict__ with\
+  \ the word_tokenizer removed if the word_tokenizer_type is one of [\"mecab\", \"\
+  sudachi\", \"jumanpp\"].\n\n        Important notes:\n            - This method\
+  \ works in conjunction with __setstate__ to handle proper serialization/deserialization\n\
+  \            - The word_tokenizer is excluded from serialization for MeCab, Sudachi,\
+  \ and JumanPP tokenizers because they contain non-picklable objects (like C++ extensions\
+  \ or system resources)\n            - The word_tokenizer will be reconstructed in\
+  \ __setstate__ using the saved configuration parameters\n            - For basic\
+  \ word tokenizers, the word_tokenizer is preserved in the serialized state since\
+  \ it contains only picklable Python objects\n        \"\"\"\n        <your code>\n\
+  \n    def __setstate__(self, state):\n        \"\"\"\n        Restore the object's\
+  \ state from a pickled representation.\n\n        This method is part of Python's\
+  \ pickle protocol and is automatically called during\n        the unpickling process\
+  \ to reconstruct a BertJapaneseTokenizer object. It restores\n        the object's\
+  \ attributes from the provided state dictionary and reinitializes any\n        word\
+  \ tokenizers that were excluded during pickling.\n\n        Parameters:\n      \
+  \      state (dict): A dictionary containing the object's state that was previously\n\
+  \                saved by __getstate__(). This includes all instance attributes\
+  \ except\n                for certain word tokenizers that need to be recreated.\n\
+  \n        Returns:\n            None: This method modifies the object in-place and\
+  \ does not return a value.\n\n        Important notes:\n            - This method\
+  \ is automatically called by Python's pickle module during\n              deserialization\
+  \ and should not be called directly by users.\n            - Word tokenizers of\
+  \ types \"mecab\", \"sudachi\", and \"jumanpp\" are recreated\n              from\
+  \ their respective configuration parameters (mecab_kwargs, sudachi_kwargs,\n   \
+  \           jumanpp_kwargs) since these objects cannot be directly pickled.\n  \
+  \          - The method assumes that the state dictionary contains all necessary\n\
+  \              configuration parameters to properly reconstruct the tokenizer.\n\
+  \            - If the word_tokenizer_type is not one of the special cases (\"mecab\"\
+  ,\n              \"sudachi\", \"jumanpp\"), the word tokenizer is expected to be\
+  \ preserved\n              in the state and will be restored automatically.\n  \
+  \      \"\"\"\n        <your code>\n\n    def _tokenize(self, text):\n        \"\
+  \"\"\n        Tokenizes a piece of text into tokens using the configured word and\
+  \ subword tokenizers.\n\n        This is the core tokenization method that applies\
+  \ the tokenization pipeline configured for this\n        BertJapaneseTokenizer instance.\
+  \ The method performs tokenization in two stages:\n        1. Word-level tokenization\
+  \ (if enabled) using the configured word tokenizer\n        2. Subword-level tokenization\
+  \ (if enabled) using the configured subword tokenizer\n\n        Parameters:\n \
+  \           text (str): The input text to be tokenized. This should be a string\
+  \ containing\n                Japanese text that needs to be broken down into tokens.\n\
+  \n        Returns:\n            List[str]: A list of tokens representing the tokenized\
+  \ input text. The tokens\n                are strings that result from the applied\
+  \ tokenization pipeline. If both\n                word and subword tokenization\
+  \ are enabled, the returned tokens will be\n                the result of subword\
+  \ tokenization applied to each word token. If only\n                word tokenization\
+  \ is enabled, returns the word tokens. If neither is\n                enabled, returns\
+  \ the original text as a single-item list.\n\n        Important Notes:\n       \
+  \     - The tokenization behavior depends on the tokenizer configuration set during\n\
+  \              initialization (do_word_tokenize, do_subword_tokenize, word_tokenizer_type,\n\
+  \              subword_tokenizer_type)\n            - When word tokenization is\
+  \ enabled, special tokens from self.all_special_tokens\n              are passed\
+  \ to the word tokenizer's never_split parameter to prevent splitting\n         \
+  \   - The method processes tokens sequentially through the pipeline: first word\n\
+  \              tokenization (if enabled), then subword tokenization (if enabled)\n\
+  \            - This is an internal method (indicated by the underscore prefix) and\
+  \ is typically\n              called by the public tokenize method of the parent\
+  \ PreTrainedTokenizer class\n        \"\"\"\n        <your code>\n\n    @property\n\
+  \    def vocab_size(self):\n        \"\"\"\n        Get the size of the tokenizer's\
+  \ vocabulary.\n\n        This property returns the total number of tokens in the\
+  \ tokenizer's vocabulary,\n        which varies depending on the subword tokenizer\
+  \ type being used.\n\n        Returns:\n            int: The size of the vocabulary.\
+  \ For SentencePiece tokenizers, this is the\n                length of the SentencePiece\
+  \ model. For other tokenizer types (wordpiece,\n                character), this\
+  \ is the length of the vocab dictionary.\n\n        Notes:\n            The vocabulary\
+  \ size calculation differs based on the subword_tokenizer_type:\n            - For\
+  \ \"sentencepiece\": Returns len(self.subword_tokenizer.sp_model)\n            -\
+  \ For other types (\"wordpiece\", \"character\"): Returns len(self.vocab)\n\n  \
+  \          This property is commonly used for initializing model embedding layers\n\
+  \            and ensuring compatibility between tokenizer and model vocabularies.\n\
+  \        \"\"\"\n        <your code>\n\n    def get_vocab(self):\n        \"\"\"\
+  \n        Retrieve the vocabulary dictionary used by the tokenizer.\n\n        This\
+  \ method returns the complete vocabulary mapping from tokens to their corresponding\
+  \ IDs,\n        including both the base vocabulary and any additional tokens that\
+  \ have been added to the\n        tokenizer (such as special tokens or tokens added\
+  \ during fine-tuning).\n\n        Returns:\n            dict: A dictionary mapping\
+  \ tokens (str) to their token IDs (int). The dictionary\n                contains\
+  \ all tokens from the base vocabulary plus any additional tokens from\n        \
+  \        the added_tokens_encoder.\n\n        Notes:\n            - For SentencePiece-based\
+  \ tokenizers (when subword_tokenizer_type is \"sentencepiece\"),\n             \
+  \ the vocabulary is dynamically generated by converting token IDs back to tokens\n\
+  \              using the SentencePiece model, then merged with added tokens.\n \
+  \           - For other tokenizer types (wordpiece, character), the method returns\
+  \ the\n              pre-loaded vocabulary dictionary merged with added tokens.\n\
+  \            - The returned dictionary includes special tokens like [CLS], [SEP],\
+  \ [MASK], etc.\n              if they were added to the tokenizer.\n           \
+  \ - This method is commonly used for vocabulary inspection, saving tokenizer state,\n\
+  \              or when you need to access the complete token-to-ID mapping.\n  \
+  \      \"\"\"\n        <your code>\n\n    def _convert_token_to_id(self, token):\n\
+  \        \"\"\"\n        Converts a token (str) in an id using the vocab.\n    \
+  \    \"\"\"\n        <your code>\n\n    def _convert_id_to_token(self, index):\n\
+  \        \"\"\"\n        Converts an index (integer) in a token (str) using the\
+  \ vocab.\n        \"\"\"\n        <your code>\n\n    def convert_tokens_to_string(self,\
+  \ tokens):\n        \"\"\"\n        Converts a sequence of tokens (string) in a\
+  \ single string.\n        \"\"\"\n        <your code>\n\n    def build_inputs_with_special_tokens(\n\
+  \        self,\n        token_ids_0: list[int],\n        token_ids_1: Optional[list[int]]\
+  \ = None\n    ) -> list[int]:\n        \"\"\"\n\n                Build model inputs\
+  \ from a sequence or a pair of sequence for sequence classification tasks by concatenating\
+  \ and\n                adding special tokens. A BERT sequence has the following\
+  \ format:\n\n                - single sequence: `[CLS] X [SEP]`\n              \
+  \  - pair of sequences: `[CLS] A [SEP] B [SEP]`\n\n                Args:\n     \
+  \               token_ids_0 (`List[int]`):\n                        List of IDs\
+  \ to which the special tokens will be added.\n                    token_ids_1 (`List[int]`,\
+  \ *optional*):\n                        Optional second list of IDs for sequence\
+  \ pairs.\n\n                Returns:\n                    `List[int]`: List of [input\
+  \ IDs](../glossary#input-ids) with the appropriate special tokens.\n\n        \"\
+  \"\"\n        <your code>\n\n    def get_special_tokens_mask(\n        self,\n \
+  \       token_ids_0: list[int],\n        token_ids_1: Optional[list[int]] = None,\n\
+  \        already_has_special_tokens: bool = False\n    ) -> list[int]:\n       \
+  \ \"\"\"\n\n                Retrieve sequence ids from a token list that has no\
+  \ special tokens added. This method is called when adding\n                special\
+  \ tokens using the tokenizer `prepare_for_model` method.\n\n                Args:\n\
+  \                    token_ids_0 (`List[int]`):\n                        List of\
+  \ IDs.\n                    token_ids_1 (`List[int]`, *optional*):\n           \
+  \             Optional second list of IDs for sequence pairs.\n                \
+  \    already_has_special_tokens (`bool`, *optional*, defaults to `False`):\n   \
+  \                     Whether or not the token list is already formatted with special\
+  \ tokens for the model.\n\n                Returns:\n                    `List[int]`:\
+  \ A list of integers in the range [0, 1]: 1 for a special token, 0 for a sequence\
+  \ token.\n\n        \"\"\"\n        <your code>\n\n    def save_vocabulary(\n  \
+  \      self,\n        save_directory: str,\n        filename_prefix: Optional[str]\
+  \ = None\n    ) -> tuple[str]:\n        \"\"\"\n        Save the tokenizer's vocabulary\
+  \ files to the specified directory.\n\n        This method saves the vocabulary\
+  \ used by the tokenizer to disk, handling both\n        regular vocabulary files\
+  \ and SentencePiece model files depending on the\n        subword tokenizer type\
+  \ configured for this tokenizer instance.\n\n        Args:\n            save_directory\
+  \ (str): The directory path where the vocabulary file(s) should be saved.\n    \
+  \            If this is a directory path, the vocabulary file will be saved inside\
+  \ it with\n                the standard filename. If this is not a directory, it\
+  \ will be treated as a\n                filename prefix.\n            filename_prefix\
+  \ (Optional[str], optional): An optional prefix to add to the\n                vocabulary\
+  \ filename. If provided, it will be prepended to the standard\n                vocabulary\
+  \ filename with a hyphen separator. Defaults to None.\n\n        Returns:\n    \
+  \        tuple[str]: A tuple containing the path(s) to the saved vocabulary file(s).\n\
+  \                Currently returns a single-element tuple with the path to the saved\n\
+  \                vocabulary file.\n\n        Notes:\n            - For SentencePiece\
+  \ tokenizers (subword_tokenizer_type == \"sentencepiece\"):\n              Saves\
+  \ the serialized SentencePiece model as a binary file with .model extension\n  \
+  \          - For other tokenizer types: Saves the vocabulary as a text file with\
+  \ one token\n              per line, sorted by token index\n            - If vocabulary\
+  \ indices are not consecutive, a warning will be logged\n            - The method\
+  \ automatically determines the appropriate file extension based on\n           \
+  \   the tokenizer type (vocab.txt for regular vocabularies, spiece.model for\n \
+  \             SentencePiece)\n        \"\"\"\n        <your code>\n\nclass MecabTokenizer:\n\
+  \    \"\"\"\n    Runs basic tokenization with MeCab morphological parser.\n    \"\
+  \"\"\n\n    def __init__(\n        self,\n        do_lower_case = False,\n     \
+  \   never_split = None,\n        normalize_text = True,\n        mecab_dic: Optional[str]\
+  \ = 'unidic_lite',\n        mecab_option: Optional[str] = None\n    ):\n       \
+  \ \"\"\"\n\n                Constructs a MecabTokenizer.\n\n                Args:\n\
+  \                    **do_lower_case**: (*optional*) boolean (default True)\n  \
+  \                      Whether to lowercase the input.\n                    **never_split**:\
+  \ (*optional*) list of str\n                        Kept for backward compatibility\
+  \ purposes. Now implemented directly at the base class level (see\n            \
+  \            [`PreTrainedTokenizer.tokenize`]) List of tokens not to split.\n  \
+  \                  **normalize_text**: (*optional*) boolean (default True)\n   \
+  \                     Whether to apply unicode normalization to text before tokenization.\n\
+  \                    **mecab_dic**: (*optional*) string (default \"ipadic\")\n \
+  \                       Name of dictionary to be used for MeCab initialization.\
+  \ If you are using a system-installed dictionary,\n                        set this\
+  \ option to `None` and modify *mecab_option*.\n                    **mecab_option**:\
+  \ (*optional*) string\n                        String passed to MeCab constructor.\n\
+  \n        \"\"\"\n        <your code>\n\n    def tokenize(\n        self,\n    \
+  \    text,\n        never_split = None,\n        **kwargs\n    ):\n        \"\"\"\
+  \n        Tokenizes a piece of text.\n        \"\"\"\n        <your code>\n\nclass\
+  \ SudachiTokenizer:\n    \"\"\"\n    Runs basic tokenization with Sudachi morphological\
+  \ parser.\n    \"\"\"\n\n    def __init__(\n        self,\n        do_lower_case\
+  \ = False,\n        never_split = None,\n        normalize_text = True,\n      \
+  \  trim_whitespace = False,\n        sudachi_split_mode = 'A',\n        sudachi_config_path\
+  \ = None,\n        sudachi_resource_dir = None,\n        sudachi_dict_type = 'core',\n\
+  \        sudachi_projection = None\n    ):\n        \"\"\"\n\n                Constructs\
+  \ a SudachiTokenizer.\n\n                Args:\n                    **do_lower_case**:\
+  \ (*optional*) boolean (default True)\n                        Whether to lowercase\
+  \ the input.\n                    **never_split**: (*optional*) list of str\n  \
+  \                      Kept for backward compatibility purposes. Now implemented\
+  \ directly at the base class level (see\n                        [`PreTrainedTokenizer.tokenize`])\
+  \ List of tokens not to split.\n                    **normalize_text**: (*optional*)\
+  \ boolean (default True)\n                        Whether to apply unicode normalization\
+  \ to text before tokenization.\n                    **trim_whitespace**: (*optional*)\
+  \ boolean (default False)\n                        Whether to trim all whitespace,\
+  \ tab, newline from tokens.\n                    **sudachi_split_mode**: (*optional*)\
+  \ string\n                        Split mode of sudachi, choose from `[\"A\", \"\
+  B\", \"C\"]`.\n                    **sudachi_config_path**: (*optional*) string\n\
+  \                    **sudachi_resource_dir**: (*optional*) string\n           \
+  \         **sudachi_dict_type**: (*optional*) string\n                        dict\
+  \ type of sudachi, choose from `[\"small\", \"core\", \"full\"]`.\n            \
+  \        **sudachi_projection**: (*optional*) string\n                        Word\
+  \ projection mode of sudachi, choose from `[\"surface\", \"normalized\", \"reading\"\
+  , \"dictionary\", \"dictionary_and_surface\", \"normalized_and_surface\", \"normalized_nouns\"\
+  ]`.\n\n        \"\"\"\n        <your code>\n\n    def tokenize(\n        self,\n\
+  \        text,\n        never_split = None,\n        **kwargs\n    ):\n        \"\
+  \"\"\n        Tokenizes a piece of text.\n        \"\"\"\n        <your code>\n\n\
+  class JumanppTokenizer:\n    \"\"\"\n    Runs basic tokenization with jumanpp morphological\
+  \ parser.\n    \"\"\"\n\n    def __init__(\n        self,\n        do_lower_case\
+  \ = False,\n        never_split = None,\n        normalize_text = True,\n      \
+  \  trim_whitespace = False\n    ):\n        \"\"\"\n\n                Constructs\
+  \ a JumanppTokenizer.\n\n                Args:\n                    **do_lower_case**:\
+  \ (*optional*) boolean (default True)\n                        Whether to lowercase\
+  \ the input.\n                    **never_split**: (*optional*) list of str\n  \
+  \                      Kept for backward compatibility purposes. Now implemented\
+  \ directly at the base class level (see\n                        [`PreTrainedTokenizer.tokenize`])\
+  \ List of tokens not to split.\n                    **normalize_text**: (*optional*)\
+  \ boolean (default True)\n                        Whether to apply unicode normalization\
+  \ to text before tokenization.\n                    **trim_whitespace**: (*optional*)\
+  \ boolean (default False)\n                        Whether to trim all whitespace,\
+  \ tab, newline from tokens.\n\n        \"\"\"\n        <your code>\n\n    def tokenize(\n\
+  \        self,\n        text,\n        never_split = None,\n        **kwargs\n \
+  \   ):\n        \"\"\"\n        Tokenizes a piece of text.\n        \"\"\"\n   \
+  \     <your code>\n\nclass CharacterTokenizer:\n    \"\"\"\n    Runs Character tokenization.\n\
+  \    \"\"\"\n\n    def __init__(\n        self,\n        vocab,\n        unk_token,\n\
+  \        normalize_text = True\n    ):\n        \"\"\"\n\n                Constructs\
+  \ a CharacterTokenizer.\n\n                Args:\n                    **vocab**:\n\
+  \                        Vocabulary object.\n                    **unk_token**:\
+  \ str\n                        A special symbol for out-of-vocabulary token.\n \
+  \                   **normalize_text**: (`optional`) boolean (default True)\n  \
+  \                      Whether to apply unicode normalization to text before tokenization.\n\
+  \n        \"\"\"\n        <your code>\n\n    def tokenize(self, text):\n       \
+  \ \"\"\"\n\n                Tokenizes a piece of text into characters.\n\n     \
+  \           For example, `input = \"apple\"\"` will return as output `[\"a\", \"\
+  p\", \"p\", \"l\", \"e\"]`.\n\n                Args:\n                    text:\
+  \ A single token or whitespace separated tokens.\n                        This should\
+  \ have already been passed through *BasicTokenizer*.\n\n                Returns:\n\
+  \                    A list of characters.\n\n        \"\"\"\n        <your code>\n\
+  \nclass WordpieceTokenizer:\n    \"\"\"\n    Runs WordPiece tokenization.\n    \"\
+  \"\"\n\n    def __init__(\n        self,\n        vocab,\n        unk_token,\n \
+  \       max_input_chars_per_word = 100\n    ):\n        \"\"\"\n        Initialize\
+  \ a WordpieceTokenizer instance.\n\n        This constructor sets up a WordPiece\
+  \ tokenizer that performs subword tokenization using a greedy longest-match-first\
+  \ algorithm. WordPiece tokenization breaks down words into smaller subword units\
+  \ based on a pre-trained vocabulary, which is particularly useful for handling out-of-vocabulary\
+  \ words and improving model performance on morphologically rich languages.\n\n \
+  \       Args:\n            vocab (dict): A dictionary mapping tokens to their corresponding\
+  \ IDs. This vocabulary should contain the subword pieces that the tokenizer will\
+  \ use to break down input text. The vocabulary typically includes whole words, subword\
+  \ pieces (often prefixed with \"##\"), and special tokens.\n            unk_token\
+  \ (str): The unknown token string used to replace any token that cannot be found\
+  \ in the vocabulary or cannot be properly tokenized into known subword pieces. Common\
+  \ values include \"[UNK]\" for BERT-style models.\n            max_input_chars_per_word\
+  \ (int, optional): The maximum number of characters allowed per input word. Words\
+  \ exceeding this length will be replaced with the unknown token to prevent excessive\
+  \ computation and memory usage during tokenization. Defaults to 100.\n\n       \
+  \ Returns:\n            None: This is a constructor method that initializes the\
+  \ instance.\n\n        Notes:\n            - The tokenizer expects input text to\
+  \ have already been processed by a basic tokenizer (whitespace tokenization, lowercasing,\
+  \ etc.)\n            - Words longer than max_input_chars_per_word characters are\
+  \ automatically replaced with unk_token\n            - The tokenization algorithm\
+  \ uses a greedy approach, always trying to match the longest possible subword piece\
+  \ first\n            - Subword pieces (except the first piece of a word) are typically\
+  \ prefixed with \"##\" in the vocabulary\n        \"\"\"\n        <your code>\n\n\
+  \    def tokenize(self, text):\n        \"\"\"\n\n                Tokenizes a piece\
+  \ of text into its word pieces. This uses a greedy longest-match-first algorithm\
+  \ to perform\n                tokenization using the given vocabulary.\n\n     \
+  \           For example, `input = \"unaffable\"` will return as output `[\"un\"\
+  , \"##aff\", \"##able\"]`.\n\n                Args:\n                    text: A\
+  \ single token or whitespace separated tokens. This should have\n              \
+  \          already been passed through *BasicTokenizer*.\n\n                Returns:\n\
+  \                    A list of wordpiece tokens.\n\n        \"\"\"\n        <your\
+  \ code>\n"
+interface_code_example: "class BertJapaneseTokenizer(PreTrainedTokenizer):\n    \"\
+  \"\"\n    \n        Construct a BERT tokenizer for Japanese text.\n    \n      \
+  \  This tokenizer inherits from [`PreTrainedTokenizer`] which contains most of the\
+  \ main methods. Users should refer\n        to: this superclass for more information\
+  \ regarding those methods.\n    \n        Args:\n            vocab_file (`str`):\n\
+  \                Path to a one-wordpiece-per-line vocabulary file.\n           \
+  \ spm_file (`str`, *optional*):\n                Path to [SentencePiece](https://github.com/google/sentencepiece)\
+  \ file (generally has a .spm or .model\n                extension) that contains\
+  \ the vocabulary.\n            do_lower_case (`bool`, *optional*, defaults to `True`):\n\
+  \                Whether to lower case the input. Only has an effect when do_basic_tokenize=True.\n\
+  \            do_word_tokenize (`bool`, *optional*, defaults to `True`):\n      \
+  \          Whether to do word tokenization.\n            do_subword_tokenize (`bool`,\
+  \ *optional*, defaults to `True`):\n                Whether to do subword tokenization.\n\
+  \            word_tokenizer_type (`str`, *optional*, defaults to `\"basic\"`):\n\
+  \                Type of word tokenizer. Choose from [\"basic\", \"mecab\", \"sudachi\"\
+  , \"jumanpp\"].\n            subword_tokenizer_type (`str`, *optional*, defaults\
+  \ to `\"wordpiece\"`):\n                Type of subword tokenizer. Choose from [\"\
+  wordpiece\", \"character\", \"sentencepiece\",].\n            mecab_kwargs (`dict`,\
+  \ *optional*):\n                Dictionary passed to the `MecabTokenizer` constructor.\n\
+  \            sudachi_kwargs (`dict`, *optional*):\n                Dictionary passed\
+  \ to the `SudachiTokenizer` constructor.\n            jumanpp_kwargs (`dict`, *optional*):\n\
+  \                Dictionary passed to the `JumanppTokenizer` constructor.\n    \
+  \    \n    \"\"\"\n\n    vocab_files_names = \"VOCAB_FILES_NAMES\"\n\n    def __init__(\n\
+  \        self,\n        vocab_file,\n        spm_file = None,\n        do_lower_case\
+  \ = False,\n        do_word_tokenize = True,\n        do_subword_tokenize = True,\n\
+  \        word_tokenizer_type = 'basic',\n        subword_tokenizer_type = 'wordpiece',\n\
+  \        never_split = None,\n        unk_token = '[UNK]',\n        sep_token =\
+  \ '[SEP]',\n        pad_token = '[PAD]',\n        cls_token = '[CLS]',\n       \
+  \ mask_token = '[MASK]',\n        mecab_kwargs = None,\n        sudachi_kwargs =\
+  \ None,\n        jumanpp_kwargs = None,\n        **kwargs\n    ):\n        \"\"\"\
+  \n        Initialize a BERT tokenizer for Japanese text processing.\n\n        This\
+  \ constructor sets up a comprehensive tokenization pipeline that can handle both\
+  \ word-level\n        and subword-level tokenization using various Japanese morphological\
+  \ analyzers and tokenization\n        strategies. The tokenizer inherits from PreTrainedTokenizer\
+  \ and provides flexible configuration\n        options for different Japanese text\
+  \ processing needs.\n\n        Parameters:\n            vocab_file (str): Path to\
+  \ a one-wordpiece-per-line vocabulary file. Required when using\n              \
+  \  wordpiece or character subword tokenization.\n            spm_file (str, optional):\
+  \ Path to SentencePiece model file (typically .spm or .model extension)\n      \
+  \          containing the vocabulary. Required when subword_tokenizer_type is 'sentencepiece'.\n\
+  \                Defaults to None.\n            do_lower_case (bool, optional):\
+  \ Whether to convert input text to lowercase during tokenization.\n            \
+  \    Only effective when do_word_tokenize is True. Defaults to False.\n        \
+  \    do_word_tokenize (bool, optional): Whether to perform word-level tokenization\
+  \ before subword\n                tokenization. Defaults to True.\n            do_subword_tokenize\
+  \ (bool, optional): Whether to perform subword tokenization after word\n       \
+  \         tokenization. Defaults to True.\n            word_tokenizer_type (str,\
+  \ optional): Type of word tokenizer to use. Must be one of:\n                'basic',\
+  \ 'mecab', 'sudachi', 'jumanpp'. Defaults to 'basic'.\n            subword_tokenizer_type\
+  \ (str, optional): Type of subword tokenizer to use. Must be one of:\n         \
+  \       'wordpiece', 'character', 'sentencepiece'. Defaults to 'wordpiece'.\n  \
+  \          never_split (list of str, optional): List of tokens that should never\
+  \ be split during\n                tokenization. Defaults to None.\n           \
+  \ unk_token (str, optional): Special token to represent unknown/out-of-vocabulary\
+  \ words.\n                Defaults to '[UNK]'.\n            sep_token (str, optional):\
+  \ Special token used to separate sequences. Defaults to '[SEP]'.\n            pad_token\
+  \ (str, optional): Special token used for padding sequences to equal length.\n \
+  \               Defaults to '[PAD]'.\n            cls_token (str, optional): Special\
+  \ token used at the beginning of sequences for classification\n                tasks.\
+  \ Defaults to '[CLS]'.\n            mask_token (str, optional): Special token used\
+  \ for masked language modeling tasks.\n                Defaults to '[MASK]'.\n \
+  \           mecab_kwargs (dict, optional): Additional keyword arguments passed to\
+  \ MecabTokenizer\n                constructor when word_tokenizer_type is 'mecab'.\
+  \ Defaults to None.\n            sudachi_kwargs (dict, optional): Additional keyword\
+  \ arguments passed to SudachiTokenizer\n                constructor when word_tokenizer_type\
+  \ is 'sudachi'. Defaults to None.\n            jumanpp_kwargs (dict, optional):\
+  \ Additional keyword arguments passed to JumanppTokenizer\n                constructor\
+  \ when word_tokenizer_type is 'jumanpp'. Defaults to None.\n            **kwargs:\
+  \ Additional keyword arguments passed to the parent PreTrainedTokenizer class.\n\
+  \n        Raises:\n            ValueError: If the specified vocab_file or spm_file\
+  \ does not exist, or if invalid\n                word_tokenizer_type or subword_tokenizer_type\
+  \ values are provided.\n            ModuleNotFoundError: If required dependencies\
+  \ for specific tokenizers (fugashi for MeCab,\n                sudachipy for Sudachi,\
+  \ rhoknp for Juman++, sentencepiece for SentencePiece) are not\n               \
+  \ installed.\n\n        Notes:\n            - When using 'sentencepiece' as subword_tokenizer_type,\
+  \ spm_file must be provided and\n              vocab_file is not used.\n       \
+  \     - For morphological analyzers (MeCab, Sudachi, Juman++), additional system\
+  \ dependencies\n              and dictionaries may need to be installed separately.\n\
+  \            - The tokenizer supports serialization/deserialization but morphological\
+  \ analyzer instances\n              are recreated during deserialization to handle\
+  \ non-serializable components.\n            - Special tokens are automatically handled\
+  \ and can be accessed through properties like\n              cls_token_id, sep_token_id,\
+  \ etc.\n        \"\"\"\n        <your code>\n..."

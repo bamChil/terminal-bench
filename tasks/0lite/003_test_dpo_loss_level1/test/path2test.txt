@@ -1,0 +1,6 @@
+Liger-Kernel/test/chunked_loss/test_dpo_loss.py
+Liger-Kernel/test/transformers/test_transformers.py
+Liger-Kernel/test/transformers/test_monkey_patch.py
+Liger-Kernel/test/transformers/test_trainer_integration.py
+Liger-Kernel/test/transformers/test_fused_linear_jsd.py
+Liger-Kernel/test/transformers/test_auto_model.py

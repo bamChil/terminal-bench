@@ -1,0 +1,6 @@
+matplotlib/lib/matplotlib/tests/test_backend_pgf.py
+matplotlib/lib/matplotlib/tests/test_multivariate_colormaps.py
+matplotlib/lib/matplotlib/tests/test_mlab.py
+matplotlib/lib/matplotlib/tests/test_backend_ps.py
+matplotlib/lib/matplotlib/tests/test_cm_stubs.py
+matplotlib/lib/matplotlib/tests/test_sankey.py

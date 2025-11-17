@@ -1,0 +1,235 @@
+base_image: pb-python310-base_1da72186
+black_links:
+- https://github.com/pallets/flask
+commit: null
+custom_instance_image_build:
+- '# 设置 Hugging Face 相关环境变量'
+- ENV HF_HOME=/root/my_cache/huggingface
+- ENV HF_HUB_CACHE=/root/my_cache/huggingface/hub
+docker_specs:
+  custom_docker_args:
+  - -v /data2/cache_pb_datapipeline:/root/my_cache/
+  run_args:
+    cap_add: []
+    enable_gpu: true
+    shm_size: 4g
+exclude_keywords: []
+install: pip install -e .[dev,async]
+instance_image: pb-instance_9d023750
+library_name: flask
+pip_packages:
+- pytest
+- pytest_mock
+pre_install: []
+repo_name: flask
+repository: pallets/flask
+start_time: '2024-01-01'
+task_level: 1
+task_name: flask_cli
+task_statement: '**Task: Flask Application Discovery and Environment Setup**
+
+
+  **Core Functionality:**
+
+  Automatically locate, import, and initialize Flask web applications from Python
+  modules, with support for environment configuration loading.
+
+
+  **Main Features & Requirements:**
+
+  - Dynamically discover Flask apps using common naming conventions or specific identifiers
+
+  - Handle both direct app instances and factory function patterns
+
+  - Support flexible module import paths and app naming schemes
+
+  - Load environment variables from dotenv files (.env, .flaskenv)
+
+  - Provide CLI integration with version information display
+
+  - Offer configurable error handling (strict vs. graceful failure modes)
+
+
+  **Key Challenges:**
+
+  - Robust module import handling across different Python path configurations
+
+  - Distinguishing between various Flask app instantiation patterns
+
+  - Managing import errors vs. application discovery failures
+
+  - Maintaining backward compatibility while supporting modern Flask factory patterns
+
+  - Graceful degradation when optional dependencies are unavailable'
+technical_docs: []
+test_cmd: pytest -rA --timeout=10
+test_code1: 'from flask.cli import find_best_app
+
+  from flask.cli import get_version
+
+  from flask.cli import load_dotenv
+
+  from flask.cli import locate_app
+
+  from flask.cli import prepare_import'
+test_code_example: from flask.cli import find_best_app
+test_code_example_obj: find_best_app
+test_code_example_path: /testbed/src/flask/cli.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 10
+interface_description1: 'Below is **Interface Description 1** for file: src-flask-cli.py
+
+
+  This file contains 7 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "def find_best_app(module: ModuleType) -> Flask:\n    \"\"\"\n  \
+  \  Given a module instance this tries to find the best possible\n        application\
+  \ in the module or raises an exception.\n        \n    \"\"\"\n    <your code>\n\
+  \ndef prepare_import(path: str) -> str:\n    \"\"\"\n    Given a filename this will\
+  \ try to calculate the python path, add it\n        to the search path and return\
+  \ the actual module name that is expected.\n        \n    \"\"\"\n    <your code>\n\
+  \n@t.overload\ndef locate_app(\n    module_name: str,\n    app_name: str | None,\n\
+  \    raise_if_not_found: t.Literal[True] = True\n) -> Flask:\n    \"\"\"\n    Locate\
+  \ and return a Flask application instance from a specified module.\n    \n    This\
+  \ function attempts to import the given module and locate a Flask application\n\
+  \    instance within it. When `raise_if_not_found` is True (the default), this overload\n\
+  \    guarantees that a Flask application will be returned or an exception will be\
+  \ raised.\n    \n    Args:\n        module_name (str): The name of the module to\
+  \ import and search for a Flask \n            application. This can be a dotted\
+  \ import path like 'myapp.wsgi' or a \n            simple module name like 'app'.\n\
+  \        app_name (str | None): The specific name of the Flask application or factory\
+  \ \n            function within the module. If None, the function will automatically\
+  \ \n            search for common application names ('app', 'application') or factory\
+  \ \n            functions ('create_app', 'make_app'). If provided, it can be either\
+  \ a \n            variable name or a function call expression like 'create_app()'\
+  \ or \n            'create_app(config=\"development\")'.\n        raise_if_not_found\
+  \ (Literal[True]): When True, ensures that an exception \n            is raised\
+  \ if the module cannot be imported or no Flask application is \n            found.\
+  \ This parameter uses a literal type to enable proper overload \n            resolution.\n\
+  \    \n    Returns:\n        Flask: A Flask application instance. This overload\
+  \ guarantees a non-None \n            return value when `raise_if_not_found` is\
+  \ True.\n    \n    Raises:\n        NoAppException: Raised when the module cannot\
+  \ be imported, when no Flask \n            application or factory function is found\
+  \ in the module, when the \n            specified app_name doesn't exist in the\
+  \ module, when a factory function \n            cannot be called with the provided\
+  \ arguments, or when the located object \n            is not a valid Flask application\
+  \ instance.\n        ImportError: May be raised if there are import errors within\
+  \ the target \n            module itself (as opposed to the module not being found).\n\
+  \    \n    Note:\n        This is an overloaded function. When `raise_if_not_found`\
+  \ is True, the \n        function will always return a Flask instance or raise an\
+  \ exception. For \n        cases where you want to handle missing applications gracefully,\
+  \ use the \n        overload with `raise_if_not_found=False` which can return None.\n\
+  \    \"\"\"\n    <your code>\n\n@t.overload\ndef locate_app(\n    module_name: str,\n\
+  \    app_name: str | None,\n    raise_if_not_found: t.Literal[False] = ...\n) ->\
+  \ Flask | None:\n    \"\"\"\n    Locate and return a Flask application instance\
+  \ from a module.\n    \n    This is an overloaded function that attempts to import\
+  \ a specified module and locate\n    a Flask application instance within it. When\
+  \ `raise_if_not_found` is False, the\n    function returns None if the application\
+  \ cannot be found instead of raising an exception.\n    \n    Args:\n        module_name\
+  \ (str): The name of the module to import and search for a Flask application.\n\
+  \            This should be a valid Python module name (e.g., 'myapp' or 'package.module').\n\
+  \        app_name (str | None): The specific name of the Flask application or factory\
+  \ function\n            to look for within the module. If None, the function will\
+  \ automatically search\n            for common application names ('app', 'application')\
+  \ or factory functions\n            ('create_app', 'make_app'). Can also be a function\
+  \ call string like 'create_app()'\n            or 'create_app(args)' to call factory\
+  \ functions with arguments.\n        raise_if_not_found (Literal[False]): When False,\
+  \ the function returns None instead\n            of raising a NoAppException if\
+  \ the module cannot be imported or no Flask\n            application is found. Defaults\
+  \ to False in this overload.\n    \n    Returns:\n        Flask | None: A Flask\
+  \ application instance if found, or None if not found and\n            raise_if_not_found\
+  \ is False.\n    \n    Raises:\n        NoAppException: Never raised in this overload\
+  \ since raise_if_not_found is False.\n            However, other exceptions like\
+  \ ImportError from within the imported module\n            may still be raised and\
+  \ wrapped in NoAppException.\n    \n    Note:\n        This overload is used when\
+  \ you want to gracefully handle cases where a Flask\n        application might not\
+  \ be available, such as when searching through multiple\n        potential module\
+  \ locations. The function will attempt to import the module\n        and locate\
+  \ a Flask application using the find_best_app() or find_app_by_string()\n      \
+  \  helper functions depending on whether app_name is provided.\n    \"\"\"\n   \
+  \ <your code>\n\ndef locate_app(\n    module_name: str,\n    app_name: str | None,\n\
+  \    raise_if_not_found: bool = True\n) -> Flask | None:\n    \"\"\"\n    Locate\
+  \ and return a Flask application instance from a specified module.\n    \n    This\
+  \ function attempts to import a module and locate a Flask application within it.\n\
+  \    If no specific app name is provided, it will search for the best available\
+  \ Flask\n    application using common naming conventions. If an app name is specified,\
+  \ it will\n    look for that specific attribute or callable.\n    \n    Parameters:\n\
+  \        module_name (str): The name of the module to import and search for a Flask\
+  \ app.\n            This can be a dotted import path like 'myapp.wsgi' or a simple\
+  \ module name.\n        app_name (str | None): The specific name of the Flask application\
+  \ or factory\n            function to look for within the module. If None, the function\
+  \ will\n            automatically search for common Flask app names and factory\
+  \ functions.\n        raise_if_not_found (bool, optional): Whether to raise an exception\
+  \ if the\n            module cannot be imported or no Flask app is found. Defaults\
+  \ to True.\n            When False, returns None instead of raising an exception\
+  \ for import failures.\n    \n    Returns:\n        Flask | None: The Flask application\
+  \ instance if found. Returns None only when\n            raise_if_not_found is False\
+  \ and the module cannot be imported. Otherwise,\n            always returns a Flask\
+  \ instance or raises an exception.\n    \n    Raises:\n        NoAppException: Raised\
+  \ when raise_if_not_found is True and:\n            - The specified module cannot\
+  \ be imported\n            - An ImportError occurs within the imported module during\
+  \ processing\n            - No Flask application or factory function can be found\
+  \ in the module\n            - The specified app_name cannot be found or called\n\
+  \            - The found object is not a valid Flask application instance\n    \n\
+  \    Notes:\n        - When app_name is None, the function uses find_best_app()\
+  \ which searches for\n          common names like 'app', 'application', 'create_app',\
+  \ and 'make_app'\n        - When app_name is provided, the function uses find_app_by_string()\
+  \ which can\n          handle both variable names and function calls with arguments\n\
+  \        - Import errors that occur within the target module (not just missing modules)\n\
+  \          are re-raised as NoAppException with additional context\n        - The\
+  \ function distinguishes between import failures and errors within the module\n\
+  \          by examining the traceback depth\n    \"\"\"\n    <your code>\n\ndef\
+  \ get_version(\n    ctx: click.Context,\n    param: click.Parameter,\n    value:\
+  \ t.Any\n) -> None:\n    \"\"\"\n    Click callback function that displays version\
+  \ information and exits.\n    \n    This function is designed to be used as a callback\
+  \ for a Click option (typically --version).\n    When triggered, it displays the\
+  \ current Python version along with the versions of Flask\n    and Werkzeug, then\
+  \ exits the CLI application.\n    \n    Parameters:\n        ctx (click.Context):\
+  \ The Click context object containing command execution state\n            and configuration.\
+  \ Used to access color settings and exit the application.\n        param (click.Parameter):\
+  \ The Click parameter object that triggered this callback.\n            Not used\
+  \ in the function but required by Click's callback signature.\n        value (t.Any):\
+  \ The value of the parameter that triggered this callback. If falsy\n          \
+  \  or if ctx.resilient_parsing is True, the function returns early without action.\n\
+  \    \n    Returns:\n        None: This function does not return a value as it either\
+  \ exits early or\n            terminates the application via ctx.exit().\n    \n\
+  \    Notes:\n        - The function uses ctx.resilient_parsing to avoid executing\
+  \ during Click's\n          parsing phase when building help text or performing\
+  \ other non-execution tasks\n        - Version information is retrieved using importlib.metadata\
+  \ for Flask and Werkzeug\n        - Output respects the context's color setting\
+  \ for terminal formatting\n        - The function calls ctx.exit() which terminates\
+  \ the CLI application with exit code 0\n        - This is typically used with the\
+  \ is_eager=True option setting to ensure version\n          checking happens before\
+  \ other command processing\n    \"\"\"\n    <your code>\n\ndef load_dotenv(\n  \
+  \  path: str | os.PathLike[str] | None = None,\n    load_defaults: bool = True\n\
+  ) -> bool:\n    \"\"\"\n    Load \"dotenv\" files to set environment variables.\
+  \ A given path takes\n        precedence over ``.env``, which takes precedence over\
+  \ ``.flaskenv``. After\n        loading and combining these files, values are only\
+  \ set if the key is not\n        already set in ``os.environ``.\n    \n        This\
+  \ is a no-op if `python-dotenv`_ is not installed.\n    \n        .. _python-dotenv:\
+  \ https://github.com/theskumar/python-dotenv#readme\n    \n        :param path:\
+  \ Load the file at this location.\n        :param load_defaults: Search for and\
+  \ load the default ``.flaskenv`` and\n            ``.env`` files.\n        :return:\
+  \ ``True`` if at least one env var was loaded.\n    \n        .. versionchanged::\
+  \ 3.1\n            Added the ``load_defaults`` parameter. A given path takes precedence\n\
+  \            over default files.\n    \n        .. versionchanged:: 2.0\n      \
+  \      The current directory is not changed to the location of the\n           \
+  \ loaded file.\n    \n        .. versionchanged:: 2.0\n            When loading\
+  \ the env files, set the default encoding to UTF-8.\n    \n        .. versionchanged::\
+  \ 1.1.0\n            Returns ``False`` when python-dotenv is not installed, or when\n\
+  \            the given path isn't a file.\n    \n        .. versionadded:: 1.0\n\
+  \        \n    \"\"\"\n    <your code>\n"
+interface_code_example: "def find_best_app(module: ModuleType) -> Flask:\n    \"\"\
+  \"\n    Given a module instance this tries to find the best possible\n        application\
+  \ in the module or raises an exception.\n        \n    \"\"\"\n    <your code>\n\
+  ..."

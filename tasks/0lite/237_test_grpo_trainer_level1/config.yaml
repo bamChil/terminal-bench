@@ -1,0 +1,765 @@
+base_image: pb-python312_cu121_torch28-base_0953d328
+black_links:
+- https://github.com/huggingface/trl/
+commit: null
+custom_instance_image_build: []
+docker_specs:
+  custom_docker_args:
+  - -e HTTP_PROXY=http://172.17.0.1:7893
+  - -e HTTPS_PROXY=http://172.17.0.1:7893
+  run_args:
+    cap_add: []
+    cuda_visible_devices: '7'
+    shm_size: 8g
+install: pip install -e . --no-build-isolation
+instance_image: pb-instance_7a199856
+library_name: trl
+pip_packages:
+- rich
+- peft
+- diffusers
+- bitsandbytes
+- pytest
+- pytest-datadir
+- parameterized
+pre_install: []
+repo_name: trl
+repository: huggingface/trl
+task_level: 1
+task_name: trl_grpo_trainer
+task_statement: '## Task: Implement Group Relative Policy Optimization (GRPO) Trainer
+  for Language Model Fine-tuning
+
+
+  **Core Functionality:**
+
+  Develop a specialized trainer that fine-tunes language models using reward-based
+  optimization through the GRPO algorithm, which normalizes rewards within prompt
+  groups and applies policy gradient methods with clipped probability ratios.
+
+
+  **Main Features & Requirements:**
+
+  - Support multiple reward functions (pretrained models, custom functions) with automatic
+  aggregation
+
+  - Handle both text-only and multimodal (vision-language) model training
+
+  - Implement efficient completion generation with configurable backends (transformers,
+  vLLM)
+
+  - Provide distributed training compatibility (FSDP, DeepSpeed) with proper parameter
+  synchronization
+
+  - Enable importance sampling correction for generation/optimization misalignment
+
+  - Support parameter-efficient fine-tuning (PEFT) integration
+
+
+  **Key Challenges:**
+
+  - **Memory efficiency**: Optimize completion generation frequency and reuse across
+  gradient steps
+
+  - **Distributed coordination**: Ensure identical prompt distribution across GPUs
+  for proper reward normalization
+
+  - **Multi-backend integration**: Handle seamless weight synchronization between
+  training and generation engines
+
+  - **Reward computation**: Manage multiple reward functions with proper aggregation
+  and group-wise normalization
+
+  - **Gradient stability**: Implement clipped probability ratios and KL regularization
+  to prevent training instability'
+technical_docs: []
+test_cmd: pytest -rA --timeout=300
+test_code1: 'from trl import GRPOConfig
+
+  from trl import GRPOTrainer'
+test_code_example: from trl import GRPOConfig
+test_code_example_obj: GRPOConfig
+test_code_example_path: /testbed/trl/trainer/grpo_config.py
+test_description1: Below is **Test Description 1**
+test_discovery_cmd:
+- python
+- -m
+- pytest
+- --rootdir=.
+- --collect-only
+- -q
+- --tb=no
+test_dynamic_trace_cmd: -p no:xdist --no-header --tb=no --color=no -q
+timeout: 300
+timeout_dynamic: 3600
+timeout_run: 3600
+timeout_scanner: 3600
+interface_description1: 'Below is **Interface Description 1** for file: trl-trainer-grpo_trainer.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class GRPOTrainer(Trainer):\n    \"\"\"\n    \n        Trainer for\
+  \ the Group Relative Policy Optimization (GRPO) method. This algorithm was initially\
+  \ proposed in the\n        paper [DeepSeekMath: Pushing the Limits of Mathematical\
+  \ Reasoning in Open Language\n        Models](https://huggingface.co/papers/2402.03300).\n\
+  \    \n        Example:\n    \n        ```python\n        from datasets import load_dataset\n\
+  \        from trl import GRPOTrainer\n    \n        dataset = load_dataset(\"trl-lib/tldr\"\
+  , split=\"train\")\n    \n    \n        def reward_func(completions, **kwargs):\n\
+  \            # Dummy reward function that rewards completions with more unique letters.\n\
+  \            return [float(len(set(completion))) for completion in completions]\n\
+  \    \n    \n        trainer = GRPOTrainer(\n            model=\"Qwen/Qwen2-0.5B-Instruct\"\
+  ,\n            reward_funcs=reward_func,\n            train_dataset=dataset,\n \
+  \       )\n    \n        trainer.train()\n        ```\n    \n        Args:\n   \
+  \         model (`Union[str, PreTrainedModel]`):\n                Model to be trained.\
+  \ Can be either:\n    \n                - A string, being the *model id* of a pretrained\
+  \ model hosted inside a model repo on huggingface.co, or a\n                  path\
+  \ to a *directory* containing model weights saved using\n                  [`~transformers.PreTrainedModel.save_pretrained`],\
+  \ e.g., `'./my_model_directory/'`. The model is loaded\n                  using\
+  \ [`~transformers.AutoModelForCausalLM.from_pretrained`] with the keyword arguments\
+  \ in\n                  `args.model_init_kwargs`.\n                - A [`~transformers.PreTrainedModel`]\
+  \ object. Only causal language models are supported.\n            reward_funcs (`Union[RewardFunc,\
+  \ list[RewardFunc]]`):\n                Reward functions to be used for computing\
+  \ the rewards. To compute the rewards, we call all the reward\n                functions\
+  \ with the prompts and completions and sum the rewards. Can be either:\n    \n \
+  \               - A single reward function, such as:\n                    - A string:\
+  \ The *model ID* of a pretrained model hosted inside a model repo on huggingface.co,\
+  \ or a\n                    path to a *directory* containing model weights saved\
+  \ using\n                    [`~transformers.PreTrainedModel.save_pretrained`],\
+  \ e.g., `'./my_model_directory/'`. The model is loaded\n                    using\
+  \ [`~transformers.AutoModelForSequenceClassification.from_pretrained`] with `num_labels=1`\
+  \ and the\n                    keyword arguments in `args.model_init_kwargs`.\n\
+  \                    - A [`~transformers.PreTrainedModel`] object: Only sequence\
+  \ classification models are supported.\n                    - A custom reward function:\
+  \ The function is provided with the prompts and the generated completions,\n   \
+  \                   plus any additional columns in the dataset. It should return\
+  \ a list of rewards. Custom reward\n                      functions can also return\
+  \ `None` when the reward is not applicable to those samples. This is useful\n  \
+  \                    for multi-task training where different reward functions apply\
+  \ to different types of samples. When a\n                      reward function returns\
+  \ `None` for a sample, that reward function is excluded from the reward\n      \
+  \                calculation for that sample. For more details, see [Using a custom\
+  \ reward\n                      function](#using-a-custom-reward-function).\n  \
+  \  \n                      The trainer's state is also passed to the reward function.\
+  \ The trainer's state is an instance of\n                      [`~transformers.TrainerState`]\
+  \ and can be accessed by accessing the `trainer_state` argument to the\n       \
+  \               reward function's signature.\n                - A list of reward\
+  \ functions, where each item can independently be any of the above types. Mixing\
+  \ different\n                types within the list (e.g., a string model ID and\
+  \ a custom reward function) is allowed.\n            args ([`GRPOConfig`], *optional*):\n\
+  \                Configuration for this trainer. If `None`, a default configuration\
+  \ is used.\n            train_dataset ([`~datasets.Dataset`] or [`~datasets.IterableDataset`]):\n\
+  \                Dataset to use for training. It must include a column `\"prompt\"\
+  `. Any additional columns in the dataset is\n                ignored. The format\
+  \ of the samples can be either:\n    \n                - [Standard](dataset_formats#standard):\
+  \ Each sample contains plain text.\n                - [Conversational](dataset_formats#conversational):\
+  \ Each sample contains structured messages (e.g., role\n                  and content).\n\
+  \            eval_dataset ([`~datasets.Dataset`], [`~datasets.IterableDataset`]\
+  \ or `dict[str, Union[Dataset, IterableDataset]]`):\n                Dataset to\
+  \ use for evaluation. It must meet the same requirements as `train_dataset`.\n \
+  \           processing_class ([`~transformers.PreTrainedTokenizerBase`], [`~transformers.ProcessorMixin`],\
+  \ *optional*):\n                Processing class used to process the data. The padding\
+  \ side must be set to \"left\". If `None`, the\n                processing class\
+  \ is loaded from the model's name with [`~transformers.AutoProcessor.from_pretrained`].\
+  \ A\n                padding token, `tokenizer.pad_token`, must be set. If the processing\
+  \ class has not set a padding token,\n                `tokenizer.eos_token` will\
+  \ be used as the default.\n            reward_processing_classes (`Union[PreTrainedTokenizerBase,\
+  \ list[PreTrainedTokenizerBase]]`, *optional*):\n                Processing classes\
+  \ corresponding to the reward functions specified in `reward_funcs`. Can be either:\n\
+  \    \n                - A single processing class: Used when `reward_funcs` contains\
+  \ only one reward function.\n                - A list of processing classes: Must\
+  \ match the order and length of the reward functions in `reward_funcs`.\n      \
+  \          If set to `None`, or if an element of the list corresponding to a [`~transformers.PreTrainedModel`]\
+  \ is\n                `None`, the tokenizer for the model is automatically loaded\
+  \ using\n                [`~transformers.AutoTokenizer.from_pretrained`]. For elements\
+  \ in `reward_funcs` that are custom reward\n                functions (not [`~transformers.PreTrainedModel`]),\
+  \ the corresponding entries in `reward_processing_classes`\n                are\
+  \ ignored.\n            callbacks (list of [`~transformers.TrainerCallback`], *optional*):\n\
+  \                List of callbacks to customize the training loop. Will add those\
+  \ to the list of default callbacks detailed\n                in [here](https://huggingface.co/docs/transformers/main_classes/callback).\n\
+  \    \n                If you want to remove one of the default callbacks used,\
+  \ use the [`~transformers.Trainer.remove_callback`]\n                method.\n \
+  \           optimizers (`tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR]`,\
+  \ *optional*, defaults to `(None, None)`):\n                A tuple containing the\
+  \ optimizer and the scheduler to use. Will default to an instance of [`AdamW`] on\
+  \ your\n                model and a scheduler given by [`get_linear_schedule_with_warmup`]\
+  \ controlled by `args`.\n            peft_config ([`~peft.PeftConfig`], *optional*):\n\
+  \                PEFT configuration used to wrap the model. If `None`, the model\
+  \ is not wrapped.\n        \n    \"\"\"\n\n    _tag_names = ['trl', 'grpo']\n\n\
+  \    def __init__(\n        self,\n        model: Union[str, PreTrainedModel],\n\
+  \        reward_funcs: Union[RewardFunc, list[RewardFunc]],\n        args: Optional[GRPOConfig]\
+  \ = None,\n        train_dataset: Optional[Union[Dataset, IterableDataset]] = None,\n\
+  \        eval_dataset: Optional[Union[Dataset, IterableDataset, dict[str, Union[Dataset,\
+  \ IterableDataset]]]] = None,\n        processing_class: Optional[Union[PreTrainedTokenizerBase,\
+  \ ProcessorMixin]] = None,\n        reward_processing_classes: Optional[Union[PreTrainedTokenizerBase,\
+  \ list[PreTrainedTokenizerBase]]] = None,\n        callbacks: Optional[list[TrainerCallback]]\
+  \ = None,\n        optimizers: tuple[Optional[torch.optim.Optimizer], Optional[torch.optim.lr_scheduler.LambdaLR]]\
+  \ = (None, None),\n        peft_config: Optional['PeftConfig'] = None\n    ):\n\
+  \        \"\"\"\n        Initialize a GRPOTrainer instance for Group Relative Policy\
+  \ Optimization training.\n\n        This trainer implements the GRPO algorithm for\
+  \ training language models using reward-based optimization.\n        It supports\
+  \ multiple reward functions, importance sampling, and various generation backends\
+  \ including\n        transformers and vLLM.\n\n        Parameters:\n           \
+  \ model (Union[str, PreTrainedModel]): Model to be trained. Can be either a string\
+  \ representing\n                the model ID of a pretrained model hosted on huggingface.co\
+  \ or a path to a directory\n                containing model weights, or a PreTrainedModel\
+  \ object. Only causal language models are\n                supported. If a string\
+  \ is provided, the model is loaded using AutoModelForCausalLM.from_pretrained\n\
+  \                with the keyword arguments in args.model_init_kwargs.\n\n     \
+  \       reward_funcs (Union[RewardFunc, list[RewardFunc]]): Reward functions used\
+  \ for computing rewards.\n                Can be a single reward function or a list\
+  \ of reward functions. Each reward function can be:\n                - A string:\
+  \ Model ID of a pretrained sequence classification model\n                - A PreTrainedModel:\
+  \ Sequence classification model with num_labels=1\n                - A callable:\
+  \ Custom function that takes prompts and completions and returns rewards\n     \
+  \           When multiple reward functions are provided, their outputs are summed\
+  \ after applying weights.\n\n            args (Optional[GRPOConfig], default=None):\
+  \ Configuration object for the trainer. If None,\n                a default GRPOConfig\
+  \ is created using the model name.\n\n            train_dataset (Optional[Union[Dataset,\
+  \ IterableDataset]], default=None): Training dataset.\n                Must include\
+  \ a \"prompt\" column. Can be in standard format (plain text) or conversational\n\
+  \                format (structured messages with roles and content).\n\n      \
+  \      eval_dataset (Optional[Union[Dataset, IterableDataset, dict[str, Union[Dataset,\
+  \ IterableDataset]]]], default=None):\n                Evaluation dataset(s). Must\
+  \ meet the same requirements as train_dataset. Can be a single\n               \
+  \ dataset or a dictionary mapping dataset names to datasets.\n\n            processing_class\
+  \ (Optional[Union[PreTrainedTokenizerBase, ProcessorMixin]], default=None):\n  \
+  \              Processing class for tokenization and data preprocessing. Must have\
+  \ padding side set to \"left\".\n                If None, automatically loaded from\
+  \ the model using AutoProcessor.from_pretrained. A padding\n                token\
+  \ must be set; if not available, eos_token is used as default.\n\n            reward_processing_classes\
+  \ (Optional[Union[PreTrainedTokenizerBase, list[PreTrainedTokenizerBase]]], default=None):\n\
+  \                Processing classes for reward model tokenization. Should match\
+  \ the order and length of\n                reward_funcs. If None or if an element\
+  \ is None for PreTrainedModel reward functions,\n                the tokenizer is\
+  \ automatically loaded. Ignored for custom reward functions.\n\n            callbacks\
+  \ (Optional[list[TrainerCallback]], default=None): List of custom callbacks to add\n\
+  \                to the training loop. These are added to the default callbacks\
+  \ provided by the base Trainer.\n\n            optimizers (tuple[Optional[torch.optim.Optimizer],\
+  \ Optional[torch.optim.lr_scheduler.LambdaLR]], default=(None, None)):\n       \
+  \         Tuple containing optimizer and learning rate scheduler. If None, defaults\
+  \ to AdamW optimizer\n                and linear schedule with warmup controlled\
+  \ by args.\n\n            peft_config (Optional[PeftConfig], default=None): PEFT\
+  \ configuration for parameter-efficient\n                fine-tuning. If None, the\
+  \ model is trained without PEFT. If provided, the model is wrapped\n           \
+  \     with the specified PEFT configuration.\n\n        Raises:\n            ValueError:\
+  \ If reward_weights length doesn't match number of reward functions, if\n      \
+  \          reward_processing_classes length doesn't match reward_funcs length, if\
+  \ invalid dtype\n                is passed in model_init_kwargs, or if vLLM configuration\
+  \ is invalid.\n            ImportError: If required dependencies (liger-kernel,\
+  \ vLLM) are not available when\n                corresponding features are enabled.\n\
+  \            NotImplementedError: If unsupported feature combinations are used (e.g.,\
+  \ IterableDataset,\n                certain Liger kernel limitations).\n\n     \
+  \   Notes:\n            - The trainer automatically handles model preparation for\
+  \ distributed training (DeepSpeed, FSDP)\n            - When using PEFT, reference\
+  \ model computation is optimized by disabling adapters instead of\n            \
+  \  loading a separate model\n            - vLLM integration supports both server\
+  \ and colocated modes for efficient generation\n            - Importance sampling\
+  \ is automatically applied when generation and optimization steps are misaligned\n\
+  \            - The trainer supports multimodal inputs when using vision-language\
+  \ models\n        \"\"\"\n        <your code>\n\n    def _set_signature_columns_if_needed(self):\n\
+  \        \"\"\"\n        Set signature columns for the trainer if they haven't been\
+  \ set already.\n\n        This method overrides the parent class implementation\
+  \ to customize column handling for GRPO training.\n        In the standard Trainer,\
+  \ signature columns are set to match the model's expected inputs (like \"input_ids\"\
+  ).\n        However, in GRPOTrainer, data is preprocessed differently and the training_step\
+  \ method expects different\n        column names.\n\n        The method sets the\
+  \ signature columns to [\"prompt\", \"image\"] which are the columns expected by\
+  \ the\n        GRPO training pipeline. This ensures that when `args.remove_unused_columns`\
+  \ is True, only the\n        relevant columns are kept and others are removed during\
+  \ data preprocessing.\n\n        Parameters:\n            self: The GRPOTrainer\
+  \ instance.\n\n        Returns:\n            None: This method modifies the instance's\
+  \ `_signature_columns` attribute in place.\n\n        Notes:\n            - This\
+  \ method is called automatically by the Trainer framework during initialization\n\
+  \            - The signature columns determine which columns are preserved when\
+  \ `remove_unused_columns=True`\n            - Only sets `_signature_columns` if\
+  \ it hasn't been set already (i.e., if it's None)\n            - The \"image\" column\
+  \ is included to support multimodal training scenarios\n        \"\"\"\n       \
+  \ <your code>\n\n    def get_train_dataloader(self):\n        \"\"\"\n        Retrieves\
+  \ the training dataloader for the GRPO trainer.\n\n        This method overrides\
+  \ the parent class implementation to support GRPO's custom batching strategy. Instead\
+  \ of returning a standard per-step batch (i.e., `per_device_batch_size`), the dataloader\
+  \ loads a *generation* batch (i.e., `per_device_batch_size × steps_per_generation`).\
+  \ This allows the trainer to generate completions once every `steps_per_generation`\
+  \ steps rather than once per accumulation step, which is significantly more efficient.\n\
+  \n        The method multiplies the standard batch size by `steps_per_generation`,\
+  \ so `_prepare_inputs` receives this larger generation batch and handles the splitting\
+  \ internally across multiple training steps.\n\n        Parameters:\n          \
+  \  self: The GRPOTrainer instance.\n\n        Returns:\n            torch.utils.data.DataLoader:\
+  \ A DataLoader configured with the generation batch size \n                (`_train_batch_size\
+  \ * steps_per_generation`) instead of the standard training batch size.\n      \
+  \          The dataloader is prepared by the accelerator for distributed training.\n\
+  \n        Raises:\n            ValueError: If `train_dataset` is None, as training\
+  \ requires a dataset.\n\n        Notes:\n            - This implementation is largely\
+  \ identical to the parent `Trainer.get_train_dataloader` method,\n             \
+  \ with only the batch size calculation modified to support GRPO's generation batching\
+  \ strategy.\n            - The larger batch size enables more efficient completion\
+  \ generation by reducing the frequency\n              of generation calls from once\
+  \ per step to once per `steps_per_generation` steps.\n            - Some parts of\
+  \ the method may not be directly relevant to GRPO but are maintained for\n     \
+  \         compatibility with the parent class implementation.\n        \"\"\"\n\
+  \        <your code>\n\n    def _get_train_sampler(\n        self,\n        dataset:\
+  \ Optional[Dataset] = None\n    ) -> Sampler:\n        \"\"\"\n        Get the training\
+  \ sampler for the dataset.\n\n        This method creates a specialized sampler\
+  \ that handles the unique requirements of GRPO training:\n        1. Ensures each\
+  \ prompt is repeated across multiple processes to guarantee identical prompts\n\
+  \           are distributed to different GPUs for proper reward computation and\
+  \ normalization\n        2. Repeats batches multiple times to allow reusing generations\
+  \ across multiple updates,\n           optimizing the training process by avoiding\
+  \ redundant generation steps\n\n        The sampler uses consistent seeding across\
+  \ processes to ensure proper prompt assignment\n        and prevent discrepancies\
+  \ in group formation during reward computation.\n\n        Args:\n            dataset\
+  \ (Optional[Dataset], optional): The dataset to sample from. If None, uses\n   \
+  \             self.train_dataset. Defaults to None.\n\n        Returns:\n      \
+  \      Sampler: A RepeatSampler configured for GRPO training that handles prompt\
+  \ repetition\n                across processes and batch reuse across multiple training\
+  \ iterations.\n\n        Notes:\n            - The sampler ensures prompts are distributed\
+  \ identically across GPUs for proper\n              reward normalization within\
+  \ prompt groups\n            - Batch repetition allows efficient reuse of generated\
+  \ completions across multiple\n              gradient updates, reducing computational\
+  \ overhead\n            - The repeat count is calculated as num_iterations × steps_per_generation\
+  \ to support\n              the multi-iteration training strategy of GRPO\n    \
+  \        - Uses the same seed across all processes to maintain consistent prompt\
+  \ assignment\n        \"\"\"\n        <your code>\n\n    def _get_eval_sampler(self,\
+  \ eval_dataset) -> Sampler:\n        \"\"\"\n        Get the evaluation sampler\
+  \ for the given evaluation dataset.\n\n        This method creates a RepeatSampler\
+  \ specifically configured for evaluation mode. The sampler\n        ensures that\
+  \ each prompt is repeated across multiple processes to enable proper reward\n  \
+  \      computation and normalization within prompt groups. Unlike the training sampler,\
+  \ the\n        evaluation sampler does not include multiple iterations or buffering\
+  \ since evaluation\n        is performed once per batch without reusing generations.\n\
+  \n        Args:\n            eval_dataset: The evaluation dataset to create a sampler\
+  \ for. Should be a Dataset\n                object containing evaluation samples\
+  \ with the required format (including \"prompt\"\n                column and any\
+  \ additional columns).\n\n        Returns:\n            Sampler: A RepeatSampler\
+  \ instance configured for evaluation with the following properties:\n          \
+  \      - data_source set to the provided eval_dataset\n                - mini_repeat_count\
+  \ set to self.num_generations to ensure each prompt is repeated\n              \
+  \    for multiple generations\n                - seed set to self.args.seed for\
+  \ reproducible sampling across processes\n                - No repeat_count specified\
+  \ (defaults to 1) since evaluation doesn't require\n                  multiple iterations\
+  \ like training\n\n        Important notes:\n            - This is a private method\
+  \ intended for internal use by the trainer's evaluation pipeline\n            -\
+  \ The sampler uses the same seed across all processes to ensure consistent prompt\n\
+  \              assignment and proper group formation for reward computation\n  \
+  \          - The mini_repeat_count ensures that identical prompts are distributed\
+  \ to different\n              GPUs, which is crucial for computing and normalizing\
+  \ rewards correctly within each\n              prompt group\n            - Unlike\
+  \ the training sampler, this doesn't include batch buffering or multiple\n     \
+  \         iterations since evaluation generates completions once per batch\n   \
+  \     \"\"\"\n        <your code>\n\n    @profiling_decorator\n    def _get_last_hidden_state(\n\
+  \        self,\n        unwrapped_model,\n        input_ids,\n        attention_mask,\n\
+  \        logits_to_keep,\n        pixel_values = None,\n        image_grid_thw =\
+  \ None,\n        pixel_attention_mask = None,\n        image_sizes = None\n    ):\n\
+  \        \"\"\"\n        Extract the last hidden states from a language model for\
+  \ completion tokens.\n\n        This method computes the last hidden states of the\
+  \ model for the completion portion of the input sequence. It handles various multimodal\
+  \ inputs (images, pixel values, attention masks) and supports models with or without\
+  \ the `logits_to_keep` parameter optimization.\n\n        Args:\n            unwrapped_model:\
+  \ The unwrapped model instance to extract hidden states from. If the model is a\
+  \ PEFT model, it will be further unwrapped to access the base model.\n         \
+  \   input_ids (torch.Tensor): Input token IDs of shape (batch_size, sequence_length)\
+  \ containing both prompt and completion tokens.\n            attention_mask (torch.Tensor):\
+  \ Attention mask of shape (batch_size, sequence_length) indicating which tokens\
+  \ should be attended to.\n            logits_to_keep (int): Number of completion\
+  \ tokens to keep from the end of the sequence. Used to extract only the relevant\
+  \ hidden states.\n            pixel_values (torch.Tensor, optional): Pixel values\
+  \ for image inputs in multimodal models. Shape depends on the specific model architecture.\n\
+  \            image_grid_thw (torch.Tensor, optional): Image grid dimensions (tiles,\
+  \ height, width) for models like Qwen that use tiled image processing.\n       \
+  \     pixel_attention_mask (torch.Tensor, optional): Attention mask for pixel values,\
+  \ used in models like SmolVLM2.\n            image_sizes (torch.Tensor, optional):\
+  \ Original image sizes before preprocessing, used in models like LLaVa-Next.\n\n\
+  \        Returns:\n            torch.Tensor: Last hidden states of shape (batch_size,\
+  \ logits_to_keep, hidden_size) containing the hidden representations for the completion\
+  \ tokens only. The last token prediction logits are excluded.\n\n        Notes:\n\
+  \            - The method automatically detects whether the model supports the `logits_to_keep`\
+  \ optimization parameter\n            - For models that don't support `logits_to_keep`,\
+  \ the method computes all hidden states and then slices to keep only the required\
+  \ completion tokens\n            - The last hidden state corresponding to next token\
+  \ prediction is always excluded\n            - Multimodal parameters are conditionally\
+  \ added based on model requirements and availability\n            - The method sets\
+  \ `use_cache=False` to suppress generation-related warnings during training\n  \
+  \      \"\"\"\n        <your code>\n\n    def get_high_entropy_mask(\n        self,\n\
+  \        entropies: torch.Tensor,\n        mask: torch.Tensor,\n        threshold:\
+  \ float\n    ) -> torch.Tensor:\n        \"\"\"\n\n                Returns a binary\
+  \ mask identifying tokens whose entropy exceeds a given quantile threshold.\n\n\
+  \                Args:\n                    entropies (`torch.Tensor`):\n      \
+  \                  Tensor of shape (batch_size, seq_len) with per-token entropy\
+  \ values.\n                    mask (`torch.Tensor`):\n                        Binary\
+  \ mask of the same shape as `entropies`, where `1` indicates valid tokens and `0`\
+  \ padding.\n                    threshold (`float`):\n                        Quantile\
+  \ threshold between `0.0` and `1.0` to select high-entropy tokens.\n\n         \
+  \       Returns:\n                    `torch.Tensor`:\n                        Boolean\
+  \ mask of shape (batch_size, seq_len), where `True` indicates tokens with entropy\
+  \ >= threshold\n                        and `False` otherwise.\n\n        \"\"\"\
+  \n        <your code>\n\n    @profiling_decorator\n    def _get_per_token_logps_and_entropies(\n\
+  \        self,\n        model,\n        input_ids,\n        attention_mask,\n  \
+  \      logits_to_keep,\n        batch_size = None,\n        compute_entropy = False,\n\
+  \        pixel_values = None,\n        image_grid_thw = None,\n        pixel_attention_mask\
+  \ = None,\n        image_sizes = None\n    ) -> dict[str, Optional[torch.Tensor]]:\n\
+  \        \"\"\"\n        Compute log-probs and (optionally) entropies for each token.\n\
+  \        \"\"\"\n        <your code>\n\n    def _fix_param_name_to_vllm(\n     \
+  \   self,\n        name,\n        extra_prefixes: Optional[list[str]] = None\n \
+  \   ):\n        \"\"\"\n        Convert parameter names from checkpoint format to\
+  \ vLLM-compatible format by removing specific prefixes.\n\n        This method handles\
+  \ the parameter name conversion needed when synchronizing model weights\n      \
+  \  with vLLM instances. It removes checkpoint-specific prefixes that are added during\
+  \ model\n        wrapping (e.g., FSDP, DeepSpeed) to restore the original parameter\
+  \ names expected by vLLM.\n\n        Args:\n            name (str): The parameter\
+  \ name to be converted, typically from a model checkpoint\n                or wrapped\
+  \ model state dict.\n            extra_prefixes (Optional[list[str]], optional):\
+  \ Additional prefixes to remove\n                beyond the default \"_checkpoint_wrapped_module.\"\
+  \ prefix. Defaults to None,\n                which creates an empty list.\n\n  \
+  \      Returns:\n            str: The converted parameter name with specified prefixes\
+  \ removed. The name\n                is processed sequentially, removing each prefix\
+  \ if found.\n\n        Notes:\n            - The method always attempts to remove\
+  \ \"_checkpoint_wrapped_module.\" prefix first\n            - Additional prefixes\
+  \ from extra_prefixes are processed in order\n            - If a prefix is not found\
+  \ in the name, it is left unchanged\n            - This is primarily used internally\
+  \ during vLLM weight synchronization\n            - Common extra prefixes include\
+  \ \"_fsdp_wrapped_module.\" for FSDP models\n              and \"modules_to_save.default.\"\
+  \ for PEFT models\n        \"\"\"\n        <your code>\n\n    def _sync_fsdp1_params_to_vllm(\n\
+  \        self,\n        module: nn.Module,\n        prefix: str = '',\n        visited\
+  \ = None\n    ):\n        \"\"\"\n        Memory-efficient post-order traversal\
+  \ of FSDP modules to extract full parameters and sync with vLLM.\n        \"\"\"\
+  \n        <your code>\n\n    def _sync_fsdp2_params_to_vllm(self, module: nn.Module):\n\
+  \        \"\"\"\n        Synchronizes FSDP2 (Fully Sharded Data Parallel version\
+  \ 2) model parameters to vLLM engine.\n\n        This method extracts parameters\
+  \ from an FSDP2-wrapped PyTorch module and updates the corresponding\n        parameters\
+  \ in the vLLM engine. Unlike FSDP1, FSDP2's state_dict() method already provides\
+  \ access\n        to all parameters without requiring recursive traversal of child\
+  \ modules.\n\n        Args:\n            module (nn.Module): The FSDP2-wrapped PyTorch\
+  \ module whose parameters need to be synchronized\n                to vLLM. This\
+  \ should be a model that has been prepared with FSDP2.\n\n        Returns:\n   \
+  \         None: This method performs in-place parameter synchronization and does\
+  \ not return any value.\n\n        Important Notes:\n            - This method is\
+  \ specifically designed for FSDP2 and should not be used with FSDP1 models\n   \
+  \         - Parameters are automatically moved to CUDA if they are currently on\
+  \ CPU\n            - The method calls full_tensor() on each parameter to ensure\
+  \ complete tensor data is available\n            - Parameter names are passed through\
+  \ _fix_param_name_to_vllm() for compatibility with vLLM naming conventions\n   \
+  \         - The synchronization behavior depends on the vLLM mode:\n           \
+  \     * In \"server\" mode: Updates are sent via vLLM client (only on main process)\n\
+  \                * In \"colocate\" mode: Parameters are loaded directly into the\
+  \ local vLLM model\n            - This method assumes vLLM has already been properly\
+  \ initialized and configured\n            - Memory usage is optimized compared to\
+  \ FSDP1 since no recursive parameter gathering is required\n        \"\"\"\n   \
+  \     <your code>\n\n    @profiling_decorator\n    def _move_model_to_vllm(self):\n\
+  \        \"\"\"\n        Move the current model weights to the vLLM inference engine\
+  \ for generation.\n\n        This method synchronizes the training model's parameters\
+  \ with the vLLM engine to ensure\n        that completions are generated using the\
+  \ most up-to-date model weights. The synchronization\n        process varies depending\
+  \ on the distributed training setup (DeepSpeed ZeRO-3, FSDP, or\n        standard\
+  \ training) and whether PEFT adapters are being used.\n\n        The method handles\
+  \ different scenarios:\n        - For PEFT models: Temporarily merges adapters,\
+  \ syncs weights, then unmerges\n        - For FSDP: Uses memory-efficient post-order\
+  \ traversal to gather and sync parameters\n        - For DeepSpeed ZeRO-3: Gathers\
+  \ parameters using DeepSpeed's context manager\n        - For standard models: Directly\
+  \ syncs parameters without special handling\n\n        After weight synchronization,\
+  \ the method resets the vLLM prefix cache to ensure clean\n        generation state.\n\
+  \n        Notes:\n            This method is decorated with @profiling_decorator\
+  \ for performance monitoring.\n            The synchronization is only performed\
+  \ when using vLLM for generation (use_vllm=True).\n            For PEFT models with\
+  \ FSDP/DeepSpeed, parameters must be gathered before merging adapters\n        \
+  \    as sharded adapter merging is not supported.\n            The method handles\
+  \ both server and colocate vLLM modes differently for weight updates.\n\n      \
+  \  Raises:\n            RuntimeError: If PEFT adapter merging fails with sharded\
+  \ parameters.\n            MemoryError: If parameter gathering exceeds available\
+  \ GPU memory.\n        \"\"\"\n        <your code>\n\n    @profiling_decorator\n\
+  \    def _prepare_inputs(\n        self,\n        generation_batch: dict[str, Union[torch.Tensor,\
+  \ Any]]\n    ) -> dict[str, Union[torch.Tensor, Any]]:\n        \"\"\"\n       \
+  \ Prepares inputs for model training/evaluation by managing completion generation\
+  \ and batch handling.\n\n        This method serves as the main input preparation\
+  \ pipeline for the GRPO trainer, handling different\n        behaviors for training\
+  \ and evaluation modes. During training, it implements an efficient batching\n \
+  \       strategy that generates completions once per generation cycle and reuses\
+  \ them across multiple\n        gradient accumulation steps. During evaluation,\
+  \ it processes each batch independently without\n        buffering or reuse.\n\n\
+  \        Args:\n            generation_batch (dict[str, Union[torch.Tensor, Any]]):\
+  \ Input batch containing training/evaluation\n                data. During training,\
+  \ this is a generation batch with size \n                (per_device_train_batch_size\
+  \ × steps_per_generation). During evaluation, this is a standard\n             \
+  \   local batch. Must contain a \"prompt\" key and may contain additional keys like\
+  \ \"image\" for\n                multimodal inputs.\n\n        Returns:\n      \
+  \      dict[str, Union[torch.Tensor, Any]]: Processed batch ready for model training/evaluation.\
+  \ Contains\n                keys such as \"prompt_ids\", \"completion_ids\", \"\
+  advantages\", \"attention_mask\", and potentially\n                multimodal data\
+  \ like \"pixel_values\". The returned batch always has size per_device_train_batch_size\n\
+  \                (training) or per_device_eval_batch_size (evaluation).\n\n    \
+  \    Notes:\n            - Training mode: Implements efficient completion generation\
+  \ by buffering completions and reusing\n              them across multiple gradient\
+  \ accumulation steps. Completions are regenerated every\n              (steps_per_generation\
+  \ × num_iterations) steps.\n            - Evaluation mode: Generates completions\
+  \ for each batch without buffering or reuse.\n            - The method handles both\
+  \ text-only and multimodal inputs (images).\n            - Completion generation\
+  \ can use either transformers, vLLM, or paged attention depending on\n         \
+  \     trainer configuration.\n            - Rewards are calculated using the configured\
+  \ reward functions and normalized per group.\n            - The method tracks various\
+  \ metrics including completion lengths, reward statistics, and\n              clipping\
+  \ ratios for logging purposes.\n        \"\"\"\n        <your code>\n\n    @profiling_decorator\n\
+  \    def _calculate_rewards(\n        self,\n        inputs,\n        prompts,\n\
+  \        completions,\n        completion_ids_list\n    ):\n        \"\"\"\n   \
+  \     Calculate rewards for generated completions using the configured reward functions.\n\
+  \n        This method computes rewards for each completion by calling all configured\
+  \ reward functions\n        and aggregating their outputs. The rewards are calculated\
+  \ across all processes and then\n        gathered to ensure proper normalization\
+  \ per prompt group.\n\n        Args:\n            inputs (list[dict]): List of input\
+  \ examples containing prompt and completion data.\n                Each dictionary\
+  \ should contain keys like \"prompt\", \"completion\", \"completion_ids\"\n    \
+  \            and any additional columns from the dataset.\n            prompts (list):\
+  \ List of prompts corresponding to the completions. Format depends on\n        \
+  \        whether conversational data is used (list of message dicts vs plain strings).\n\
+  \            completions (list): List of generated completions in the same format\
+  \ as prompts.\n            completion_ids_list (list[list[int]]): List of token\
+  \ ID sequences for each completion,\n                used by reward functions that\
+  \ operate on tokens rather than text.\n\n        Returns:\n            torch.Tensor:\
+  \ Tensor of shape (total_batch_size, num_reward_functions) containing\n        \
+  \        rewards from each reward function for all completions across all processes.\n\
+  \                Values are gathered across all processes to enable proper group-wise\
+  \ normalization.\n\n        Notes:\n            - Reward functions can return None\
+  \ for samples where the reward is not applicable,\n              which will be converted\
+  \ to NaN in the output tensor\n            - For PreTrainedModel reward functions,\
+  \ inputs are tokenized and processed automatically\n            - For custom reward\
+  \ functions, the trainer state is passed as an additional argument\n           \
+  \ - All additional columns from the input dataset are passed to custom reward functions\n\
+  \            - Rewards are computed on the appropriate device and gathered across\
+  \ all processes\n            - A warning is issued if all reward functions return\
+  \ None for any sample\n        \"\"\"\n        <your code>\n\n    def _generate_and_score_completions(\n\
+  \        self,\n        inputs: list[dict[str, Union[torch.Tensor, Any]]]\n    )\
+  \ -> dict[str, Union[torch.Tensor, Any]]:\n        \"\"\"\n        Generate completions\
+  \ for prompts and compute their rewards for training or evaluation.\n\n        This\
+  \ method handles the core generation and scoring pipeline for GRPO training. It\
+  \ processes\n        input prompts, generates completions using either the model\
+  \ directly or vLLM, computes\n        rewards using the configured reward functions,\
+  \ and prepares the data for loss computation.\n\n        Args:\n            inputs\
+  \ (list[dict[str, Union[torch.Tensor, Any]]]): A list of input dictionaries containing\n\
+  \                prompts and potentially other data like images. Each dictionary\
+  \ must contain a \"prompt\"\n                key. During training, this is a generation\
+  \ batch (per_device_batch_size × steps_per_generation).\n                During\
+  \ evaluation, this is a standard evaluation batch.\n\n        Returns:\n       \
+  \     dict[str, Union[torch.Tensor, Any]]: A dictionary containing processed data\
+  \ for training/evaluation:\n                - prompt_ids (torch.Tensor): Tokenized\
+  \ prompt sequences\n                - prompt_mask (torch.Tensor): Attention mask\
+  \ for prompts\n                - completion_ids (torch.Tensor): Tokenized completion\
+  \ sequences\n                - completion_mask (torch.Tensor): Attention mask for\
+  \ completions (masked after EOS)\n                - advantages (torch.Tensor): Computed\
+  \ advantages for policy optimization\n                - num_items_in_batch (torch.Tensor):\
+  \ Total number of completion tokens across processes\n                - old_per_token_logps\
+  \ (torch.Tensor, optional): Log probabilities from previous model state\n      \
+  \              for importance sampling when generation and optimization steps are\
+  \ misaligned\n                - importance_sampling_ratio (torch.Tensor, optional):\
+  \ Importance sampling ratios when using vLLM\n                - ref_per_token_logps\
+  \ (torch.Tensor, optional): Reference model log probabilities for KL computation\n\
+  \                - pixel_values (torch.Tensor, optional): Image pixel values for\
+  \ vision-language models\n                - image_grid_thw (torch.Tensor, optional):\
+  \ Image grid dimensions for certain VLMs\n                - pixel_attention_mask\
+  \ (torch.Tensor, optional): Attention mask for image pixels\n                - image_sizes\
+  \ (torch.Tensor, optional): Original image sizes for certain VLMs\n\n        Notes:\n\
+  \            - Supports both text-only and vision-language models with automatic\
+  \ multimodal processing\n            - Handles prompt truncation when max_prompt_length\
+  \ is specified, preserving special vision tokens\n            - Computes group-wise\
+  \ reward normalization where rewards are normalized within each prompt group\n \
+  \           - Automatically masks completions after the first EOS token to prevent\
+  \ training on padding\n            - Supports importance sampling correction when\
+  \ using vLLM to account for distribution mismatch\n            - Updates internal\
+  \ metrics and logs for monitoring training progress\n            - For conversational\
+  \ data, properly formats messages and handles role-based completion structure\n\
+  \        \"\"\"\n        <your code>\n\n    def compute_liger_loss(self, unwrapped_model,\
+  \ inputs):\n        \"\"\"\n        Computes the loss using the Liger kernel implementation\
+  \ for GRPO (Group Relative Policy Optimization).\n\n        This method leverages\
+  \ the LigerFusedLinearGRPOLoss kernel to efficiently compute the GRPO loss\n   \
+  \     by fusing the linear layer computation with the loss calculation. This approach\
+  \ provides memory\n        and computational efficiency benefits compared to the\
+  \ standard loss computation.\n\n        Args:\n            unwrapped_model: The\
+  \ unwrapped model instance (without any distributed training wrappers)\n       \
+  \         that contains the language model head and other components needed for\
+  \ loss computation.\n            inputs (dict): A dictionary containing the input\
+  \ data for loss computation. Expected keys include:\n                - \"prompt_ids\"\
+  : Token IDs for the prompt portion\n                - \"prompt_mask\": Attention\
+  \ mask for the prompt\n                - \"completion_ids\": Token IDs for the completion\
+  \ portion  \n                - \"completion_mask\": Attention mask for the completion\n\
+  \                - \"advantages\": Computed advantages for each sample\n       \
+  \         - \"old_per_token_logps\" (optional): Previous per-token log probabilities\
+  \ for importance sampling\n                - \"ref_per_token_logps\" (optional):\
+  \ Reference model per-token log probabilities for KL regularization\n          \
+  \      - \"pixel_values\" (optional): Image pixel values for vision-language models\n\
+  \                - \"image_grid_thw\" (optional): Image grid dimensions for vision-language\
+  \ models\n                - \"pixel_attention_mask\" (optional): Attention mask\
+  \ for image pixels\n                - \"image_sizes\" (optional): Original image\
+  \ sizes for vision-language models\n\n        Returns:\n            torch.Tensor:\
+  \ The computed GRPO loss value, scaled by the current gradient accumulation steps\n\
+  \                to ensure proper gradient scaling during distributed training.\n\
+  \n        Notes:\n            - This method requires the Liger kernel to be available\
+  \ and use_liger_loss to be enabled\n            - The loss is automatically scaled\
+  \ by gradient accumulation steps for proper distributed training\n            -\
+  \ Metrics such as KL divergence and clip ratios are computed and logged internally\n\
+  \            - Only supports token-level importance sampling when using Liger kernels\n\
+  \            - The method extracts the last hidden states from the model and passes\
+  \ them to the fused loss function\n            - Beta parameter controls KL regularization\
+  \ strength; when beta=0, KL divergence is not computed\n        \"\"\"\n       \
+  \ <your code>\n\n    @profiling_decorator\n    def compute_loss(\n        self,\n\
+  \        model,\n        inputs,\n        return_outputs = False,\n        num_items_in_batch\
+  \ = None\n    ):\n        \"\"\"\n        Computes the loss for the GRPO (Group\
+  \ Relative Policy Optimization) training step.\n\n        This method handles the\
+  \ core loss computation for GRPO training, supporting both standard\n        PyTorch\
+  \ implementation and optimized Liger kernel implementation. The loss is computed\n\
+  \        based on policy gradients with clipped probability ratios and optional\
+  \ KL divergence\n        regularization against a reference model.\n\n        Parameters:\n\
+  \            model: The model being trained (wrapped by accelerator).\n        \
+  \    inputs (dict): Dictionary containing preprocessed training inputs with the\
+  \ following keys:\n                - \"prompt_ids\": Token IDs for the prompts\n\
+  \                - \"prompt_mask\": Attention mask for prompts  \n             \
+  \   - \"completion_ids\": Token IDs for generated completions\n                -\
+  \ \"completion_mask\": Attention mask for completions\n                - \"advantages\"\
+  : Computed advantages for each sample\n                - \"num_items_in_batch\"\
+  : Total number of items across all processes (for DAPO loss)\n                -\
+  \ \"old_per_token_logps\" (optional): Log probabilities from previous model state\n\
+  \                - \"ref_per_token_logps\" (optional): Reference model log probabilities\n\
+  \                - \"importance_sampling_ratio\" (optional): Importance sampling\
+  \ corrections for vLLM\n                - Visual inputs (optional): \"pixel_values\"\
+  , \"image_grid_thw\", etc. for multimodal models\n            return_outputs (bool,\
+  \ optional): Whether to return model outputs. Defaults to False.\n             \
+  \   Currently not supported and will raise ValueError if True.\n            num_items_in_batch\
+  \ (int, optional): Number of items in batch. Currently unused as this\n        \
+  \        information is extracted from inputs[\"num_items_in_batch\"].\n\n     \
+  \   Returns:\n            torch.Tensor: Computed loss value, scaled by gradient\
+  \ accumulation steps. The loss\n                incorporates clipped policy gradients,\
+  \ optional KL regularization, and importance\n                sampling corrections\
+  \ when applicable.\n\n        Important Notes:\n            - The method automatically\
+  \ detects whether to use Liger kernel optimization based on\n              the `use_liger_loss`\
+  \ configuration\n            - Loss scaling depends on the `loss_type` setting (grpo,\
+  \ bnpo, dr_grpo, or dapo)\n            - KL divergence regularization is applied\
+  \ when `beta > 0.0`\n            - Importance sampling corrections are applied when\
+  \ using vLLM generation\n            - The method logs various training metrics\
+  \ including entropy, clipping ratios, and KL divergence\n            - Visual inputs\
+  \ are supported for multimodal models\n\n        Exceptions:\n            ValueError:\
+  \ Raised if `return_outputs=True` as output return is not currently supported.\n\
+  \        \"\"\"\n        <your code>\n\n    def _compute_loss(self, model, inputs):\n\
+  \        \"\"\"\n        Compute the loss for the GRPO (Group Relative Policy Optimization)\
+  \ training step.\n\n        This method calculates the GRPO loss by computing per-token\
+  \ log probabilities, KL divergence\n        with a reference model (if applicable),\
+  \ and applying importance sampling corrections. The loss\n        incorporates advantages\
+  \ from reward normalization and uses clipped probability ratios to\n        stabilize\
+  \ training.\n\n        Args:\n            model: The model being trained. This should\
+  \ be a PyTorch model that can compute\n                forward passes and return\
+  \ logits for the given inputs.\n            inputs (dict): A dictionary containing\
+  \ the training inputs with the following keys:\n                - \"prompt_ids\"\
+  \ (torch.Tensor): Token IDs for the prompts, shape (batch_size, prompt_length)\n\
+  \                - \"prompt_mask\" (torch.Tensor): Attention mask for prompts, shape\
+  \ (batch_size, prompt_length)\n                - \"completion_ids\" (torch.Tensor):\
+  \ Token IDs for completions, shape (batch_size, completion_length)\n           \
+  \     - \"completion_mask\" (torch.Tensor): Attention mask for completions, shape\
+  \ (batch_size, completion_length)\n                - \"advantages\" (torch.Tensor):\
+  \ Computed advantages for each sequence, shape (batch_size,)\n                -\
+  \ \"num_items_in_batch\" (int): Total number of items across all processes (used\
+  \ for DAPO loss)\n                - \"old_per_token_logps\" (torch.Tensor, optional):\
+  \ Log probabilities from previous model state\n                - \"ref_per_token_logps\"\
+  \ (torch.Tensor, optional): Reference model log probabilities for KL computation\n\
+  \                - \"importance_sampling_ratio\" (torch.Tensor, optional): Importance\
+  \ sampling weights when using vLLM\n                - \"pixel_values\" (torch.Tensor,\
+  \ optional): Image pixel values for vision-language models\n                - \"\
+  image_grid_thw\" (torch.Tensor, optional): Image grid dimensions for certain VLMs\n\
+  \                - \"pixel_attention_mask\" (torch.Tensor, optional): Attention\
+  \ mask for image pixels\n                - \"image_sizes\" (torch.Tensor, optional):\
+  \ Original image sizes for certain VLMs\n\n        Returns:\n            torch.Tensor:\
+  \ The computed GRPO loss scalar, already scaled by gradient accumulation steps.\n\
+  \                The loss incorporates:\n                - Clipped probability ratios\
+  \ with configurable epsilon bounds\n                - KL divergence penalty with\
+  \ reference model (if beta > 0)\n                - Importance sampling corrections\
+  \ (if applicable)\n                - Entropy-based token masking (if top_entropy_quantile\
+  \ < 1.0)\n\n        Notes:\n            - The loss is automatically scaled by the\
+  \ current gradient accumulation steps\n            - Different loss types are supported:\
+  \ \"grpo\", \"bnpo\", \"dr_grpo\", and \"dapo\"\n            - When using vLLM with\
+  \ importance sampling correction, additional weighting is applied\n            -\
+  \ Metrics such as KL divergence, entropy, and clipping ratios are logged during\
+  \ computation\n            - The method handles both token-level and sequence-level\
+  \ importance sampling\n            - For vision-language models, additional visual\
+  \ inputs are processed appropriately\n        \"\"\"\n        <your code>\n\n  \
+  \  def prediction_step(\n        self,\n        model,\n        inputs,\n      \
+  \  prediction_loss_only,\n        ignore_keys: Optional[list[str]] = None\n    ):\n\
+  \        \"\"\"\n        Perform a single prediction step on a batch of inputs during\
+  \ model evaluation.\n\n        This method processes a batch of inputs through the\
+  \ model to compute the prediction loss\n        without updating model parameters.\
+  \ It handles the preparation of inputs, loss computation,\n        and returns the\
+  \ results in the format expected by the Trainer's evaluation loop.\n\n        Args:\n\
+  \            model: The model to perform prediction with. This should be the wrapped\
+  \ model\n                that will be used for inference.\n            inputs: A\
+  \ batch of input data containing prompts and any additional features\n         \
+  \       needed for generation and scoring. The inputs will be processed through\n\
+  \                _prepare_inputs to generate completions and compute rewards.\n\
+  \            prediction_loss_only (bool): If True, only compute and return the loss\
+  \ value.\n                When False, additional outputs like predictions and labels\
+  \ could be returned,\n                but this trainer implementation always returns\
+  \ None for those.\n            ignore_keys (Optional[list[str]], optional): List\
+  \ of keys to ignore when\n                processing inputs. Currently not used\
+  \ in this implementation but maintained\n                for compatibility with\
+  \ the parent class interface. Defaults to None.\n\n        Returns:\n          \
+  \  tuple: A 3-tuple containing:\n                - loss (torch.Tensor): The computed\
+  \ prediction loss as a scalar tensor,\n                  detached from the computation\
+  \ graph\n                - predictions (None): Always None in this implementation\n\
+  \                - labels (None): Always None in this implementation\n\n       \
+  \ Important notes:\n            - This method runs in evaluation mode with torch.no_grad()\
+  \ to prevent\n              gradient computation and reduce memory usage\n     \
+  \       - The loss is computed using the same loss function as training but without\n\
+  \              parameter updates\n            - Input preparation includes generating\
+  \ completions and computing rewards,\n              which may involve calls to reward\
+  \ functions or models\n            - The returned loss is averaged and detached\
+  \ to ensure it's a scalar value\n              suitable for logging and evaluation\
+  \ metrics\n        \"\"\"\n        <your code>\n\n    def log(\n        self,\n\
+  \        logs: dict[str, float],\n        start_time: Optional[float] = None\n \
+  \   ) -> None:\n        \"\"\"\n        Log metrics and training statistics to the\
+  \ configured logging backends.\n\n        This method aggregates and logs various\
+  \ training and evaluation metrics collected during\n        the GRPO training process,\
+  \ including rewards, completion statistics, KL divergence,\n        clipping ratios,\
+  \ and other performance indicators. It also handles logging of sample\n        completions\
+  \ to Weights & Biases if configured.\n\n        Args:\n            logs (dict[str,\
+  \ float]): Dictionary containing metrics to be logged. Keys are metric\n       \
+  \         names and values are the corresponding metric values. During evaluation,\
+  \ keys\n                typically have an \"eval_\" prefix.\n            start_time\
+  \ (Optional[float], optional): Timestamp indicating when the current\n         \
+  \       training/evaluation step started. Used for computing timing metrics. Defaults\n\
+  \                to None.\n\n        Returns:\n            None: This method does\
+  \ not return any value. It logs metrics to the configured\n                backends\
+  \ and clears internal metric buffers.\n\n        Notes:\n            - Automatically\
+  \ detects training vs evaluation mode and applies appropriate prefixes\n       \
+  \     - Aggregates metrics by computing averages across accumulated values\n   \
+  \         - Clears internal metric buffers after logging to prevent memory accumulation\n\
+  \            - If log_completions is enabled and running on the main process, prints\
+  \ sample\n              completions and logs them to Weights & Biases as interactive\
+  \ tables\n            - For Weights & Biases logging, creates tables with prompts,\
+  \ completions, rewards,\n              advantages, and images (if present)\n   \
+  \         - Supports filtering unique prompts in Weights & Biases tables when\n\
+  \              wandb_log_unique_prompts is enabled\n        \"\"\"\n        <your\
+  \ code>\n\n    def _save_checkpoint(self, model, trial):\n        \"\"\"\n     \
+  \   Save a model checkpoint during training.\n\n        This method extends the\
+  \ base Trainer's checkpoint saving functionality by automatically\n        generating\
+  \ and saving a model card alongside the checkpoint. The model card contains\n  \
+  \      metadata about the training process, model configuration, and other relevant\
+  \ information.\n\n        Args:\n            model: The model being trained. This\
+  \ is typically the wrapped model from the training\n                process that\
+  \ contains the current state of the parameters.\n            trial: Trial information\
+  \ from hyperparameter optimization frameworks like Optuna.\n                Can\
+  \ be None if not using hyperparameter optimization. Contains trial-specific\n  \
+  \              metadata that may be included in the checkpoint.\n\n        Returns:\n\
+  \            None: This method performs side effects (saving files) but does not\
+  \ return a value.\n\n        Notes:\n            - The model card is automatically\
+  \ generated using information available to the trainer\n            - If args.hub_model_id\
+  \ is set, the model name is extracted from the hub ID\n            - Otherwise,\
+  \ the model name is derived from the output directory name\n            - The model\
+  \ card is saved as README.md in the output directory\n            - This method\
+  \ calls the parent class's _save_checkpoint method to handle the actual\n      \
+  \        model parameter saving\n            - Model card generation only occurs\
+  \ on the main process to avoid duplicate files\n        \"\"\"\n        <your code>\n\
+  \n    def create_model_card(\n        self,\n        model_name: Optional[str] =\
+  \ None,\n        dataset_name: Optional[str] = None,\n        tags: Union[str, list[str],\
+  \ None] = None\n    ):\n        \"\"\"\n\n                Creates a draft of a model\
+  \ card using the information available to the `Trainer`.\n\n                Args:\n\
+  \                    model_name (`str`, *optional*):\n                        Name\
+  \ of the model.\n                    dataset_name (`str`, *optional*):\n       \
+  \                 Name of the dataset used for training.\n                    tags\
+  \ (`str`, `list[str]`, *optional*):\n                        Tags to be associated\
+  \ with the model card.\n\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class GRPOTrainer(Trainer):\n    \"\"\"\n    \n        Trainer\
+  \ for the Group Relative Policy Optimization \n..."
