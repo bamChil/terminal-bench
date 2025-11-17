@@ -9,6 +9,13 @@ services:
     container_name: ${T_BENCH_TASK_DOCKER_CLIENT_CONTAINER_NAME}
     network_mode: "host"
     command: [ "sh", "-c", "sleep infinity"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0', '1']  # 指定使用 GPU 0 和 GPU 1
+              capabilities: [gpu]
     environment:
       - TEST_DIR=${T_BENCH_TEST_DIR}
     volumes:

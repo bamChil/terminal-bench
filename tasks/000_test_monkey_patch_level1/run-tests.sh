@@ -86,28 +86,52 @@ echo ""
 echo "步骤3: 运行pytest测试..."
 echo "========================================="
 
-# 收集所有需要测试的文件路径
-TEST_FILES=""
-while IFS= read -r test_file_path; do
-    [ -z "$test_file_path" ] && continue
-    
-    relative_path="${test_file_path#$REPO_NAME/}"
-    target_file="/testbed/$relative_path"
-    
-    # 只添加存在的文件
-    if [ -f "$target_file" ]; then
-        TEST_FILES="$TEST_FILES $target_file"
-    fi
-done < "$PATH2TEST_FILE"
+# ===== 方式1: 只运行第一个测试文件 (当前使用) =====
+# 读取path2test.txt的第一行
+FIRST_TEST_PATH=$(head -n 1 "$PATH2TEST_FILE" | tr -d '[:space:]')
 
-# 一次性运行所有测试文件
-# terminal-bench会自动捕获pytest输出并解析结果
-if [ -n "$TEST_FILES" ]; then
-    pytest $TEST_FILES -rA --color=no
-else
-    echo "错误: 没有找到可测试的文件"
+if [ -z "$FIRST_TEST_PATH" ]; then
+    echo "错误: path2test.txt为空或第一行为空"
     exit 1
 fi
+
+# 计算相对路径和目标文件
+relative_path="${FIRST_TEST_PATH#$REPO_NAME/}"
+target_file="/testbed/$relative_path"
+
+echo "只运行第一个测试: $relative_path"
+
+# 检查文件是否存在并运行
+if [ -f "$target_file" ]; then
+    pytest "$target_file" -rA --color=no
+else
+    echo "错误: 测试文件不存在: $target_file"
+    exit 1
+fi
+
+# ===== 方式2: 运行所有测试文件 (已注释，保留以备后用) =====
+# # 收集所有需要测试的文件路径
+# TEST_FILES=""
+# while IFS= read -r test_file_path; do
+#     [ -z "$test_file_path" ] && continue
+#     
+#     relative_path="${test_file_path#$REPO_NAME/}"
+#     target_file="/testbed/$relative_path"
+#     
+#     # 只添加存在的文件
+#     if [ -f "$target_file" ]; then
+#         TEST_FILES="$TEST_FILES $target_file"
+#     fi
+# done < "$PATH2TEST_FILE"
+# 
+# # 一次性运行所有测试文件
+# # terminal-bench会自动捕获pytest输出并解析结果
+# if [ -n "$TEST_FILES" ]; then
+#     pytest $TEST_FILES -rA --color=no
+# else
+#     echo "错误: 没有找到可测试的文件"
+#     exit 1
+# fi
 
 echo "========================================="
 echo "测试评测完成"

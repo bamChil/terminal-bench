@@ -1,6 +1,0 @@
-polars/py-polars/tests/unit/io/database/test_inference.py
-polars/py-polars/tests/unit/interop/test_from_pandas.py
-polars/py-polars/tests/unit/test_chunks.py
-polars/py-polars/tests/unit/operations/test_shrink_dtype.py
-polars/py-polars/tests/unit/operations/test_extend_constant.py
-polars/py-polars/tests/unit/utils/test_utils.py

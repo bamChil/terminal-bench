@@ -1,6 +1,0 @@
-sphinx/tests/test_intl/test_intl.py
-sphinx/tests/test_util/test_util_inspect.py
-sphinx/tests/test_pycode/test_pycode_parser.py
-sphinx/tests/test_util/test_util_rst.py
-sphinx/tests/test_util/test_util_docutils_sphinx_directive.py
-sphinx/tests/test_roles.py

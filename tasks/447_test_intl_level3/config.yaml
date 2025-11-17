@@ -1,0 +1,185 @@
+base_image: pb-python311-base_000b0f09
+black_links:
+- https://github.com/sphinx-doc/sphinx/
+commit: null
+docker_specs:
+  run_args:
+    cap add: []
+    cuda_visible_devices: 0,1
+install: pip install -e .&& python setup.py build_ext --inplace && pip install -U
+  sphinx
+instance_image: pb-instance_5fc75856
+library_name: sphinx
+pip_packages:
+- pytest>=8.0
+- pytest-xdist[psutil]>=3.4
+- pytest-timeout
+- Cython>=3.1.2
+- defusedxml>=0.7.1
+- setuptools>=70.0
+- typing_extensions>=4.9
+- threadpoolctl>=3.1.0
+- docutils>=0.18
+- Jinja2>=3.0
+- Pygments>=2.13
+- requests>=2.25.0
+- packaging>=21.0
+- babel>=2.9
+python: '3.11'
+repo_name: sphinx
+repository: sphinx-doc/sphinx
+task_level: 3
+task_name: sphinx_intl
+task_statement: '**Task: Internationalization Message Catalog Management**
+
+
+  **Core Functionality:**
+
+  Build a system to collect, organize, and process translatable messages from documentation
+  sources for internationalization (i18n) support.
+
+
+  **Main Features & Requirements:**
+
+  - Collect translatable text strings with source location metadata (file paths, line
+  numbers, unique IDs)
+
+  - Store and consolidate duplicate messages while tracking all their locations
+
+  - Provide iteration and access methods for message retrieval
+
+  - Transform document trees to preserve original messages before translation
+
+  - Generate data structures compatible with gettext-style translation workflows
+
+
+  **Key Challenges:**
+
+  - Handle missing or incomplete metadata gracefully (missing UIDs, line numbers)
+
+  - Consolidate duplicate messages while preserving all location references
+
+  - Ensure proper transform execution order in the processing pipeline
+
+  - Maintain data integrity during in-place document tree modifications'
+technical_docs: []
+test_cmd: python -m pytest --timeout=20
+test_code1: from agent_code.babel.messages.catalog import Catalog
+test_code_example: from agent_code.babel.messages.catalog import Catalog
+test_code_example_obj: Catalog
+test_code_example_path: /testbed/agent_code/babel/messages/catalog.py
+test_description1: Below is **Test Description 1**
+timeout: 20
+interface_description1: 'Below is **Interface Description 1** for file: sphinx-builders-gettext.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code1: "class Catalog:\n    \"\"\"\n    Catalog of translatable messages.\n\
+  \    \"\"\"\n\n    __slots__ = ('metadata',)\n\n    def __init__(self) -> None:\n\
+  \        \"\"\"\n        Initialize a new Catalog instance for storing translatable\
+  \ messages.\n\n        This constructor creates an empty catalog with initialized\
+  \ metadata storage\n        for managing translatable message entries and their\
+  \ associated location\n        information.\n\n        Parameters\n        ----------\n\
+  \        None\n\n        Returns\n        -------\n        None\n            This\
+  \ is a constructor method that does not return a value.\n\n        Notes\n     \
+  \   -----\n        - Initializes the metadata attribute as an empty dictionary that\
+  \ will map\n          message strings to lists of tuples containing file path, line\
+  \ number,\n          and unique identifier information\n        - The metadata structure\
+  \ follows the format: \n          {msgid: [(file_path, line_number, uid), ...]}\n\
+  \        - This catalog is used to collect and organize translatable strings during\n\
+  \          the documentation building process for internationalization (i18n) support\n\
+  \        \"\"\"\n        <your code>\n\n    def add(\n        self,\n        msg:\
+  \ str,\n        origin: Element | MsgOrigin\n    ) -> None:\n        \"\"\"\n  \
+  \      Add a translatable message to the catalog.\n\n        This method registers\
+  \ a translatable message string along with its source location\n        and metadata\
+  \ for inclusion in gettext-style message catalogs (.pot files). The\n        message\
+  \ will be associated with location information derived from the origin\n       \
+  \ parameter.\n\n        Parameters:\n            msg (str): The translatable message\
+  \ text to be added to the catalog. This\n                is typically extracted\
+  \ from documentation content, templates, or other\n                translatable\
+  \ elements.\n            origin (Element | MsgOrigin): The source origin of the\
+  \ message, which can be\n                either a docutils Element node or a MsgOrigin\
+  \ object. This provides\n                location metadata including source file\
+  \ path, line number, and unique\n                identifier for the message.\n\n\
+  \        Returns:\n            None: This method does not return a value. It modifies\
+  \ the catalog's\n                internal metadata dictionary in-place.\n\n    \
+  \    Notes:\n            - If the origin object does not have a 'uid' attribute,\
+  \ the message will\n              be silently ignored and not added to the catalog.\
+  \ This typically occurs\n              with replicated nodes like todo items where\
+  \ translation is unnecessary.\n            - The method extracts source file path\
+  \ and line number from the origin.\n              If no line number is available,\
+  \ it defaults to -1.\n            - Messages with the same text content will have\
+  \ their metadata consolidated\n              under a single entry, allowing multiple\
+  \ locations to be tracked for the\n              same translatable string.\n   \
+  \         - The source file path may be empty if not available from the origin object.\n\
+  \        \"\"\"\n        <your code>\n\n    def __iter__(self) -> Iterator[Message]:\n\
+  \        \"\"\"\n        Return an iterator over all Message objects in the catalog.\n\
+  \n        This method implements the iterator protocol for the Catalog class, allowing\n\
+  \        it to be used in for loops and other iteration contexts. It processes the\n\
+  \        internal metadata dictionary to create Message objects with consolidated\n\
+  \        location and UUID information.\n\n        Returns:\n            Iterator[Message]:\
+  \ An iterator that yields Message objects. Each Message\n                contains:\n\
+  \                - text: The translatable message string\n                - locations:\
+  \ A sorted list of unique (source_file, line_number) tuples\n                  where\
+  \ the message appears\n                - uuids: A list of unique identifiers associated\
+  \ with the message\n\n        Notes:\n            - Duplicate locations are automatically\
+  \ removed and the remaining locations\n              are sorted for consistent output\n\
+  \            - The locations are extracted from the first two elements of each metadata\n\
+  \              tuple (source, line), while UUIDs are extracted from the third element\n\
+  \            - This method processes all messages stored in the catalog's metadata\n\
+  \              dictionary at the time of iteration\n        \"\"\"\n        <your\
+  \ code>\n\n    @property\n    def messages(self) -> list[str]:\n        \"\"\"\n\
+  \        Get all translatable message strings from the catalog.\n\n        This\
+  \ property provides access to all message identifiers (msgids) that have been\n\
+  \        collected in the catalog's metadata dictionary. These represent the original\n\
+  \        translatable text strings that were extracted from documentation sources.\n\
+  \n        Returns:\n            list[str]: A list of all message strings (keys)\
+  \ stored in the catalog's\n                metadata dictionary. Each string represents\
+  \ a unique translatable\n                message that was found during the documentation\
+  \ parsing process.\n\n        Note:\n            This property returns only the\
+  \ message text strings, not the associated\n            metadata such as source\
+  \ locations or UUIDs. For complete message information\n            including metadata,\
+  \ iterate over the catalog instance directly using the\n            __iter__ method\
+  \ which yields Message objects.\n        \"\"\"\n        <your code>\n"
+interface_description2: 'Below is **Interface Description 2** for file: sphinx-transforms-i18n.py
+
+
+  This file contains 1 top-level interface(s) that need to be implemented.
+
+  '
+interface_code2: "class Locale(SphinxTransform):\n    \"\"\"\n    Replace translatable\
+  \ nodes with their translated doctree.\n    \"\"\"\n\n    default_priority = 20\n\
+  \n    def apply(self, **kwargs: Any) -> None:\n        \"\"\"\n        Apply the\
+  \ Sphinx transform to process and translate document nodes.\n\n        This method\
+  \ is the main entry point for the transform that executes the core\n        functionality\
+  \ of preserving translatable messages before translation occurs.\n        It traverses\
+  \ the document tree to find all translatable nodes and calls their\n        preservation\
+  \ method to maintain original message content.\n\n        Parameters\n        ----------\n\
+  \        **kwargs : Any\n            Arbitrary keyword arguments passed to the transform.\
+  \ These are typically\n            used by the Sphinx transform framework but are\
+  \ not utilized by this\n            specific implementation.\n\n        Returns\n\
+  \        -------\n        None\n            This method performs in-place modifications\
+  \ on the document tree and\n            does not return any value.\n\n        Notes\n\
+  \        -----\n        - This transform MUST be invoked before the Locale transform\
+  \ (priority 10 vs 20)\n        - The method modifies nodes in-place by calling preserve_original_messages()\n\
+  \          on each translatable node found in the document\n        - Only nodes\
+  \ of type addnodes.translatable are processed by this transform\n        - The preservation\
+  \ of original messages is essential for proper translation\n          workflow and\
+  \ maintaining reference integrity\n        \"\"\"\n        <your code>\n"
+interface_code_example: "class Catalog:\n    \"\"\"\n    Catalog of translatable messages.\n\
+  \    \"\"\"\n\n    __slots__ = ('metadata',)\n\n    def __init__(self) -> None:\n\
+  \        \"\"\"\n        Initialize a new Catalog instance for storing translatable\
+  \ messages.\n\n        This constructor creates an empty catalog with initialized\
+  \ metadata storage\n        for managing translatable message entries and their\
+  \ associated location\n        information.\n\n        Parameters\n        ----------\n\
+  \        None\n\n        Returns\n        -------\n        None\n            This\
+  \ is a constructor method that does not return a value.\n\n        Notes\n     \
+  \   -----\n        - Initializes the metadata attribute as an empty dictionary that\
+  \ will map\n          message strings to lists of tuples containing file path, line\
+  \ number,\n          and unique identifier information\n        - The metadata structure\
+  \ follows the format: \n          {msgid: [(file_path, line_number, uid), ...]}\n\
+  \        - This catalog is used to collect and organize translatable strings during\n\
+  \          the documentation building process for internationalization (i18n) support\n\
+  \        \"\"\"\n        <your code>\n..."

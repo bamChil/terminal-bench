@@ -11,3 +11,8 @@ def test_hello_world_file_exists_example():
     hello_path = Path("/testbed/hello-world.txt")
 
     assert hello_path.exists(), f"File {hello_path} does not exist"
+
+# 定义一个函数判断cuda是否可用
+def test_cuda_available():
+    import torch
+    assert torch.cuda.is_available(), "CUDA is not available"

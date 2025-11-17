@@ -1,6 +1,0 @@
-transformers/tests/models/evolla/test_processing_evolla.py
-transformers/tests/models/bert_generation/test_tokenization_bert_generation.py
-transformers/tests/models/blenderbot_small/test_tokenization_blenderbot_small.py
-transformers/tests/models/siglip/test_image_processing_siglip.py
-transformers/tests/models/tapas/test_tokenization_tapas.py
-transformers/tests/models/gemma3/test_image_processing_gemma3.py
