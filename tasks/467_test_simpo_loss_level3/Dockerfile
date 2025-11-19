@@ -26,10 +26,10 @@ FROM pb-instance_24e14545
 RUN apt-get update && apt-get install -y tmux asciinema
 
 ENV ANTHROPIC_BASE_URL="https://yunwu.ai"
-ENV http_proxy="http://127.0.0.1:7890"
-ENV https_proxy="http://127.0.0.1:7890"
-ENV HTTP_PROXY="http://127.0.0.1:7890"
-ENV HTTPS_PROXY="http://127.0.0.1:7890"
+ENV http_proxy="http://127.0.0.1:17890"
+ENV https_proxy="http://127.0.0.1:17890"
+ENV HTTP_PROXY="http://127.0.0.1:17890"
+ENV HTTPS_PROXY="http://127.0.0.1:17890"
 ENV NO_PROXY="localhost,127.0.0.1"
 # ======================================================================================
 # LV3任务初始化逻辑（参考run_infer_for_dev.py的initialize_runtime）

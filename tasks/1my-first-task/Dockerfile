@@ -31,10 +31,13 @@ FROM pb-instance_24e14545
 RUN apt-get update && apt-get install -y tmux asciinema
 
 ENV ANTHROPIC_BASE_URL="https://yunwu.ai"
-ENV http_proxy="http://127.0.0.1:7890"
-ENV https_proxy="http://127.0.0.1:7890"
-ENV HTTP_PROXY="http://127.0.0.1:7890"
-ENV HTTPS_PROXY="http://127.0.0.1:7890"
+ENV GOOGLE_GEMINI_BASE_URL="https://poloai.top"
+ENV OPENAI_API_BASE="https://openaieastus2instance.openai.azure.com"
+
+ENV http_proxy="http://127.0.0.1:17890"
+ENV https_proxy="http://127.0.0.1:17890"
+ENV HTTP_PROXY="http://127.0.0.1:17890"
+ENV HTTPS_PROXY="http://127.0.0.1:17890"
 ENV NO_PROXY="localhost,127.0.0.1"
 
 WORKDIR /testbed
