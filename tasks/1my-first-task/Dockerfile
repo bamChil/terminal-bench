@@ -31,7 +31,7 @@ FROM pb-instance_24e14545
 RUN apt-get update && apt-get install -y tmux asciinema
 
 ENV ANTHROPIC_BASE_URL="https://yunwu.ai"
-ENV GOOGLE_GEMINI_BASE_URL="https://poloai.top"
+ENV GOOGLE_GEMINI_BASE_URL="https://yunwu.ai"
 ENV OPENAI_API_BASE="https://openaieastus2instance.openai.azure.com"
 
 ENV http_proxy="http://127.0.0.1:17890"
