@@ -26,7 +26,7 @@ Create an efficient PyTorch module that combines linear transformations with cos
 - Also, don't try to `pip uninstall liger-kernel` even if the actual `liger-kernel` has already been deleted by us, as this will affect our evaluation of you, and uninstalling the residual `liger-kernel` will result in you getting a ZERO because our tests won't run.
 
 Your available resources are listed below:
-- `/workspace/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
+- `/testbed/ace_bench/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
 
 
 ## Precautions
@@ -39,16 +39,9 @@ Your available resources are listed below:
     - Match the exact interface shown in the **Interface Description** (I will give you this later)
 - I will tell you details about **CRITICAL REQUIREMENT** below.
 
-Your final deliverable should be code in the `/testbed/agent_code` directory, and after completing the codebase, we will use testfiles in workspace/test to evaluatate your codebase, and note that you won't see workspace/test.
+Your final deliverable should be code in the `/testbed/agent_code` directory.
 The final structure is like below, note that all dirs and files under agent_code/ are just examples, your codebase's structure should match import structure in **Test Description**, which I will tell you later.
 ```
-/workspace
-├── task/                 
-│   ├── prompt.md          # task statement
-│   ├── black_links.txt    # black links you can't access
-│   ├── ...
-├── test/                 # you won't see this dir
-│   ├── ...
 /testbed
 ├── agent_code/           # all your code should be put into this dir and match the specific dir structure
 │   ├── __init__.py       # agent_code/ folder and ALL folders under it should contain __init__.py

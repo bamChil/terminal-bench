@@ -25,7 +25,7 @@ The task focuses on creating a high-performance optimization layer that accelera
 - What's more, you need to install `pytest, pytest-timeout, pytest-json-report` in your environment, otherwise our tests won't run and you'll get **ZERO POINTS**!
 
 Your available resources are listed below:
-- `/workspace/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
+- `/testbed/ace_bench/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
 
 
 ## Precautions
@@ -41,13 +41,6 @@ Your available resources are listed below:
 Your final deliverable should be code under the `/testbed/` directory, and after completing the codebase, we will evaluate your completion and it is important that you complete our tasks with integrity and precision
 The final structure is like below, note that  your codebase's structure should match import structure in **Test Description**, which I will tell you later.
 ```
-/workspace
-├── task/
-│   ├── prompt.md          # task statement
-│   ├── black_links.txt    # black links you can't access
-│   ├── ...
-├── test/                  # you won't see this dir
-│   ├── ...
 /testbed                   # all your work should be put into this codebase and match the specific dir structure
 ├── dir1/
 │   ├── file1.py

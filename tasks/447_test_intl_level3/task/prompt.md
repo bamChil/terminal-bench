@@ -26,7 +26,7 @@ Build a system to collect, organize, and process translatable messages from docu
 - You are now in `/testbed/`, and originally there was a specific implementation of `sphinx` under `/testbed/` that had been installed via `pip install -e .`. However, to prevent you from cheating, we've removed the code under `/testbed/`. While you can see traces of the installation via the pip show, it's an artifact, and `sphinx` doesn't exist. So you can't and don't need to use `pip install sphinx`, just focus on writing your `agent_code` and accomplishing our task.
 
 Your available resources are listed below:
-- `/workspace/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
+- `/testbed/ace_bench/task/black_links.txt`: Prohibited URLs (all other web resources are allowed)
 
 
 ## Precautions
@@ -39,16 +39,9 @@ Your available resources are listed below:
     - Match the exact interface shown in the **Interface Description** (I will give you this later)
 - I will tell you details about **CRITICAL REQUIREMENT** below.
 
-Your final deliverable should be code in the `/testbed/agent_code` directory, and after completing the codebase, we will use testfiles in workspace/test to evaluatate your codebase, and note that you won't see workspace/test.
+Your final deliverable should be code in the `/testbed/agent_code` directory.
 The final structure is like below, note that all dirs and files under agent_code/ are just examples, your codebase's structure should match import structure in **Test Description**, which I will tell you later.
 ```
-/workspace
-├── task/                 
-│   ├── prompt.md          # task statement
-│   ├── black_links.txt    # black links you can't access
-│   ├── ...
-├── test/                 # you won't see this dir
-│   ├── ...
 /testbed
 ├── agent_code/           # all your code should be put into this dir and match the specific dir structure
 │   ├── __init__.py       # agent_code/ folder and ALL folders under it should contain __init__.py
