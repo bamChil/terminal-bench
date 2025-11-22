@@ -50,7 +50,7 @@ class MiniSweAgent(AbstractInstalledAgent):
         escaped_instruction = shlex.quote(instruction)
         return [
             TerminalCommand(
-                command=f"mini -m {self._model_name} -t {escaped_instruction} -y "
+                command=f"mini -m {self._model_name} -t {escaped_instruction} -y -l 100 "
                 f"--exit-immediately",
                 min_timeout_sec=0.0,
                 max_timeout_sec=float("inf"),
