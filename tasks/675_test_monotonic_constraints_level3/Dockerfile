@@ -55,9 +55,9 @@ RUN rm -rf /tmp/task/notes && \
     rm -rf /tmp/task/origin && \
     rm -f /tmp/task/replace_with_masked_code.py
 
-# 5. 将清理后的task目录移动到/workspace/task（agent工作目录）
-RUN mkdir -p /workspace/task && \
-    mv /tmp/task/* /workspace/task/ && \
+# 5. 将清理后的task目录移动到/testbed/ace_bench/task（agent工作目录）
+RUN mkdir -p /testbed/ace_bench/task && \
+    mv /tmp/task/* /testbed/ace_bench/task/ && \
     rm -rf /tmp/task
 
 # 6. 删除/testbed/.git文件夹（如果存在）
