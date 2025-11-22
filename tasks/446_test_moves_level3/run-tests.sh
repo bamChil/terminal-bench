@@ -41,66 +41,37 @@ else
     echo "⚠ 清空/testbed目录失败"
 fi
 
-# 2. 检查$TEST_DIR/Liger-Kernel目录是否存在
-if [ -d "$TEST_DIR/$REPO_NAME" ]; then
-    echo "将$TEST_DIR/$REPO_NAME/*移动到/testbed/..."
-    mv "$TEST_DIR/$REPO_NAME"/* /testbed/
-    if [ $? -eq 0 ]; then
-        echo "✓ 成功移动仓库内容到/testbed"
-    else
-        echo "✗ 移动仓库内容失败"
-        exit 1
-    fi
-    
-    # 3. 删除空的repo_name文件夹
-    echo "删除空目录$TEST_DIR/$REPO_NAME..."
-    rm -rf "$TEST_DIR/$REPO_NAME"
-    if [ $? -eq 0 ]; then
-        echo "✓ 成功删除空目录"
-    else
-        echo "⚠ 删除空目录失败"
-    fi
-else
-    echo "⚠ 警告: $TEST_DIR/$REPO_NAME目录不存在，跳过仓库移动步骤"
-fi
+rm -rf /testbed/* && \
+cp /tmp/my_repo1.zip /testbed/ && \
+cd /testbed && \
+unzip -o -P ace_bench my_repo1.zip && \
+rm -f my_repo1.zip
 
 echo ""
 echo "步骤2: 复制测试文件到/testbed..."
 echo "========================================="
 
-# 遍历path2test.txt中的每一行，复制测试文件
-while IFS= read -r test_file_path; do
-    # 跳过空行
-    [ -z "$test_file_path" ] && continue
-    
-    # 提取测试文件名（例如：test_cosine_loss.py）
-    test_file_name=$(basename "$test_file_path")
-    
-    # 计算相对于repo_name的路径（例如：test/chunked_loss/test_cosine_loss.py）
-    # test_file_path格式是：Liger-Kernel/test/chunked_loss/test_cosine_loss.py
-    relative_path="${test_file_path#$REPO_NAME/}"
-    
-    # 源文件路径（从$TEST_DIR获取）
-    source_file="$TEST_DIR/$test_file_name"
-    
-    # 目标文件路径（在/testbed下）
-    target_file="/testbed/$relative_path"
-    
-    # 检查源文件是否存在
-    if [ ! -f "$source_file" ]; then
-        echo "警告: 源测试文件不存在: $source_file，跳过"
-        continue
-    fi
-    
-    # 创建目标目录（如果不存在）
+# 只读取path2test.txt的第一行并复制该测试文件
+FIRST_LINE=$(head -n 1 "$PATH2TEST_FILE")
+if [ -z "$FIRST_LINE" ]; then
+    echo "错误: path2test.txt文件为空"
+    exit 1
+fi
+
+test_file_path="$FIRST_LINE"
+test_file_name=$(basename "$test_file_path")
+relative_path="${test_file_path#$REPO_NAME/}"
+source_file="$TEST_DIR/$test_file_name"
+target_file="/testbed/$relative_path"
+
+if [ ! -f "$source_file" ]; then
+    echo "警告: 源测试文件不存在: $source_file，跳过"
+else
     target_dir=$(dirname "$target_file")
     mkdir -p "$target_dir"
-    
-    # 复制测试文件到目标位置
     echo "  复制: $test_file_name -> $relative_path"
     cp "$source_file" "$target_file"
-    
-done < "$PATH2TEST_FILE"
+fi
 
 echo ""
 echo "步骤3: 执行wrap_imports_with_try.py脚本..."

@@ -39,8 +39,10 @@ ENV NO_PROXY="localhost,127.0.0.1"
 #    注意：根据run_infer_for_dev.py第699-706行，LV3只是删除/testbed/*
 RUN rm -rf /testbed/*
 
-# 2. 删除/root下所有非隐藏文件和文件夹
-RUN find /root -maxdepth 1 ! -name ".*" ! -path "/root" -exec rm -rf {} +
+# 2. 先将/root/my_repo1/*打包为my_repo1.zip（带密码ace_bench），放到/tmp，再进行删除/root操作
+RUN apt-get update && apt-get install -y zip && \
+    cd /root/my_repo1 && zip -r -P ace_bench /tmp/my_repo1.zip . && \
+    find /root -maxdepth 1 ! -name ".*" ! -path "/root" -exec rm -rf {} +
 
 # 3. 复制task目录到临时位置
 #    注意：LV3不执行replace_with_masked_code.py（与LV1的关键区别）
