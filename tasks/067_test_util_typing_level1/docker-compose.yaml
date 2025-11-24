@@ -14,10 +14,11 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0', '1']  # 指定使用 GPU 0 和 GPU 1
-              capabilities: [gpu]
+              device_ids: [ '0', '1' ] # 指定使用 GPU 0 和 GPU 1
+              capabilities: [ gpu ]
     environment:
       - TEST_DIR=${T_BENCH_TEST_DIR}
+      - LOG_ALL_EVENTS=true
     volumes:
       - ${T_BENCH_TASK_LOGS_PATH}:${T_BENCH_CONTAINER_LOGS_PATH}
       - ${T_BENCH_TASK_AGENT_LOGS_PATH}:${T_BENCH_CONTAINER_AGENT_LOGS_PATH}
